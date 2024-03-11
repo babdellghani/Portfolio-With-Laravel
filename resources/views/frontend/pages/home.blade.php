@@ -4,7 +4,7 @@
 @section('content')
 
     <!-- slider-area -->
-    <x-slider />
+    <x-home.slider />
     <!-- slider-area-end -->
 
     <!-- about-area -->

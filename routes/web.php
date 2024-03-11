@@ -5,7 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Home\HomeSlideController;
 
 Route::get('/', function () {
-    return view('frontend.index');
+    return view('frontend.pages.home');
 })->name('home');
 
 Route::get('/dashboard', function () {
@@ -21,6 +21,10 @@ Route::middleware('auth')->group(function () {
 Route::controller(HomeSlideController::class)->group(function () {
     Route::get('/slide', 'index')->name('home.slide');
     Route::post('/slide', 'store')->name('home.slide.store');
+});
+
+Route::get('/about', function () {
+    return view('frontend.pages.about');
 });
 
 require __DIR__.'/auth.php';

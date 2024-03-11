@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\Home;
 
 use Closure;
 use App\Models\HomeSlide;
@@ -22,6 +22,6 @@ class Slider extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('frontend.home.slider', ['homeSlide' => HomeSlide::latest()->firstOrFail()]);
+        return view('frontend.components.home.slider', ['homeSlide' => HomeSlide::latest()->firstOrFail()]);
     }
 }
