@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AboutController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Home\HomeSlideController;
 
@@ -23,8 +24,7 @@ Route::controller(HomeSlideController::class)->group(function () {
     Route::post('/slide', 'store')->name('home.slide.store');
 });
 
-Route::get('/about', function () {
-    return view('frontend.pages.about');
-});
+Route::get('/about', [AboutController::class, 'index'])->name('about');
+Route::post('/about', [AboutController::class, 'store'])->name('about.store');
 
 require __DIR__.'/auth.php';
