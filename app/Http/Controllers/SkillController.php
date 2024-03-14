@@ -12,15 +12,9 @@ class SkillController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $skill = Skill::latest()->first();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return view('admin.about.skill', compact('skill'));
     }
 
     /**
@@ -28,23 +22,17 @@ class SkillController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'name' => 'required',
+            'value' => 'required|min:0|max:100|numeric',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Skill $skill)
-    {
-        //
-    }
+        Skill::create($request->all());
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Skill $skill)
-    {
-        //
+        return back()->with([
+            'message' => 'Skill created successfully',
+            'alert-type' => 'success',
+        ]);
     }
 
     /**
@@ -52,7 +40,17 @@ class SkillController extends Controller
      */
     public function update(Request $request, Skill $skill)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'value' => 'required|min:0|max:100|numeric',
+        ]);
+
+        $skill->update($request->all());
+
+        return back()->with([
+            'message' => 'Skill updated successfully',
+            'alert-type' => 'success',
+        ]);
     }
 
     /**
@@ -60,6 +58,11 @@ class SkillController extends Controller
      */
     public function destroy(Skill $skill)
     {
-        //
+        $skill->delete();
+
+        return back()->with([
+            'message' => 'Skill deleted successfully',
+            'alert-type' => 'success',
+        ]);
     }
 }

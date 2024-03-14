@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\About;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AboutController extends Controller
 {
@@ -28,15 +29,26 @@ class AboutController extends Controller
             'short_description' => 'required|max:255|string',
             'long_description' => 'required|max:255|string',
             'about_image' => 'required|image|mimes:png,jpg,jpeg|max:2048',
+            'cv_file' => 'nullable|file|mimetypes:application/pdf|max:10000',
         ]);
 
-        About::create([
-            'title' => $request->title,
-            'short_title' => $request->short_title,
-            'short_description' => $request->short_description,
-            'long_description' => $request->long_description,
-            'about_image' => $request->about_image,
-        ]);
+        $about = About::latest()->firstOrFail();
+        if ($request->hasFile('about_image')) {
+            Storage::delete('public/' . $about->about_image);
+            $about->about_image = $request->file('about_image')->store('about', 'public');
+        }
+
+        if ($request->hasFile('cv_file')) {
+            Storage::delete('public/' . $about->cv_file);
+            $about->cv_file = $request->file('cv_file')->store('about', 'public');
+        }
+
+        $about->title = $request->title;
+        $about->short_title = $request->short_title;
+        $about->short_description = $request->short_description;
+        $about->long_description = $request->long_description;
+
+        $about->save();
 
         return back()->with([
             'message' => 'About created successfully',

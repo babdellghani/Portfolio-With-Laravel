@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\AwardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Home\HomeSlideController;
 
@@ -26,5 +27,11 @@ Route::controller(HomeSlideController::class)->group(function () {
 
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::post('/about', [AboutController::class, 'store'])->name('about.store');
+
+Route::get('/awards', [AwardController::class, 'index'])->name('award');
+Route::post('/awards', [AwardController::class, 'store'])->name('award.store');
+Route::get('/awards/edit/{award}', [AwardController::class, 'edit'])->name('award.edit');
+Route::put('/awards/update/{award}', [AwardController::class, 'update'])->name('award.update');
+Route::delete('/awards/delete/{award}', [AwardController::class, 'destroy'])->name('award.destroy');
 
 require __DIR__.'/auth.php';

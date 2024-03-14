@@ -82,6 +82,28 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="mb-3">
+                                        <x-input-label for="cv_file" :value="__('CV')" class="form-label" />
+
+                                        <div class="d-flex flex-column align-items-center gap-3">
+                                            <div>
+                                                <div class="mt-4 mt-md-0">
+                                                    @if ($about->cv_file)
+                                                        <embed
+                                                            src="{{ asset('storage/' . $about->cv_file) }}"
+                                                            id="showPdf"
+                                                            type="application/pdf" frameBorder="0" scrolling="auto"
+                                                            height="100%" width="100%"></embed>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="input-group">
+                                                <input type="file" id="pdf" name="cv_file" class="form-control" id="customFile">
+                                                <x-input-error class="text-danger small mt-1" :messages="$errors->get('cv_file')" />
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="d-flex align-items-center gap-3">
                                         <x-primary-button class="btn btn-primary">{{ __('Save') }}</x-primary-button>
                                     </div>
@@ -110,10 +132,10 @@
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script type="text/javascript">
             $(document).ready(function() {
-                $('#image').change(function() {
+                $('#pdf').change(function() {
                     const reader = new FileReader();
                     reader.onload = function(e) {
-                        $('#showImage').attr('src', e.target.result);
+                        $('#showPdf').attr('src', e.target.result);
                     };
                     reader.readAsDataURL(this.files[0]);
                 });

@@ -25,9 +25,12 @@
               n("#rtl-mode-switch").prop("checked", !1),
               n("#bootstrap-style").attr(
                   "href",
-                  "backend/assets/css/bootstrap.min.css"
+                  "http://127.0.0.1:8000/backend/assets/css/bootstrap.min.css"
               ),
-              n("#app-style").attr("href", "backend/assets/css/app.min.css"),
+              n("#app-style").attr(
+                  "href",
+                  "http://127.0.0.1:8000/backend/assets/css/app.min.css"
+              ),
               sessionStorage.setItem("is_visited", "light-mode-switch"))
             : 1 == n("#dark-mode-switch").prop("checked") &&
               "dark-mode-switch" === e
@@ -36,11 +39,11 @@
               n("#rtl-mode-switch").prop("checked", !1),
               n("#bootstrap-style").attr(
                   "href",
-                  "backend/assets/css/bootstrap-dark.min.css"
+                  "http://127.0.0.1:8000/backend/assets/css/bootstrap-dark.min.css"
               ),
               n("#app-style").attr(
                   "href",
-                  "backend/assets/css/app-dark.min.css"
+                  "http://127.0.0.1:8000/backend/assets/css/app-dark.min.css"
               ),
               sessionStorage.setItem("is_visited", "dark-mode-switch"))
             : 1 == n("#rtl-mode-switch").prop("checked") &&
@@ -49,11 +52,11 @@
               n("#dark-mode-switch").prop("checked", !1),
               n("#bootstrap-style").attr(
                   "href",
-                  "backend/assets/css/bootstrap-rtl.min.css"
+                  "http://127.0.0.1:8000/backend/assets/css/bootstrap-rtl.min.css"
               ),
               n("#app-style").attr(
                   "href",
-                  "backend/assets/css/app-rtl.min.css"
+                  "http://127.0.0.1:8000/backend/assets/css/app-rtl.min.css"
               ),
               n("html").attr("dir", "rtl"),
               sessionStorage.setItem("is_visited", "rtl-mode-switch"));

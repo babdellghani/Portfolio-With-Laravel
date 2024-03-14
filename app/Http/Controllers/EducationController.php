@@ -12,15 +12,9 @@ class EducationController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $education = Education::latest()->first();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return view('admin.about.education', compact('education'));
     }
 
     /**
@@ -28,23 +22,19 @@ class EducationController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'name' => 'required',
+            'description' => 'required|max:255|string',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Education $education)
-    {
-        //
-    }
+        Education::create($request->all());
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Education $education)
-    {
-        //
+        return back()->with([
+            'message' => 'Education created successfully',
+            'alert-type' => 'success',
+        ]);
     }
 
     /**
@@ -52,7 +42,19 @@ class EducationController extends Controller
      */
     public function update(Request $request, Education $education)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'description' => 'required|max:255|string',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+        ]);
+
+        $education->update($request->all());
+
+        return back()->with([
+            'message' => 'Education updated successfully',
+            'alert-type' => 'success',
+        ]);
     }
 
     /**
@@ -60,6 +62,11 @@ class EducationController extends Controller
      */
     public function destroy(Education $education)
     {
-        //
+        $education->delete();
+
+        return back()->with([
+            'message' => 'Education deleted successfully',
+            'alert-type' => 'success',
+        ]);
     }
 }
