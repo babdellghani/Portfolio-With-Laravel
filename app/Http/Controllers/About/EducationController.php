@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\About;
 
 use App\Models\Education;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class EducationController extends Controller
 {

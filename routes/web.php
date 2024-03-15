@@ -1,11 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AboutController;
-use App\Http\Controllers\AwardController;
-use App\Http\Controllers\EducationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\About\AboutController;
+use App\Http\Controllers\About\AwardController;
+use App\Http\Controllers\About\SkillController;
 use App\Http\Controllers\Home\HomeSlideController;
+use App\Http\Controllers\About\EducationController;
 
 Route::get('/', function () {
     return view('frontend.pages.home');
@@ -42,5 +43,12 @@ Route::post('/educations', [EducationController::class, 'store'])->name('educati
 Route::get('/educations/edit/{education}', [EducationController::class, 'edit'])->name('education.edit');
 Route::put('/educations/update/{education}', [EducationController::class, 'update'])->name('education.update');
 Route::delete('/educations/delete/{education}', [EducationController::class, 'destroy'])->name('education.destroy');
+
+// skills
+Route::get('/skills', [SkillController::class, 'index'])->name('skill');
+Route::post('/skills', [SkillController::class, 'store'])->name('skill.store');
+Route::get('/skills/edit/{skill}', [SkillController::class, 'edit'])->name('skill.edit');
+Route::put('/skills/update/{skill}', [SkillController::class, 'update'])->name('skill.update');
+Route::delete('/skills/delete/{skill}', [SkillController::class, 'destroy'])->name('skill.destroy');
 
 require __DIR__ . '/auth.php';

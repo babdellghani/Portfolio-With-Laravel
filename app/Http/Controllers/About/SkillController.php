@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\About;
 
 use App\Models\Skill;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class SkillController extends Controller
 {
@@ -12,9 +13,9 @@ class SkillController extends Controller
      */
     public function index()
     {
-        $skill = Skill::latest()->first();
+        $skills = Skill::latest()->get();
 
-        return view('admin.about.skill', compact('skill'));
+        return view('admin.about.skill', compact('skills'));
     }
 
     /**
@@ -36,6 +37,14 @@ class SkillController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Skill $skill)
+    {
+        return view('admin.about.skill-edit', compact('skill'));
+    }
+
+    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Skill $skill)
@@ -47,7 +56,7 @@ class SkillController extends Controller
 
         $skill->update($request->all());
 
-        return back()->with([
+        return redirect()->route('skill')->with([
             'message' => 'Skill updated successfully',
             'alert-type' => 'success',
         ]);
