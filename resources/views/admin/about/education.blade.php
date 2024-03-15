@@ -20,7 +20,17 @@
                                     </p>
                                 </header>
 
-                                <form method="post" action="{{ route('about.store') }}" class="mt-4"
+                                @if ($errors->any())
+                                    <div class="alert alert-danger">
+                                        <ul>
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+
+                                <form method="post" action="{{ route('education.store') }}" class="mt-4"
                                     enctype="multipart/form-data">
                                     @csrf
 
@@ -33,9 +43,9 @@
 
                                     <div class="mb-3">
                                         <x-input-label for="description" :value="__('Description')" class="form-label" />
-                                        <x-text-input id="description" name="description" type="text"
-                                            class="form-control" :value="old('description')" placeholder="Description" required
-                                            autocomplete="description" />
+                                        <x-textarea id="description" name="description" type="text" class="form-control"
+                                            placeholder="Description" required
+                                            autocomplete="description">{{ old('description') }}</x-textarea>
                                         <x-input-error class="text-danger small mt-1" :messages="$errors->get('description')" />
                                     </div>
 
@@ -65,7 +75,7 @@
                                     <div class="card">
                                         <div class="card-body">
 
-                                            <h4 class="card-title">Your Awards</h4>
+                                            <h4 class="card-title">Your Educations</h4>
 
                                             <div class="table-responsive">
                                                 <table class="table table-editable table-nowrap align-middle table-edits">
@@ -73,7 +83,8 @@
                                                         <tr>
                                                             <th>ID</th>
                                                             <th>Name</th>
-                                                            <th>Year</th>
+                                                            <th>Start Date</th>
+                                                            <th>End Date</th>
                                                             <th>Description</th>
                                                             <th>Action</th>
                                                         </tr>
@@ -83,21 +94,27 @@
                                                             <tr>
                                                                 <td style="width: 80px">{{ $education->id }}</td>
                                                                 <td>
-                                                                    <span class="display">{{ $education->title }}</span>
+                                                                    <span class="display">{{ $education->name }}</span>
                                                                 </td>
                                                                 <td>
-                                                                    <span class="display">{{ $education->year }}</span>
+                                                                    <span
+                                                                        class="display">{{ $education->start_date }}</span>
                                                                 </td>
                                                                 <td>
-                                                                    <span class="display">{{ $education->description }}</span>
+                                                                    <span class="display">{{ $education->end_date }}</span>
+                                                                </td>
+                                                                <td>
+                                                                    <span
+                                                                        class="display">{{ $education->description }}</span>
                                                                 </td>
                                                                 <td style="width: 100px">
-                                                                    <a href="{{ route('award.edit', $award->id) }}"
+                                                                    <a href="{{ route('education.edit', $education->id) }}"
                                                                         class="btn btn-outline-secondary btn-sm edit"
                                                                         title="Edit">
                                                                         <i class="fas fa-pencil-alt"></i>
                                                                     </a>
-                                                                    <form action="{{ route('award.destroy', $award) }}"
+                                                                    <form
+                                                                        action="{{ route('education.destroy', $education) }}"
                                                                         method="post" class="d-inline">
                                                                         @csrf
                                                                         @method('delete')

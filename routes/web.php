@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AwardController;
+use App\Http\Controllers\EducationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Home\HomeSlideController;
 
@@ -28,10 +29,18 @@ Route::controller(HomeSlideController::class)->group(function () {
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::post('/about', [AboutController::class, 'store'])->name('about.store');
 
+// awards
 Route::get('/awards', [AwardController::class, 'index'])->name('award');
 Route::post('/awards', [AwardController::class, 'store'])->name('award.store');
 Route::get('/awards/edit/{award}', [AwardController::class, 'edit'])->name('award.edit');
 Route::put('/awards/update/{award}', [AwardController::class, 'update'])->name('award.update');
 Route::delete('/awards/delete/{award}', [AwardController::class, 'destroy'])->name('award.destroy');
 
-require __DIR__.'/auth.php';
+// education
+Route::get('/educations', [EducationController::class, 'index'])->name('education');
+Route::post('/educations', [EducationController::class, 'store'])->name('education.store');
+Route::get('/educations/edit/{education}', [EducationController::class, 'edit'])->name('education.edit');
+Route::put('/educations/update/{education}', [EducationController::class, 'update'])->name('education.update');
+Route::delete('/educations/delete/{education}', [EducationController::class, 'destroy'])->name('education.destroy');
+
+require __DIR__ . '/auth.php';

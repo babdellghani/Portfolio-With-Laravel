@@ -14,7 +14,7 @@ class AwardController extends Controller
      */
     public function index()
     {
-        $awards = Award::all();;
+        $awards = Award::latest()->get();;
 
         return view('admin.about.award', compact('awards'));
     }

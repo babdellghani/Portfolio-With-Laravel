@@ -1,5 +1,5 @@
 @extends('admin.partials.master')
-@section('title', 'Award')
+@section('title', 'Award Information')
 
 @section('content')
     <div class="py-5">
@@ -14,6 +14,7 @@
                                     <a href="{{ route('award') }}" class="btn btn-secondary mb-3">
                                         {{ __('Back to List') }}
                                     </a>
+
                                     <h2 class="fs-4 fw-medium text-dark">
                                         {{ __('Award Information') }}
                                     </h2>
@@ -53,9 +54,9 @@
 
                                     <div class="mb-3">
                                         <x-input-label for="description" :value="__('Description')" class="form-label" />
-                                        <x-text-input id="description" name="description" type="text"
-                                            class="form-control" :value="old('description', $award->description)" placeholder="Description" required
-                                            autocomplete="description" />
+                                        <x-textarea id="description" name="description" type="text" class="form-control"
+                                            placeholder="Description" required
+                                            autocomplete="description">{{ old('description', $award->description) }}</x-textarea>
                                         <x-input-error class="text-danger small mt-1" :messages="$errors->get('description')" />
                                     </div>
                                     <div class="d-flex align-items-center gap-3">

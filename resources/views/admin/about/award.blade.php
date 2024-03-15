@@ -50,9 +50,8 @@
 
                                     <div class="mb-3">
                                         <x-input-label for="description" :value="__('Description')" class="form-label" />
-                                        <x-text-input id="description" name="description" type="text"
-                                            class="form-control" :value="old('description')" placeholder="Description" required
-                                            autocomplete="description" />
+                                        <x-textarea id="description" name="description" type="text" class="form-control" placeholder="Description" required
+                                            autocomplete="description">{{ old('description') }}</x-textarea>
                                         <x-input-error class="text-danger small mt-1" :messages="$errors->get('description')" />
                                     </div>
                                     <div class="d-flex align-items-center gap-3">

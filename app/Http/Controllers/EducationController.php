@@ -12,9 +12,9 @@ class EducationController extends Controller
      */
     public function index()
     {
-        $education = Education::latest()->first();
+        $educations = Education::latest()->get();
 
-        return view('admin.about.education', compact('education'));
+        return view('admin.about.education', compact('educations'));
     }
 
     /**
@@ -38,6 +38,14 @@ class EducationController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Education $education)
+    {
+        return view('admin.about.education-edit', compact('education'));
+    }
+
+    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Education $education)
@@ -51,7 +59,9 @@ class EducationController extends Controller
 
         $education->update($request->all());
 
-        return back()->with([
+        $education->save();
+
+        return redirect()->route('education')->with([
             'message' => 'Education updated successfully',
             'alert-type' => 'success',
         ]);
