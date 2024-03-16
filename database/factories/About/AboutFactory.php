@@ -2,10 +2,11 @@
 
 namespace Database\Factories\About;
 
+use App\Models\About;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\About>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
  */
 class AboutFactory extends Factory
 {
@@ -14,6 +15,9 @@ class AboutFactory extends Factory
      *
      * @return array<string, mixed>
      */
+
+    protected $model = About::class;
+
     public function definition(): array
     {
         return [

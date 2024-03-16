@@ -5,6 +5,7 @@ namespace App\Http\Controllers\About;
 use App\Models\About;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Database\Seeders\About\AboutSeeder;
 use Illuminate\Support\Facades\Storage;
 
 class AboutController extends Controller
@@ -15,6 +16,11 @@ class AboutController extends Controller
     public function index()
     {
         $about = About::latest()->first();
+
+        if (!$about) {
+            (new AboutSeeder())->run();
+            $about = About::latest()->first();
+        }
 
         return view('admin.about.about', compact('about'));
     }
@@ -34,6 +40,11 @@ class AboutController extends Controller
         ]);
 
         $about = About::latest()->firstOrFail();
+        if (!$about) {
+            (new AboutSeeder())->run();
+            $about = About::latest()->first();
+        }
+        
         if ($request->hasFile('about_image')) {
             Storage::delete('public/' . $about->about_image);
             $about->about_image = $request->file('about_image')->store('about', 'public');

@@ -32,18 +32,18 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <x-input-label for="short_title" :value="__('Short Title')" class="form-label" />
-                                        <x-text-input id="short_title" name="short_title" type="text"
-                                            class="form-control" :value="old('short_title', $about->short_title)" placeholder="Short Title" required
-                                            autocomplete="title" />
+                                        <x-input-label for="short_title" :value="__('Short Title (Experience)')" class="form-label" />
+                                        <x-textarea id="short_title" name="short_title" type="text" class="form-control"
+                                            placeholder="Short Title" rows="3" required
+                                            autocomplete="title">{{ old('short_title', $about->short_title) }}</x-textarea>
                                         <x-input-error class="text-danger small mt-1" :messages="$errors->get('short_title')" />
                                     </div>
 
                                     <div class="mb-3">
                                         <x-input-label for="short_description" :value="__('Short Description')" class="form-label" />
-                                        <x-text-input id="short_description" name="short_description" type="text"
-                                            class="form-control" :value="old('short_description', $about->short_description)" placeholder="Short Description" required
-                                            autocomplete="description" />
+                                        <x-textarea id="short_description" name="short_description" rows="10"
+                                            class="form-control" placeholder="Short Description" height="150" required
+                                            autocomplete="description">{{ old('short_description', $about->short_description) }}</x-textarea>
                                         <x-input-error class="text-danger small mt-1" :messages="$errors->get('short_description')" />
                                     </div>
 
@@ -62,17 +62,9 @@
                                         <div class="d-flex flex-column align-items-center gap-3">
                                             <div>
                                                 <div class="mt-4 mt-md-0">
-                                                    @if ($about->about_image)
-                                                        <img id="showImage" class="rounded img-thumbnail w-100 h-100"
-                                                            alt=""
-                                                            src="{{ asset('storage/' . $about->about_image) }}"
-                                                            data-holder-rendered="true">
-                                                    @else
-                                                        <img id="showImage" class="rounded img-thumbnail w-100 h-100"
-                                                            alt=""
-                                                            src="{{ asset('backend/assets/images/users/avatar-1.jpg') }}"
-                                                            data-holder-rendered="true">
-                                                    @endif
+                                                    <img id="showImage" class="rounded img-thumbnail w-100 h-100"
+                                                        src="{{ asset('storage/' . $about->about_image) }}"
+                                                        data-holder-rendered="true">
                                                 </div>
                                             </div>
                                             <div class="input-group">
@@ -84,22 +76,19 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <x-input-label for="cv_file" :value="__('CV')" class="form-label" />
+                                        <x-input-label for="cv_file" :value="__('Curriculum Vitae (CV)')" class="form-label" />
 
                                         <div class="d-flex flex-column align-items-center gap-3">
-                                            <div>
-                                                <div class="mt-4 mt-md-0">
-                                                    @if ($about->cv_file)
-                                                        <embed
-                                                            src="{{ asset('storage/' . $about->cv_file) }}"
-                                                            id="showPdf"
-                                                            type="application/pdf" frameBorder="0" scrolling="auto"
-                                                            height="100%" width="100%"></embed>
-                                                    @endif
+                                            <div class="w-100">
+                                                <div class="mt-4 mt-md-0 w-100">
+                                                    <iframe src="{{ asset('storage/' . $about->cv_file) }}" id="showPdf"
+                                                        type="application/pdf" frameBorder="0" scrolling="auto"
+                                                        style="width: 100%; height: 500px"></iframe>
                                                 </div>
                                             </div>
                                             <div class="input-group">
-                                                <input type="file" id="pdf" name="cv_file" class="form-control" id="customFile">
+                                                <input type="file" id="pdf" name="cv_file" class="form-control"
+                                                    id="customFile">
                                                 <x-input-error class="text-danger small mt-1" :messages="$errors->get('cv_file')" />
                                             </div>
                                         </div>
@@ -131,6 +120,15 @@
             integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script type="text/javascript">
+            $(document).ready(function() {
+                $('#image').change(function() {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#showImage').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                });
+            });
             $(document).ready(function() {
                 $('#pdf').change(function() {
                     const reader = new FileReader();
