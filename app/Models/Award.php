@@ -13,5 +13,6 @@ class Award extends Model
         'title',
         'year',
         'description',
+        'image',
     ];
 }

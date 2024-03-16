@@ -5,6 +5,7 @@ namespace App\Http\Controllers\About;
 use App\Models\Award;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Colors\Rgb\Channels\Red;
 
@@ -25,13 +26,18 @@ class AwardController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $award = $request->validate([
             'title' => 'required',
             'year' => 'required|min:1900|max:' . date('Y') . '|numeric',
             'description' => 'required|max:255|string',
+            'image' => 'required|image|mimes:png,jpg,jpeg|max:2048',
         ]);
 
-        Award::create($request->all());
+        if ($request->hasFile('image')) {
+            $award['image'] = $request->file('image')->store('award', 'public');
+        }
+
+        Award::create($award);
 
         return back()->with([
             'message' => 'Award created successfully',
@@ -52,13 +58,19 @@ class AwardController extends Controller
      */
     public function update(Request $request, Award $award)
     {
-        $request->validate([
+        $awardNew = $request->validate([
             'title' => 'required',
             'year' => 'required|min:1900|max:' . date('Y') . '|numeric',
             'description' => 'required|max:255|string',
+            'image' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
         ]);
 
-        $award->update($request->all());
+        if ($request->hasFile('image')) {
+            Storage::delete('public/' . $award->image);
+            $awardNew['image'] = $request->file('image')->store('award', 'public');
+        }
+
+        $award->update($awardNew);
 
         $award->save();
 

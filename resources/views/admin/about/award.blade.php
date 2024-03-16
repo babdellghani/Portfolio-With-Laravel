@@ -31,7 +31,7 @@
                                     </div>
                                 @endif
 
-                                <form method="post" action="{{ route('award.store') }}" class="mt-4">
+                                <form method="post" action="{{ route('award.store') }}" class="mt-4" enctype="multipart/form-data">
                                     @csrf
 
                                     <div class="mb-3">
@@ -50,10 +50,30 @@
 
                                     <div class="mb-3">
                                         <x-input-label for="description" :value="__('Description')" class="form-label" />
-                                        <x-textarea id="description" name="description" type="text" class="form-control" placeholder="Description" required
+                                        <x-textarea id="description" name="description" type="text" class="form-control"
+                                            placeholder="Description" required
                                             autocomplete="description">{{ old('description') }}</x-textarea>
                                         <x-input-error class="text-danger small mt-1" :messages="$errors->get('description')" />
                                     </div>
+
+                                    <div class="mb-3">
+                                        <x-input-label for="image" :value="__('Award Image')" class="form-label" />
+
+                                        <div class="d-flex flex-column align-items-center gap-3">
+                                            <div id="image-preview" class="d-none">
+                                                <div class="mt-4 mt-md-0">
+                                                    <img id="showImage" class="rounded img-thumbnail w-100 h-100"
+                                                        src="" data-holder-rendered="true">
+                                                </div>
+                                            </div>
+                                            <div class="input-group">
+                                                <input type="file" id="image" name="image" class="form-control"
+                                                    id="customFile">
+                                                <x-input-error class="text-danger small mt-1" :messages="$errors->get('image')" />
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="d-flex align-items-center gap-3">
                                         <x-primary-button class="btn btn-primary">{{ __('Save') }}</x-primary-button>
                                     </div>
@@ -74,6 +94,7 @@
                                                     <thead>
                                                         <tr>
                                                             <th>ID</th>
+                                                            <th>Image</th>
                                                             <th>Name</th>
                                                             <th>Year</th>
                                                             <th>Description</th>
@@ -84,6 +105,15 @@
                                                         @foreach ($awards as $award)
                                                             <tr>
                                                                 <td style="width: 80px">{{ $award->id }}</td>
+                                                                <td style="width: 100px">
+                                                                    @if ($award->image != null)
+                                                                        <img src="{{ asset('storage/' . $award->image) }}"
+                                                                            alt="{{ $award->title }}" class="img-thumbnail"
+                                                                            style="width: 100px">
+                                                                    @else
+                                                                        <span>No Image</span>
+                                                                    @endif
+                                                                </td>
                                                                 <td>
                                                                     <span class="display">{{ $award->title }}</span>
                                                                 </td>
@@ -128,5 +158,26 @@
             </div>
         </div>
     </div>
+
+
+    @push('scripts')
+        <!-- Jquery -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('#image').change(function() {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#showImage').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(this.files[0]);
+
+                    $('#image-preview').removeClass('d-none');
+                });
+            });
+        </script>
+    @endpush
 
 @endsection

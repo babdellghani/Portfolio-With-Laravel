@@ -34,7 +34,7 @@
                                     </div>
                                 @endif
 
-                                <form method="post" action="{{ route('award.update', $award) }}" class="mt-4">
+                                <form method="post" action="{{ route('award.update', $award) }}" class="mt-4" enctype="multipart/form-data">
                                     @csrf
                                     @method('put')
 
@@ -59,6 +59,28 @@
                                             autocomplete="description">{{ old('description', $award->description) }}</x-textarea>
                                         <x-input-error class="text-danger small mt-1" :messages="$errors->get('description')" />
                                     </div>
+
+                                    <div class="mb-3">
+                                        <x-input-label for="image" :value="__('Award Image')" class="form-label" />
+
+                                        <div class="d-flex flex-column align-items-center gap-3">
+                                            @if ($award->image)
+                                                <div id="image-preview">
+                                                    <div class="mt-4 mt-md-0">
+                                                        <img id="showImage" class="rounded img-thumbnail w-100 h-100"
+                                                            src="{{ Storage::url($award->image) }}"
+                                                            data-holder-rendered="true">
+                                                    </div>
+                                                </div>
+                                            @endif
+                                            <div class="input-group">
+                                                <input type="file" id="image" name="image" class="form-control"
+                                                    id="customFile">
+                                                <x-input-error class="text-danger small mt-1" :messages="$errors->get('image')" />
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="d-flex align-items-center gap-3">
                                         <x-primary-button class="btn btn-primary">{{ __('Save') }}</x-primary-button>
                                     </div>
