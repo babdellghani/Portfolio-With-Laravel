@@ -85,6 +85,7 @@ class AwardController extends Controller
      */
     public function destroy(Award $award)
     {
+        Storage::delete('public/' . $award->image);
         $award->delete();
 
         return back()->with([
