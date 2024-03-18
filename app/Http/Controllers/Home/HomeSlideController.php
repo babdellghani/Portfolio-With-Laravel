@@ -17,7 +17,7 @@ class HomeSlideController extends Controller
     public function index()
     {
         $homeSlide = HomeSlide::latest()->firstOrFail();
-        return view('admin.home_slide.index', compact('homeSlide'));
+        return view('admin.home.slide', compact('homeSlide'));
     }
 
     /**
@@ -65,37 +65,5 @@ class HomeSlideController extends Controller
         }
         $homeSlide->save();
         return redirect()->back()->with(['message'=> 'Home Slide Updated Successfully', 'alert-type'=> 'success']);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

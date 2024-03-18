@@ -72,6 +72,13 @@
                                                             data-holder-rendered="true">
                                                     </div>
                                                 </div>
+                                            @else
+                                                <div id="image-preview" class="d-none">
+                                                    <div class="mt-4 mt-md-0">
+                                                        <img id="showImage" class="rounded img-thumbnail w-100 h-100"
+                                                            src="" data-holder-rendered="true">
+                                                    </div>
+                                                </div>
                                             @endif
                                             <div class="input-group">
                                                 <input type="file" id="image" name="image" class="form-control"
@@ -95,5 +102,25 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+        <!-- Jquery -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('#image').change(function() {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#showImage').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(this.files[0]);
+
+                    $('#image-preview').removeClass('d-none');
+                });
+            });
+        </script>
+    @endpush
 
 @endsection
