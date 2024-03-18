@@ -16,8 +16,8 @@ class HomeSlideController extends Controller
      */
     public function index()
     {
-        $homeSlide = HomeSlide::latest()->firstOrFail();
-        return view('admin.home.slide', compact('homeSlide'));
+        $slide = HomeSlide::latest()->firstOrFail();
+        return view('admin.home.slide', compact('slide'));
     }
 
     /**
@@ -25,17 +25,17 @@ class HomeSlideController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $slideNew = $request->validate([
             'title' => 'required',
             'short_title' => 'nullable',
             'home_slide' => 'nullable|mimes:png,jpg,jpeg|image|max:2048',
             'video_url' => 'nullable|file|mimetypes:video/mp4,video/x-m4v,video/*|max:10000',
         ]);
-        $homeSlide = HomeSlide::latest()->firstOrFail();
-        $homeSlide->title = $request->title;
-        $homeSlide->short_title = $request->short_title;
+
+        $slide = HomeSlide::latest()->firstOrFail();
+
         if ($request->has('home_slide')) {
-            Storage::delete('public/' . $homeSlide->home_slide);
+            Storage::delete('public/' . $slide->home_slide);
 
             // Create Directory if not exist
             if (!Storage::exists('public/home_slide')) {
@@ -43,8 +43,8 @@ class HomeSlideController extends Controller
             }
 
             // Rename Image
-            $slide = $request->file('home_slide');
-            $filename = time() . '.' . $slide->getClientOriginalExtension();
+            $homeSlide = $request->file('home_slide');
+            $filename = time() . '.' . $homeSlide->getClientOriginalExtension();
 
             // Create Image
             $imageManager = new ImageManager(new Driver());
@@ -56,14 +56,16 @@ class HomeSlideController extends Controller
             })->save(public_path('storage/home_slide/' . $filename));
             
             // Save image
-            $homeSlide->home_slide = 'home_slide/' . $filename;
+            $slideNew['home_slide'] = 'home_slide/' . $filename;
         }
+
         if ($request->has('video_url')) {
-            Storage::delete('public/' . $homeSlide->video_url);
-            $file = $request->file('video_url')->store('home_slide', 'public');
-            $homeSlide->video_url = $file;
+            Storage::delete('public/' . $slide->video_url);
+            $slideNew['video_url'] = $request->file('video_url')->store('home_slide', 'public');
         }
-        $homeSlide->save();
+        
+        $slide->update($slideNew);
+
         return redirect()->back()->with(['message'=> 'Home Slide Updated Successfully', 'alert-type'=> 'success']);
     }
 }

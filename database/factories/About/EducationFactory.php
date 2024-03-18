@@ -16,8 +16,14 @@ class EducationFactory extends Factory
      */
     public function definition(): array
     {
+        $startDate = $this->faker->year();
+        $endDate = $this->faker->year($startDate);
+
         return [
-            //
+            'name' => $this->faker->sentence(3),
+            'description' => $this->faker->sentence(50),
+            'start_date' => $startDate,
+            'end_date' => $endDate,
         ];
     }
 }

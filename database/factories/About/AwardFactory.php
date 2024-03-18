@@ -16,22 +16,11 @@ class AwardFactory extends Factory
      */
     public function definition(): array
     {
-        return [[
-            'name' => 'Best ux designer award',
-            'description' => 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour',
-            'year' => '2008',
-        ],
-        [
-            'name' => 'BBA final examination',
-            'description' => 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour',
-            'year' => '2008',
-        ],
-        [
-            'name' => 'Dsigning award',
-            'description' => 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour',
-            'year' => '2008',
-        ],
-
-    ];
+        return [
+            'title' => $this->faker->sentence(3),
+            'description' => $this->faker->sentence(50),
+            'year' => $this->faker->year(),
+            'image' => 'education/' . $this->faker->image('public/storage/education', 640, 480, null, false),
+        ];
     }
 }

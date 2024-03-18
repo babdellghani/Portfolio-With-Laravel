@@ -27,14 +27,14 @@
                                     <div class="mb-3">
                                         <x-input-label for="title" :value="__('Title')" class="form-label" />
                                         <x-text-input id="title" name="title" type="text" class="form-control"
-                                            :value="old('title', $homeSlide->title)" placeholder="Title" required autofocus autocomplete="title" />
+                                            :value="old('title', $slide->title)" placeholder="Title" required autofocus autocomplete="title" />
                                         <x-input-error class="text-danger small mt-1" :messages="$errors->get('title')" />
                                     </div>
 
                                     <div class="mb-3">
                                         <x-input-label for="short_title" :value="__('Short Title')" class="form-label" />
                                         <x-text-input id="short_title" name="short_title" type="text"
-                                            class="form-control" :value="old('short_title', $homeSlide->short_title)" placeholder="Short Title" required
+                                            class="form-control" :value="old('short_title', $slide->short_title)" placeholder="Short Title" required
                                             autofocus autocomplete="short_title" />
                                         <x-input-error class="text-danger small mt-1" :messages="$errors->get('short_title')" />
                                     </div>
@@ -45,16 +45,10 @@
                                         <div class="d-flex flex-column align-items-center gap-3">
                                             <div>
                                                 <div class="mt-4 mt-md-0">
-                                                    @if ($homeSlide->home_slide)
                                                         <img id="showImage" class="rounded img-thumbnail w-100 h-100"
                                                             alt=""
-                                                            src="{{ asset('storage/' . $homeSlide->home_slide) }}"
+                                                            src="{{ asset('storage/' . $slide->home_slide) }}"
                                                             data-holder-rendered="true">
-                                                    @else
-                                                        <img id="showImage" class="rounded img-thumbnail w-100 h-100" alt=""
-                                                            src="{{ asset('backend/assets/images/users/avatar-1.jpg') }}"
-                                                            data-holder-rendered="true">
-                                                    @endif
                                                 </div>
                                             </div>
                                             <div class="input-group">
@@ -71,17 +65,10 @@
                                         <div class="d-flex flex-column align-items-center gap-3">
                                             <div>
                                                 <div class="mt-4 mt-md-0">
-                                                    @if ($homeSlide->video_url)
                                                         <video id="showVideo" class="rounded img-thumbnail w-100 h-100" controls>
-                                                            <source src="{{ asset('storage/' . $homeSlide->video_url) }}" type="video/mp4">
+                                                            <source src="{{ asset('storage/' . $slide->video_url) }}" type="video/mp4">
                                                             Your browser does not support the video tag.
                                                         </video>
-                                                    @else
-                                                        <video id="showVideo" class="rounded img-thumbnail w-100 h-100">
-                                                            <source src="{{ asset('backend/assets/images/users/avatar-1.jpg') }}" type="video/mp4">
-                                                            Your browser does not support the video tag.
-                                                        </video>
-                                                    @endif
                                                 </div>
                                             </div>
                                             <div class="input-group">

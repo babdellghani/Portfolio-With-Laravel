@@ -17,7 +17,8 @@ class SkillFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->sentence(3),
+            'value' => $this->faker->numberBetween(0, 100),
         ];
     }
 }
