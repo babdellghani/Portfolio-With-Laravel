@@ -25,7 +25,7 @@ class ServiceController extends Controller
     {
         $service = $request->validate([
             'title' => 'required',
-            'slug' => 'required',
+            'slug' => 'required|unique:services',
             'icon' => 'required',
             'image' => 'required|image|mimes:png,jpg,jpeg|max:2048',
             'short_description' => 'required|max:255|string',
@@ -59,7 +59,7 @@ class ServiceController extends Controller
     {
         $serviceNew = $request->validate([
             'title' => 'required',
-            'slug' => 'required',
+            'slug' => 'required|unique:services,slug,' . $service->id,
             'icon' => 'required',
             'image' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
             'short_description' => 'required|max:255|string',
