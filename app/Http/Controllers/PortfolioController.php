@@ -28,7 +28,7 @@ class PortfolioController extends Controller
             'image' => 'required|image|mimes:png,jpg,jpeg|max:2048',
             'short_description' => 'required|max:255|string',
             'description' => 'required|string',
-            'status' => 'required|enum:active,inactive',
+            'status' => 'required|in:0,1|bool',
             'category' => 'required',
         ]);
 
@@ -60,7 +60,7 @@ class PortfolioController extends Controller
             'image' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
             'short_description' => 'required|max:255|string',
             'description' => 'required|string',
-            'status' => 'required|enum:active,inactive',
+            'status' => 'required|in:0,1|bool',
             'category' => 'required',
         ]);
 
@@ -71,7 +71,20 @@ class PortfolioController extends Controller
 
         $portfolio->update($portfolioNew);
 
-        return redirect()->back()->with('success', 'Portfolio updated successfully');
+        return redirect()->route('portfolio')->with('success', 'Portfolio updated successfully');
+    }
+
+    /**
+     * Update the status of the specified resource in storage.
+     */
+    public function status(Request $request, Portfolio $portfolio)
+    {
+        $request->validate([
+            'status' => 'required|in:0,1|bool',
+        ]);
+        $portfolio->update(['status' => $request->input('status')]);
+
+        return redirect()->back()->with('success', 'Portfolio status updated successfully');
     }
 
     /**

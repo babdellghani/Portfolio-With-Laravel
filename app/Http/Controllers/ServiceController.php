@@ -73,7 +73,7 @@ class ServiceController extends Controller
 
         $service->update($serviceNew);
 
-        return back()->with([
+        return redirect()->route('service')->with([
             'message' => 'Service updated successfully',
             'alert-type' => 'success',
         ]);

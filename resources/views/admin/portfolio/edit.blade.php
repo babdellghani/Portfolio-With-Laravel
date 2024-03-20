@@ -1,5 +1,5 @@
 @extends('admin.partials.master')
-@section('title', 'Service Edit')
+@section('title', 'Portfolio Edit')
 
 @section('content')
     <div class="py-5">
@@ -11,16 +11,16 @@
                             <section class="mb-4">
 
                                 <header>
-                                    <a href="{{ route('service') }}" class="btn btn-secondary mb-3">
+                                    <a href="{{ route('portfolio') }}" class="btn btn-secondary mb-3">
                                         {{ __('Back to List') }}
                                     </a>
 
                                     <h2 class="fs-4 fw-medium text-dark">
-                                        {{ __('Service Information') }}
+                                        {{ __('Portfolio Information') }}
                                     </h2>
 
                                     <p class="mt-1 text-muted small">
-                                        {{ __('Update your Service Information') }}
+                                        {{ __('Update your Portfolio Information') }}
                                     </p>
                                 </header>
 
@@ -34,22 +34,22 @@
                                     </div>
                                 @endif
 
-                                <form method="post" action="{{ route('service.update', $service) }}" class="mt-4"
+                                <form method="post" action="{{ route('portfolio.update', $portfolio) }}" class="mt-4"
                                     enctype="multipart/form-data">
                                     @csrf
                                     @method('put')
 
                                     <div class="mb-3">
-                                        <x-input-label for="title" :value="__('Name')" class="form-label" />
+                                        <x-input-label for="title" :value="__('Title')" class="form-label" />
                                         <x-text-input id="title" name="title" type="text" class="form-control"
-                                            :value="old('title', $service->title)" placeholder="Name" required autofocus autocomplete="name" />
+                                            :value="old('title', $portfolio->title)" placeholder="Title" required autofocus autocomplete="title" />
                                         <x-input-error class="text-danger small mt-1" :messages="$errors->get('title')" />
                                     </div>
 
                                     <div class="mb-3">
                                         <x-input-label for="slug" :value="__('Slug')" class="form-label" />
                                         <x-text-input id="slug" name="slug" type="text" class="form-control"
-                                            :value="old('slug', $service->slug)" placeholder="Slug" required autocomplete="slug" />
+                                            :value="old('slug', $portfolio->slug)" placeholder="Slug" required autocomplete="slug" />
                                         <x-input-error class="text-danger small mt-1" :messages="$errors->get('slug')" />
                                     </div>
 
@@ -57,7 +57,7 @@
                                         <x-input-label for="short_description" :value="__('Short Description')" class="form-label" />
                                         <x-textarea id="short_description" name="short_description" type="text"
                                             class="form-control" placeholder="Short Description" required
-                                            autocomplete="description">{{ old('short_description', $service->short_description) }}</x-textarea>
+                                            autocomplete="description">{{ old('short_description', $portfolio->short_description) }}</x-textarea>
                                         <x-input-error class="text-danger small mt-1" :messages="$errors->get('short_description')" />
                                     </div>
 
@@ -65,20 +65,36 @@
                                         <x-input-label for="elm1" :value="__('Description')" class="form-label" />
                                         <textarea id="elm1" name="description" class="form-control" placeholder="Description" required
                                             autocomplete="description">
-                                        {{ old('description', $service->description) }}
+                                        {{ old('description', $portfolio->description) }}
                                         </textarea>
                                         <x-input-error class="text-danger small mt-1" :messages="$errors->get('description')" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <x-input-label for="square-switch" :value="__('Status')" class="form-label" />
+                                        <div class="square-switch">
+                                            <input type="checkbox" id="square-switch3" switch="bool" name="status" @checked(old('status', $portfolio->status)) />
+                                            <label for="square-switch3" data-on-label="Active" data-off-label="Inactive"></label>
+                                        </div>
+                                        <x-input-error class="text-danger small mt-1" :messages="$errors->get('status')" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <x-input-label for="category" :value="__('Category')" class="form-label" />
+                                        <x-text-input id="category" name="category" type="text" class="form-control"
+                                            :value="old('category', $portfolio->category)" placeholder="Category" required autocomplete="category" />
+                                        <x-input-error class="text-danger small mt-1" :messages="$errors->get('category')" />
                                     </div>
 
                                     <div class="mb-3">
                                         <x-input-label for="image" :value="__('Image')" class="form-label" />
 
                                         <div class="d-flex flex-column align-items-center gap-3">
-                                            @if ($service->image)
+                                            @if ($portfolio->image)
                                                 <div id="image-preview">
                                                     <div class="mt-4 mt-md-0">
                                                         <img id="showImage" class="rounded img-thumbnail w-100 h-100"
-                                                            src="{{ Storage::url($service->image) }}" alt="image"
+                                                            src="{{ Storage::url($portfolio->image) }}" alt="image"
                                                             data-holder-rendered="true">
                                                     </div>
                                                 </div>
@@ -94,34 +110,6 @@
                                                 <input type="file" id="image" name="image" class="form-control"
                                                     id="customFile">
                                                 <x-input-error class="text-danger small mt-1" :messages="$errors->get('image')" />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <x-input-label for="icon" :value="__('Icon')" class="form-label" />
-
-                                        <div class="d-flex flex-column align-items-center gap-3">
-                                            @if ($service->icon)
-                                                <div id="icon-preview">
-                                                    <div class="mt-4 mt-md-0">
-                                                        <img id="showIcon" class="rounded img-thumbnail w-100 h-100"
-                                                            src="{{ Storage::url($service->icon) }}" alt="icon"
-                                                            data-holder-rendered="true">
-                                                    </div>
-                                                </div>
-                                            @else
-                                                <div id="icon-preview" class="d-none">
-                                                    <div class="mt-4 mt-md-0">
-                                                        <img id="showIcon" class="rounded img-thumbnail w-100 h-100"
-                                                            src="" data-holder-rendered="true">
-                                                    </div>
-                                                </div>
-                                            @endif
-                                            <div class="input-group">
-                                                <input type="file" id="icon" name="icon" class="form-control"
-                                                    id="customFile">
-                                                <x-input-error class="text-danger small mt-1" :messages="$errors->get('icon')" />
                                             </div>
                                         </div>
                                     </div>
