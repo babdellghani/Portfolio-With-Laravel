@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\About\AboutController;
 use App\Http\Controllers\About\AwardController;
 use App\Http\Controllers\About\SkillController;
@@ -58,6 +59,21 @@ Route::prefix('/admin')->group(function () {
     Route::get('/skills/edit/{skill}', [SkillController::class, 'edit'])->name('skill.edit');
     Route::put('/skills/update/{skill}', [SkillController::class, 'update'])->name('skill.update');
     Route::delete('/skills/delete/{skill}', [SkillController::class, 'destroy'])->name('skill.destroy');
+
+    // service
+    Route::get('/services', [ServiceController::class, 'index'])->name('service');
+    Route::post('/services', [ServiceController::class, 'store'])->name('service.store');
+    Route::get('/services/edit/{service}', [ServiceController::class, 'edit'])->name('service.edit');
+    Route::put('/services/update/{service}', [ServiceController::class, 'update'])->name('service.update');
+    Route::delete('/services/delete/{service}', [ServiceController::class, 'destroy'])->name('service.destroy');
+
+    // portfolio
+    Route::get('/portfolios', [\App\Http\Controllers\PortfolioController::class, 'index'])->name('portfolio');
+    Route::post('/portfolios', [\App\Http\Controllers\PortfolioController::class, 'store'])->name('portfolio.store');
+    Route::get('/portfolios/edit/{portfolio}', [\App\Http\Controllers\PortfolioController::class, 'edit'])->name('portfolio.edit');
+    Route::put('/portfolios/update/{portfolio}', [\App\Http\Controllers\PortfolioController::class, 'update'])->name('portfolio.update');
+    Route::patch('/portfolios/status/{portfolio}', [\App\Http\Controllers\PortfolioController::class, 'status'])->name('portfolio.status');
+    Route::delete('/portfolios/delete/{portfolio}', [\App\Http\Controllers\PortfolioController::class, 'destroy'])->name('portfolio.destroy');
 });
 
 require __DIR__ . '/auth.php';

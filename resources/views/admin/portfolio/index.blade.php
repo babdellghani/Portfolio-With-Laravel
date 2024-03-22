@@ -31,80 +31,115 @@
                                     </div>
                                 @endif
 
-                                <form method="post" action="{{ route('portfolio.store') }}" class="mt-4"
+
+                                <form method="post" id="form" action="{{ route('portfolio.store') }}" class="mt-4"
                                     enctype="multipart/form-data">
                                     @csrf
+                                    <div class="modal-body">
 
-                                    <div class="mb-3">
-                                        <x-input-label for="title" :value="__('Title')" class="form-label" />
-                                        <x-text-input id="title" name="title" type="text" class="form-control"
-                                            :value="old('title')" placeholder="Title" required autofocus autocomplete="title" />
-                                        <x-input-error class="text-danger small mt-1" :messages="$errors->get('title')" />
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <x-input-label for="slug" :value="__('Slug')" class="form-label" />
-                                        <x-text-input id="slug" name="slug" type="text" class="form-control"
-                                            :value="old('slug')" placeholder="Slug" required autocomplete="slug" />
-                                        <x-input-error class="text-danger small mt-1" :messages="$errors->get('slug')" />
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <x-input-label for="short_description" :value="__('Short Description')" class="form-label" />
-                                        <x-textarea id="short_description" name="short_description" type="text"
-                                            class="form-control" placeholder="Short Description" required
-                                            autocomplete="description">{{ old('short_description') }}</x-textarea>
-                                        <x-input-error class="text-danger small mt-1" :messages="$errors->get('short_description')" />
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <x-input-label for="elm1" :value="__('Description')" class="form-label" />
-                                        <textarea id="elm1" name="description" class="form-control" placeholder="Description" required
-                                            autocomplete="description">
-                                        {{ old('description') }}
-                                        </textarea>
-                                        <x-input-error class="text-danger small mt-1" :messages="$errors->get('description')" />
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <x-input-label for="square-switch" :value="__('Status')" class="form-label" />
-                                        <div class="square-switch">
-                                            <input type="checkbox" id="square-switch3" switch="bool" name="status"
-                                                @checked(old('status')) />
-                                            <label for="square-switch3" data-on-label="Active"
-                                                data-off-label="Inactive"></label>
+                                        <div class="mb-3">
+                                            <x-input-label for="title" :value="__('Title')" class="form-label" />
+                                            <x-text-input id="title" name="title" type="text" class="form-control"
+                                                :value="old('title')" placeholder="Title" required autofocus
+                                                autocomplete="title" />
+                                            <x-input-error class="text-danger small mt-1" :messages="$errors->get('title')" />
                                         </div>
-                                        <x-input-error class="text-danger small mt-1" :messages="$errors->get('status')" />
-                                    </div>
 
-                                    <div class="mb-3">
-                                        <x-input-label for="category" :value="__('Category')" class="form-label" />
-                                        <x-text-input id="category" name="category" type="text" class="form-control"
-                                            :value="old('category')" placeholder="Category" required autocomplete="category" />
-                                        <x-input-error class="text-danger small mt-1" :messages="$errors->get('category')" />
-                                    </div>
+                                        <div class="mb-3">
+                                            <x-input-label for="slug" :value="__('Slug')" class="form-label" />
+                                            <x-text-input id="slug" name="slug" type="text" class="form-control"
+                                                :value="old('slug')" placeholder="Slug" required autocomplete="slug" />
+                                            <x-input-error class="text-danger small mt-1" :messages="$errors->get('slug')" />
+                                        </div>
 
-                                    <div class="mb-3">
-                                        <x-input-label for="image" :value="__('Image')" class="form-label" />
-                                        <div class="d-flex flex-column align-items-center gap-3">
-                                            <div id="image-preview" class="d-none">
-                                                <div class="mt-4 mt-md-0">
-                                                    <img id="showImage" class="rounded img-thumbnail w-100 h-100"
-                                                        src="" data-holder-rendered="true">
+                                        <div class="mb-3">
+                                            <x-input-label for="date" :value="__('Date')" class="form-label" />
+                                            <x-text-input id="date" name="date" type="date" class="form-control"
+                                                :value="old('date')" placeholder="Date" required autocomplete="date" />
+                                            <x-input-error class="text-danger small mt-1" :messages="$errors->get('date')" />
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <x-input-label for="location" :value="__('Location')" class="form-label" />
+                                            <x-text-input id="location" name="location" type="text" class="form-control"
+                                                :value="old('location')" placeholder="Location" required
+                                                autocomplete="location" />
+                                            <x-input-error class="text-danger small mt-1" :messages="$errors->get('location')" />
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <x-input-label for="client" :value="__('Client Name')" class="form-label" />
+                                            <x-text-input id="client" name="client" type="text" class="form-control"
+                                                :value="old('client')" placeholder="Client Name" required
+                                                autocomplete="client" />
+                                            <x-input-error class="text-danger small mt-1" :messages="$errors->get('client')" />
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <x-input-label for="link" :value="__('Location')" class="form-label" />
+                                            <x-text-input id="link" name="link" type="url" class="form-control"
+                                                :value="old('link')" placeholder="https://example.com" required
+                                                autocomplete="url" />
+                                            <x-input-error class="text-danger small mt-1" :messages="$errors->get('link')" />
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <x-input-label for="short_description" :value="__('Short Description')" class="form-label" />
+                                            <x-textarea id="short_description" name="short_description" type="text"
+                                                class="form-control" placeholder="Short Description" required
+                                                autocomplete="description">{{ old('short_description') }}</x-textarea>
+                                            <x-input-error class="text-danger small mt-1" :messages="$errors->get('short_description')" />
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <x-input-label for="description" :value="__('Description')" class="form-label" />
+                                            <textarea id="elm1" name="description">{{ old('description') }}</textarea>
+                                            <x-input-error class="text-danger small mt-1" :messages="$errors->get('description')" />
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <x-input-label for="square-switch" :value="__('Status')" class="form-label" />
+                                            <div class="square-switch">
+                                                <input type="checkbox" id="square-switch3" switch="bool" value="1"
+                                                    name="status" @checked(old('status')) />
+                                                <label for="square-switch3" data-on-label="Yes"
+                                                    data-off-label="No"></label>
+                                            </div>
+                                            <x-input-error class="text-danger small mt-1" :messages="$errors->get('status')" />
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <x-input-label for="category" :value="__('Category')" class="form-label" />
+                                            <x-text-input id="category" name="category" type="text"
+                                                class="form-control" :value="old('category')" placeholder="Category" required
+                                                autocomplete="category" />
+                                            <x-input-error class="text-danger small mt-1" :messages="$errors->get('category')" />
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <x-input-label for="image" :value="__('Image')" class="form-label" />
+                                            <div class="d-flex flex-column align-items-center gap-3">
+                                                <div id="image-preview" class="d-none">
+                                                    <div class="mt-4 mt-md-0">
+                                                        <img id="showImage" class="rounded img-thumbnail w-100 h-100"
+                                                            src="" data-holder-rendered="true">
+                                                    </div>
+                                                </div>
+                                                <div class="input-group flex-column gap-3">
+                                                    <input type="file" id="image" name="image"
+                                                        class="form-control w-100" id="customFile">
+                                                    <x-input-error class="text-danger small mt-1" :messages="$errors->get('image')" />
                                                 </div>
                                             </div>
-                                            <div class="input-group">
-                                                <input type="file" id="image" name="image" class="form-control"
-                                                    id="customFile">
-                                                <x-input-error class="text-danger small mt-1" :messages="$errors->get('image')" />
-                                            </div>
                                         </div>
                                     </div>
-
                                     <div class="d-flex align-items-center gap-3">
-                                        <x-primary-button class="btn btn-primary">{{ __('Save') }}</x-primary-button>
+                                        <x-primary-button type="submit"
+                                            class="btn btn-primary">{{ __('Save') }}</x-primary-button>
                                     </div>
                                 </form>
+
+
 
                             </section>
 
@@ -114,7 +149,7 @@
                                     <div class="card">
                                         <div class="card-body">
 
-                                            <h4 class="card-title">Your Awards</h4>
+                                            <h4 class="card-title">Your Portfolios</h4>
 
                                             <div class="table-responsive">
                                                 <table class="table table-editable table-nowrap align-middle table-edits">
@@ -129,7 +164,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach ($portfolios as $portfolio)
+                                                        @forelse ($portfolios as $portfolio)
                                                             <tr>
                                                                 <td style="width: 80px">{{ $portfolio->id }}</td>
                                                                 <td style="width: 100px">
@@ -150,31 +185,32 @@
                                                                 </td>
                                                                 <td>
                                                                     <div class="square-switch">
-                                                                        <form method="post"
+                                                                        <form method="post" class="d-flex align-items-center"
                                                                             action="{{ route('portfolio.status', $portfolio) }}">
                                                                             @csrf
                                                                             @method('patch')
+                                                                            <input type="hidden" name="status" value="0" />
                                                                             <input type="checkbox"
                                                                                 id="square-switch3-{{ $portfolio->id }}"
-                                                                                switch="bool" name="status"
+                                                                                switch="bool" name="status" value="1"
                                                                                 @checked($portfolio->status)
                                                                                 onchange="this.form.submit()" />
                                                                             <label
+                                                                            style="margin-bottom: 0% !important;"
                                                                                 for="square-switch3-{{ $portfolio->id }}"
-                                                                                data-on-label="Active"
-                                                                                data-off-label="Inactive"
+                                                                                data-on-label="Yes" data-off-label="No"
                                                                                 onclick="document.getElementById('square-switch3-{{ $portfolio->id }}').click()"></label>
                                                                         </form>
                                                                     </div>
                                                                 </td>
                                                                 <td style="width: 100px">
-                                                                    <a href="{{ route('service.edit', $portfolio->id) }}"
+                                                                    <a href="{{ route('portfolio.edit', $portfolio->id) }}"
                                                                         class="btn btn-outline-secondary btn-sm edit"
                                                                         title="Edit">
                                                                         <i class="fas fa-pencil-alt"></i>
                                                                     </a>
                                                                     <form
-                                                                        action="{{ route('service.destroy', $portfolio) }}"
+                                                                        action="{{ route('portfolio.destroy', $portfolio) }}"
                                                                         method="post" class="d-inline">
                                                                         @csrf
                                                                         @method('delete')
@@ -186,7 +222,11 @@
                                                                     </form>
                                                                 </td>
                                                             </tr>
-                                                        @endforeach
+                                                        @empty
+                                                            <tr>
+                                                                <td colspan="6" class="text-center">No Data Found</td>
+                                                            </tr>
+                                                        @endforelse
                                                     </tbody>
                                                 </table>
                                             </div>

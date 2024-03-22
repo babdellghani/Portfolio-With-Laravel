@@ -42,7 +42,7 @@
 
                                     <div class="mb-3">
                                         <x-input-label for="range_01" :value="__('Value')" class="form-label" />
-                                        <x-text-input type="number" step="10" placeholder="Value" id="range_01" name="value" :value="old('value')"
+                                        <x-text-input type="number" placeholder="Value" id="range_01" name="value" :value="old('value')"
                                             max="100" min="0" required />
                                         <x-input-error class="text-danger small mt-1" :messages="$errors->get('value')" />
                                     </div>

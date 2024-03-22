@@ -17,5 +17,9 @@ class Portfolio extends Model
         'short_description',
         'description',
         'status',
+        'date',
+        'location',
+        'client',
+        'link',
     ];
 }

@@ -54,6 +54,35 @@
                                     </div>
 
                                     <div class="mb-3">
+                                        <x-input-label for="date" :value="__('Date')" class="form-label" />
+                                        <x-text-input id="date" name="date" type="date" class="form-control"
+                                            :value="old('date', $portfolio->date)" placeholder="Date" required autocomplete="date" />
+                                        <x-input-error class="text-danger small mt-1" :messages="$errors->get('date')" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <x-input-label for="location" :value="__('Location')" class="form-label" />
+                                        <x-text-input id="location" name="location" type="text" class="form-control"
+                                            :value="old('location', $portfolio->location)" placeholder="Location" required autocomplete="location" />
+                                        <x-input-error class="text-danger small mt-1" :messages="$errors->get('location')" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <x-input-label for="client" :value="__('Client Name')" class="form-label" />
+                                        <x-text-input id="client" name="client" type="text" class="form-control"
+                                            :value="old('client', $portfolio->client)" placeholder="Client Name" required autocomplete="client" />
+                                        <x-input-error class="text-danger small mt-1" :messages="$errors->get('client')" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <x-input-label for="link" :value="__('Location')" class="form-label" />
+                                        <x-text-input id="link" name="link" type="url" class="form-control"
+                                            :value="old('link', $portfolio->link)" placeholder="https://example.com" required
+                                            autocomplete="url" />
+                                        <x-input-error class="text-danger small mt-1" :messages="$errors->get('link')" />
+                                    </div>
+
+                                    <div class="mb-3">
                                         <x-input-label for="short_description" :value="__('Short Description')" class="form-label" />
                                         <x-textarea id="short_description" name="short_description" type="text"
                                             class="form-control" placeholder="Short Description" required
@@ -73,8 +102,9 @@
                                     <div class="mb-3">
                                         <x-input-label for="square-switch" :value="__('Status')" class="form-label" />
                                         <div class="square-switch">
-                                            <input type="checkbox" id="square-switch3" switch="bool" name="status" @checked(old('status', $portfolio->status)) />
-                                            <label for="square-switch3" data-on-label="Active" data-off-label="Inactive"></label>
+                                            <input type="checkbox" id="square-switch3" value="1" switch="bool" name="status"
+                                                @checked(old('status', $portfolio->status)) />
+                                            <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
                                         </div>
                                         <x-input-error class="text-danger small mt-1" :messages="$errors->get('status')" />
                                     </div>

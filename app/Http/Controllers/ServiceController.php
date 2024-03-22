@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Service;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -32,8 +33,14 @@ class ServiceController extends Controller
             'description' => 'required|string',
         ]);
 
+        $service['slug'] = Str::slug($service['slug']);
+        
         if ($request->hasFile('image')) {
             $service['image'] = $request->file('image')->store('services', 'public');
+        }
+        
+        if ($request->hasFile('icon')) {
+            $service['icon'] = $request->file('icon')->store('services', 'public');
         }
 
         Service::create($service);
@@ -66,9 +73,16 @@ class ServiceController extends Controller
             'description' => 'required|string',
         ]);
 
+        $serviceNew['slug'] = Str::slug($serviceNew['slug']);
+
         if ($request->hasFile('image')) {
             Storage::delete('public/' . $service->image);
             $serviceNew['image'] = $request->file('image')->store('services', 'public');
+        }
+
+        if ($request->hasFile('icon')) {
+            Storage::delete('public/' . $service->icon);
+            $serviceNew['icon'] = $request->file('icon')->store('services', 'public');
         }
 
         $service->update($serviceNew);

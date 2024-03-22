@@ -33,9 +33,9 @@ class AboutController extends Controller
         $request->validate([
             'title' => 'required',
             'short_title' => 'required|max:255',
-            'short_description' => 'required|max:255|string',
-            'long_description' => 'required|max:255|string',
-            'about_image' => 'required|image|mimes:png,jpg,jpeg|max:2048',
+            'short_description' => 'required|string',
+            'long_description' => 'required|string',
+            'about_image' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
             'cv_file' => 'nullable|file|mimetypes:application/pdf|max:10000',
         ]);
 
