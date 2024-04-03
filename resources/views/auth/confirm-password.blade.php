@@ -1,27 +1,30 @@
+@section('title', __('Confirm Password'))
+
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
+    <h4 class="text-muted text-center font-size-18"><b>Confirm Password</b></h4>
+
+    <div class="p-3">
+        <form class="form-horizontal mt-3" method="POST" action="{{ route('password.confirm') }}">
+            @csrf
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                This is a secure area of the application. Please confirm your password before continuing.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div class="form-group mb-3">
+                <div class="col-xs-12">
+                    <input class="form-control" name="password" type="password" required="" placeholder="Password">
+                    <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                </div>
+            </div>
+
+            <div class="form-group pb-2 text-center row mt-3">
+                <div class="col-12">
+                    <button class="btn btn-info w-100 waves-effect waves-light" type="submit">
+                        {{ __('Confirm Password') }}
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
-
-    <form method="POST" action="{{ route('password.confirm') }}">
-        @csrf
-
-        <!-- Password -->
-        <div>
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <div class="flex justify-end mt-4">
-            <x-primary-button>
-                {{ __('Confirm') }}
-            </x-primary-button>
-        </div>
-    </form>
 </x-guest-layout>
