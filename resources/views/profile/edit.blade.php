@@ -2,12 +2,6 @@
 @section('title', 'Profile')
 
 @section('content')
-    <x-slot name="header">
-        <h2 class="font-weight-bold h3 text-gray-800 mb-0">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
-
     <div class="py-5">
         <div class="container">
             <div class="row">
