@@ -80,7 +80,7 @@
                                                                 </td>
                                                                 <td>
                                                                     <span
-                                                                        class="display">{{ $skill->value }}</span>
+                                                                        class="display">{{ $skill->value }} %</span>
                                                                 </td>
                                                                 <td style="width: 100px">
                                                                     <a href="{{ route('skill.edit', $skill->id) }}"
