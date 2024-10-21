@@ -23,6 +23,6 @@ class Tag extends Model
 
     public function blogs()
     {
-        return $this->hasMany(Blog::class);
+        return $this->belongsToMany(Blog::class);
     }
 }

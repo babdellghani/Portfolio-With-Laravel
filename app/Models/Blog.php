@@ -16,8 +16,6 @@ class Blog extends Model
         'description',
         'image',
         'status',
-        'category_id',
-        'tag_id',
         'user_id',
     ];
 
