@@ -53,9 +53,10 @@
                                             </div>
                                             <div class="input-group">
                                                 <input type="file" id="image" name="home_slide" class="form-control"
-                                                    id="customFile">
-                                                <x-input-error class="text-danger small mt-1" :messages="$errors->get('home_slide')" />
+                                                    accept="image/jpeg,image/jpg,image/png" id="customFile">
                                             </div>
+                                            <x-input-error class="text-danger small mt-1" :messages="$errors->get('home_slide')" />
+                                            <small class="text-muted">Supported formats: JPG, JPEG, PNG. Max size: 2MB</small>
                                         </div>
                                     </div>
 
@@ -100,21 +101,58 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('#image').change(function() {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    $('#showImage').attr('src', e.target.result);
-                };
-                reader.readAsDataURL(this.files[0]);
+                const file = this.files[0];
+                
+                // Validate file type
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+                if (file && !allowedTypes.includes(file.type)) {
+                    alert('Please select a valid image file (JPG, JPEG, or PNG)');
+                    this.value = '';
+                    return;
+                }
+                
+                // Validate file size (2MB = 2 * 1024 * 1024 bytes)
+                if (file && file.size > 2 * 1024 * 1024) {
+                    alert('File size must be less than 2MB');
+                    this.value = '';
+                    return;
+                }
+                
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#showImage').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
             });
         });
 
         $(document).ready(function() {
             $('#video').change(function() {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    $('#showVideo').attr('src', e.target.result);
-                };
-                reader.readAsDataURL(this.files[0]);
+                const file = this.files[0];
+                
+                // Validate file type
+                if (file && !file.type.startsWith('video/')) {
+                    alert('Please select a valid video file');
+                    this.value = '';
+                    return;
+                }
+                
+                // Validate file size (10MB = 10 * 1024 * 1024 bytes)
+                if (file && file.size > 10 * 1024 * 1024) {
+                    alert('Video file size must be less than 10MB');
+                    this.value = '';
+                    return;
+                }
+                
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#showVideo').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
             });
         });
     </script>

@@ -9,9 +9,14 @@ use App\Http\Controllers\About\SkillController;
 use App\Http\Controllers\Home\HomeSlideController;
 use App\Http\Controllers\About\EducationController;
 
+// -------------- Frontend --------------- //
 Route::get('/', function () {
     return view('frontend.pages.home');
 })->name('home');
+
+Route::get('/about', function() {
+    return view('frontend.pages.about');
+})->name('about');
 
 // -------------- Admin --------------- //
 Route::prefix('/admin')->group(function () {

@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;
+use Illuminate\Support\Facades\Artisan;
 
 class HomeSlideController extends Controller
 {
@@ -16,7 +17,14 @@ class HomeSlideController extends Controller
      */
     public function index()
     {
-        $slide = HomeSlide::latest()->firstOrFail();
+        $slide = HomeSlide::latest()->first();
+        
+        if (!$slide) {
+            // Run the HomeSlideSeeder if no slide exists
+            Artisan::call('db:seed', ['--class' => 'HomeSlideSeeder']);
+            $slide = HomeSlide::latest()->first();
+        }
+        
         return view('admin.home.slide', compact('slide'));
     }
 
@@ -32,9 +40,15 @@ class HomeSlideController extends Controller
             'video_url' => 'nullable|file|mimetypes:video/mp4,video/x-m4v,video/*|max:10000',
         ]);
 
-        $slide = HomeSlide::latest()->firstOrFail();
+        $slide = HomeSlide::latest()->first();
+        
+        if (!$slide) {
+            // Run the HomeSlideSeeder if no slide exists
+            Artisan::call('db:seed', ['--class' => 'HomeSlideSeeder']);
+            $slide = HomeSlide::latest()->first();
+        }
 
-        if ($request->has('home_slide')) {
+        if ($request->hasFile('home_slide')) {
             Storage::delete('public/' . $slide->home_slide);
 
             // Create Directory if not exist
@@ -46,20 +60,24 @@ class HomeSlideController extends Controller
             $homeSlide = $request->file('home_slide');
             $filename = time() . '.' . $homeSlide->getClientOriginalExtension();
 
-            // Create Image
-            $imageManager = new ImageManager(new Driver());
-            $image = $imageManager->read($slide);
-            
-            // Resize image
-            $image->resize(636, 852, function ($constraint) {
-                $constraint->aspectRatio();
-            })->save(public_path('storage/home_slide/' . $filename));
-            
-            // Save image
-            $slideNew['home_slide'] = 'home_slide/' . $filename;
+            try {
+                // Create Image
+                $imageManager = new ImageManager(new Driver());
+                $image = $imageManager->read($homeSlide->path());
+                
+                // Resize image
+                $image->resize(636, 852, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->save(public_path('storage/home_slide/' . $filename));
+                
+                // Save image
+                $slideNew['home_slide'] = 'home_slide/' . $filename;
+            } catch (\Exception $e) {
+                return redirect()->back()->withErrors(['home_slide' => 'Error processing image: ' . $e->getMessage()]);
+            }
         }
 
-        if ($request->has('video_url')) {
+        if ($request->hasFile('video_url')) {
             Storage::delete('public/' . $slide->video_url);
             $slideNew['video_url'] = $request->file('video_url')->store('home_slide', 'public');
         }
