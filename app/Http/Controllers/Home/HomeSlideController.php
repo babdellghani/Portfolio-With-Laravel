@@ -37,7 +37,7 @@ class HomeSlideController extends Controller
             'title' => 'required',
             'short_title' => 'nullable',
             'home_slide' => 'nullable|mimes:png,jpg,jpeg|image|max:2048',
-            'video_url' => 'nullable|file|mimetypes:video/mp4,video/x-m4v,video/*|max:10000',
+            'video_url' => 'nullable|url|regex:/^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/)|youtu\.be\/)[\w-]+(&[\w=]*)?$/',
         ]);
 
         $slide = HomeSlide::latest()->first();
@@ -77,10 +77,7 @@ class HomeSlideController extends Controller
             }
         }
 
-        if ($request->hasFile('video_url')) {
-            Storage::delete('public/' . $slide->video_url);
-            $slideNew['video_url'] = $request->file('video_url')->store('home_slide', 'public');
-        }
+        // Video URL is handled directly as it's just a URL string, no file processing needed
         
         $slide->update($slideNew);
 

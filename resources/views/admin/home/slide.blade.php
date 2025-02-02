@@ -46,8 +46,8 @@
                                             <div>
                                                 <div class="mt-4 mt-md-0">
                                                         <img id="showImage" class="rounded img-thumbnail w-100 h-100"
-                                                            alt=""
-                                                            src="{{ asset('storage/' . $slide->home_slide) }}"
+                                                            alt="{{ $slide->home_slide ? 'Slide Image' : 'No Image' }}"
+                                                            src="{{ $slide->home_slide && str_starts_with($slide->home_slide, 'defaults_images/') ? asset($slide->home_slide) : asset('storage/' . $slide->home_slide) }}"
                                                             data-holder-rendered="true">
                                                 </div>
                                             </div>
@@ -60,27 +60,23 @@
                                         </div>
                                     </div>
 
-                                    <div class="mb-3">
-                                        <x-input-label for="video_url" :value="__('Video')" class="form-label" />
-
-                                        <div class="d-flex flex-column align-items-center gap-3">
-                                            <div>
-                                                <div class="mt-4 mt-md-0">
-                                                        <video id="showVideo" class="rounded img-thumbnail w-100 h-100" controls>
-                                                            <source src="{{ asset('storage/' . $slide->video_url) }}" type="video/mp4">
-                                                            Your browser does not support the video tag.
-                                                        </video>
-                                                </div>
-                                            </div>
-                                            <div class="input-group">
-                                                <input type="file" id="video" name="video_url" class="form-control"
-                                                    id="customFile">
-                                                <x-input-error class="text-danger small mt-1" :messages="$errors->get('video_url')" />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex align-items-center gap-3">
+                    <div class="mb-3">
+                        <x-input-label for="video_url" :value="__('YouTube Video URL')" class="form-label" />
+                        
+                        @if($slide->video_url)
+                            <div class="mb-3">
+                                <div class="ratio ratio-16x9">
+                                    <iframe src="{{ $slide->youtube_embed_url }}" allowfullscreen class="rounded"></iframe>
+                                </div>
+                                <small class="text-muted">Current video preview</small>
+                            </div>
+                        @endif
+                        
+                        <x-text-input id="video_url" name="video_url" type="url" class="form-control"
+                            :value="old('video_url', $slide->video_url)" placeholder="https://www.youtube.com/watch?v=example or https://youtu.be/example" />
+                        <x-input-error class="text-danger small mt-1" :messages="$errors->get('video_url')" />
+                        <small class="text-muted">Enter a valid YouTube URL (e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ or https://youtu.be/dQw4w9WgXcQ)</small>
+                    </div>                                    <div class="d-flex align-items-center gap-3">
                                         <x-primary-button class="btn btn-primary">{{ __('Save') }}</x-primary-button>
                                     </div>
                                 </form>
@@ -129,29 +125,46 @@
         });
 
         $(document).ready(function() {
-            $('#video').change(function() {
-                const file = this.files[0];
+            $('#video_url').on('input', function() {
+                const url = this.value;
                 
-                // Validate file type
-                if (file && !file.type.startsWith('video/')) {
-                    alert('Please select a valid video file');
-                    this.value = '';
-                    return;
-                }
+                // Basic YouTube URL validation
+                const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/)|youtu\.be\/)[\w-]+(&[\w=]*)?$/;
                 
-                // Validate file size (10MB = 10 * 1024 * 1024 bytes)
-                if (file && file.size > 10 * 1024 * 1024) {
-                    alert('Video file size must be less than 10MB');
-                    this.value = '';
-                    return;
-                }
-                
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        $('#showVideo').attr('src', e.target.result);
-                    };
-                    reader.readAsDataURL(file);
+                if (url && !youtubeRegex.test(url)) {
+                    $(this).addClass('is-invalid');
+                    $(this).next('.text-danger').remove();
+                    $(this).after('<div class="text-danger small mt-1">Please enter a valid YouTube URL</div>');
+                    $('#video-preview').hide();
+                } else {
+                    $(this).removeClass('is-invalid');
+                    $(this).next('.text-danger').remove();
+                    
+                    if (url && youtubeRegex.test(url)) {
+                        // Extract video ID and show preview
+                        let videoId = '';
+                        const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
+                        if (match) {
+                            videoId = match[1];
+                            const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                            
+                            if (!$('#video-preview').length) {
+                                $(this).after(`
+                                    <div id="video-preview" class="mt-3">
+                                        <div class="ratio ratio-16x9">
+                                            <iframe src="${embedUrl}" allowfullscreen class="rounded"></iframe>
+                                        </div>
+                                        <small class="text-muted">Live preview</small>
+                                    </div>
+                                `);
+                            } else {
+                                $('#video-preview iframe').attr('src', embedUrl);
+                                $('#video-preview').show();
+                            }
+                        }
+                    } else {
+                        $('#video-preview').hide();
+                    }
                 }
             });
         });

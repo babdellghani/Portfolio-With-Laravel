@@ -22,6 +22,13 @@ class Slider extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('frontend.components.home.slider', ['homeSlide' => HomeSlide::latest()->firstOrFail()]);
+        $homeSlide = HomeSlide::latest()->first();
+        
+        if (!$homeSlide) {
+            \Artisan::call('db:seed', ['--class' => 'HomeSlideSeeder']);
+            $homeSlide = HomeSlide::latest()->firstOrFail();
+        }
+        
+        return view('frontend.components.home.slider', ['homeSlide' => $homeSlide]);
     }
 }
