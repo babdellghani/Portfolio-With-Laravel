@@ -2,6 +2,7 @@
 
 namespace Database\Factories\About;
 
+use App\Models\Skill;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -14,6 +15,9 @@ class SkillFactory extends Factory
      *
      * @return array<string, mixed>
      */
+
+    protected $model = Skill::class;
+    
     public function definition(): array
     {
         return [

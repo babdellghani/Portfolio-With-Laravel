@@ -12,6 +12,6 @@ class AwardSeeder extends Seeder
      */
     public function run(): void
     {
-        \Database\Factories\About\AwardFactory::new()->create();
+        \Database\Factories\About\AwardFactory::new()->count(4)->create();
     }
 }

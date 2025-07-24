@@ -2,6 +2,7 @@
 
 namespace Database\Factories\About;
 
+use App\Models\Award;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -14,13 +15,16 @@ class AwardFactory extends Factory
      *
      * @return array<string, mixed>
      */
+
+    protected $model = Award::class;
+    
     public function definition(): array
     {
         return [
             'title' => $this->faker->sentence(3),
-            'description' => $this->faker->sentence(50),
+            'description' => $this->faker->sentence(10),
             'year' => $this->faker->year(),
-            'image' => 'education/' . $this->faker->image('public/storage/education', 640, 480, null, false),
+            'image' => 'defaults_images/awards_0' . $this->faker->numberBetween(1, 4) . '.png',
         ];
     }
 }

@@ -12,6 +12,6 @@ class SkillSeeder extends Seeder
      */
     public function run(): void
     {
-        \Database\Factories\About\SkillFactory::new()->create();
+        \Database\Factories\About\SkillFactory::new()->count(8)->create();
     }
 }

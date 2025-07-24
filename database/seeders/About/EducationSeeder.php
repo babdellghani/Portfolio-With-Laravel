@@ -12,6 +12,6 @@ class EducationSeeder extends Seeder
      */
     public function run(): void
     {
-        \Database\Factories\About\EducationFactory::new()->create();
+        \Database\Factories\About\EducationFactory::new()->count(4)->create();
     }
 }

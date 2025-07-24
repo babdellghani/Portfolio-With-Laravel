@@ -63,7 +63,7 @@
                                             <div>
                                                 <div class="mt-4 mt-md-0">
                                                     <img id="showImage" class="rounded img-thumbnail w-100 h-100"
-                                                        src="{{ asset('storage/' . $about->about_image) }}"
+                                                        src="{{ $about->about_image && str_starts_with($about->about_image, 'defaults_images/') ? asset($about->about_image) : asset('storage/' . $about->about_image) }}"
                                                         data-holder-rendered="true">
                                                 </div>
                                             </div>
@@ -81,7 +81,7 @@
                                         <div class="d-flex flex-column align-items-center gap-3">
                                             <div class="w-100">
                                                 <div class="mt-4 mt-md-0 w-100">
-                                                    <iframe src="{{ asset('storage/' . $about->cv_file) }}" id="showPdf"
+                                                    <iframe src="{{ $about->cv_file && str_starts_with($about->cv_file, 'defaults_images/') ? asset($about->cv_file) : asset('storage/' . $about->cv_file) }}" id="showPdf"
                                                         type="application/pdf" frameBorder="0" scrolling="auto"
                                                         style="width: 100%; height: 500px"></iframe>
                                                 </div>

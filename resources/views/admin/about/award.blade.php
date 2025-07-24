@@ -107,7 +107,7 @@
                                                                 <td style="width: 80px">{{ $award->id }}</td>
                                                                 <td style="width: 100px">
                                                                     @if ($award->image != null)
-                                                                        <img src="{{ asset('storage/' . $award->image) }}"
+                                                                        <img src="{{ $award->image && str_starts_with($award->image, 'defaults_images/') ? asset($award->image) : asset('storage/' . $award->image) }}"
                                                                             alt="{{ $award->title }}" class="img-thumbnail"
                                                                             style="width: 100px">
                                                                     @else

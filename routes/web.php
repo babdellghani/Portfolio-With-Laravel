@@ -41,7 +41,7 @@ Route::prefix('/admin')->group(function () {
 
     // ---- about ---- //
     // about
-    Route::get('/about', [AboutController::class, 'index'])->name('about');
+    Route::get('/about', [AboutController::class, 'index'])->name('admin.about');
     Route::post('/about', [AboutController::class, 'store'])->name('about.store');
 
     // awards

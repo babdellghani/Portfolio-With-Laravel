@@ -9,9 +9,9 @@
                     class="avatar-md rounded-circle">
             </div>
             <div class="mt-3">
-                <h4 class="font-size-16 mb-1">Julia Hudda</h4>
-                <span class="text-muted"><i class="ri-record-circle-line align-middle font-size-14 text-success"></i>
-                    Online</span>
+                <h4 class="font-size-16 mb-1">{{ Auth::user()->name }}</h4>
+                <span class="text-muted">
+                    {{ Auth::user()->username }}</span>
             </div>
         </div>
 
@@ -30,7 +30,7 @@
 
                 <li class="menu-title">Pages</li>
 
-                 <li>
+                <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-home-line"></i>
                         <span>Home</span>
@@ -46,7 +46,7 @@
                         <span>About</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ route('about') }}">Abouts</a></li>
+                        <li><a href="{{ route('admin.about') }}">Abouts</a></li>
                         <li><a href="{{ route('award') }}">Awards</a></li>
                         <li><a href="{{ route('education') }}">Educations</a></li>
                         <li><a href="{{ route('skill') }}">Skills</a></li>

@@ -39,8 +39,8 @@ class AboutFactory extends Factory
                                                 <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which dont look even slightly believable.</p>
                                             </li>
                                         </ul>",
-            'about_image' => 'about/about_image.png',
-            'cv_file' => 'about/cv.pdf',
+            'about_image' => 'defaults_images/about_img.png',
+            'cv_file' => 'defaults_images/cv.pdf',
         ];
     }
 }

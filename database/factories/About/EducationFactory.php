@@ -2,6 +2,7 @@
 
 namespace Database\Factories\About;
 
+use App\Models\Education;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -14,16 +15,19 @@ class EducationFactory extends Factory
      *
      * @return array<string, mixed>
      */
+
+    protected $model = Education::class;
+    
     public function definition(): array
     {
-        $startDate = $this->faker->year();
-        $endDate = $this->faker->year($startDate);
+        $startDate = $this->faker->dateTimeBetween('-20 years', '-1 year');
+        $endDate = $this->faker->dateTimeBetween($startDate, 'now');
 
         return [
             'name' => $this->faker->sentence(3),
-            'description' => $this->faker->sentence(50),
-            'start_date' => $startDate,
-            'end_date' => $endDate,
+            'description' => $this->faker->sentence(10),
+            'start_date' => $startDate->format('Y-m-d'),
+            'end_date' => $endDate->format('Y-m-d'),
         ];
     }
 }

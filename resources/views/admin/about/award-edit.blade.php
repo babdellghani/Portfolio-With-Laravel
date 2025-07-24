@@ -68,7 +68,7 @@
                                                 <div id="image-preview">
                                                     <div class="mt-4 mt-md-0">
                                                         <img id="showImage" class="rounded img-thumbnail w-100 h-100"
-                                                            src="{{ Storage::url($award->image) }}"
+                                                            src="{{ $award->image && str_starts_with($award->image, 'defaults_images/') ? asset($award->image) : asset('storage/' . $award->image) }}"
                                                             data-holder-rendered="true">
                                                     </div>
                                                 </div>
