@@ -10,13 +10,22 @@ use Illuminate\Support\Facades\Storage;
 class ServiceController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource Admin.
      */
     public function index()
     {
         $services = Service::latest()->get();
 
         return view('admin.service.index', compact('services'));
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function home()
+    {
+        $services = Service::latest()->get();
+        return view('frontend.pages.services', compact('services'));
     }
 
     /**
