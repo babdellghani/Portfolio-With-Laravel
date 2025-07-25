@@ -18,6 +18,10 @@ Route::get('/about', function() {
     return view('frontend.pages.about');
 })->name('about');
 
+Route::get('/services', [ServiceController::class, 'home'])->name('services');
+Route::get('/services/{service:slug}', [ServiceController::class, 'details'])->name('services.details');
+
+
 // -------------- Admin --------------- //
 Route::prefix('/admin')->group(function () {
     // dashboard

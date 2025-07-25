@@ -24,7 +24,7 @@ class ServiceController extends Controller
      */
     public function home()
     {
-        $services = Service::latest()->get();
+        $services = Service::latest()->paginate(10);
         return view('frontend.pages.services', compact('services'));
     }
 
@@ -66,6 +66,15 @@ class ServiceController extends Controller
     public function edit(Service $service)
     {
         return view('admin.service.edit', compact('service'));
+    }
+
+    /**
+     * Display the specified resource details.
+     */
+    public function details($slug)
+    {
+        $service = Service::where('slug', $slug)->firstOrFail();
+        return view('frontend.pages.services_details', compact('service'));
     }
 
     /**
