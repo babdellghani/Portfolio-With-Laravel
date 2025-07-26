@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\About\AboutController;
 use App\Http\Controllers\About\AwardController;
 use App\Http\Controllers\About\SkillController;
@@ -21,6 +22,8 @@ Route::get('/about', function() {
 Route::get('/services', [ServiceController::class, 'home'])->name('services');
 Route::get('/services/{service:slug}', [ServiceController::class, 'details'])->name('services.details');
 
+Route::get('/portfolio', [PortfolioController::class, 'home'])->name('portfolio');
+Route::get('/portfolio/{portfolio:slug}', [PortfolioController::class, 'details'])->name('portfolio.details');
 
 // -------------- Admin --------------- //
 Route::prefix('/admin')->group(function () {

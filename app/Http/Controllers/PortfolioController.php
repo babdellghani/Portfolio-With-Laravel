@@ -15,9 +15,24 @@ class PortfolioController extends Controller
     public function index()
     {
         $portfolios = Portfolio::latest()->get();
-
         return view('admin.portfolio.index', compact('portfolios'));
     }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function home()
+    {
+        $portfolios = Portfolio::latest()->get();
+        return view('frontend.pages.portfolio', compact('portfolios'));
+    }
+
+    public function details($slug)
+    {
+        $portfolio = Portfolio::where('slug', $slug)->firstOrFail();
+        return view('frontend.pages.portfolio_details', compact('portfolio'));
+    }
+
     /**
      * Store a newly created resource in storage.
      */

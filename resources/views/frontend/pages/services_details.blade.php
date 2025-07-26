@@ -42,7 +42,7 @@
                     </div>
                     <div class="services__details__content">
                         <h2 class="title">{{ $service->title }}</h2>
-                        <p>{{ $service->description }}</p>
+                        <p>{!! $service->description !!}</p>
                     </div>
                 </div>
                 <div class="col-lg-4">

@@ -38,51 +38,12 @@
             <div class="row">
                 <div class="col-lg-8">
                     <div class="services__details__thumb">
-                        <img src="assets/img/images/services_details01.jpg" alt="">
+                        <img src="{{ $portfolio->image && str_starts_with($portfolio->image, 'defaults_images/') ? asset($portfolio->image) : asset('storage/' . $portfolio->image) }}"
+                                            alt="{{ $portfolio->title }}">
                     </div>
                     <div class="services__details__content">
-                        <h2 class="title">Rixelda - 24 hours Control room landing page</h2>
-                        <p>Definition: Business strategy can be understood as the course of action or set of decisions which
-                            assist the
-                            entrepreneurs in achieving specific business objectives.</p>
-                        <p>It is nothing but a master plan that the management of a company implements to secure a
-                            competitive position in the market, carry on its operations, please customers and achieve the
-                            desired ends of the business.</p>
-                        <p>In business, it is the long-range sketch of the desired image, direction and destination of the
-                            organization. It is a scheme of corporate intent and action, which is carefully planned and
-                            flexibly designed with the purpose of</p>
-                        <ul class="services__details__list">
-                            <li>Achieving effectiveness,</li>
-                            <li>Perceiving and utilizing opportunities,</li>
-                            <li>Mobilising resources,</li>
-                            <li>Securing an advantageous position,</li>
-                            <li>Meeting challenges and threats,</li>
-                            <li>Directing efforts and behaviour and</li>
-                            <li>Gaining command over the situation.</li>
-                        </ul>
-                        <p>A business strategy is a set of competitive moves and actions that a business uses to attract
-                            customers, compete
-                            successfully, strengthening performance, and achieve organizational goals. It outlines how
-                            business should be carried
-                            out to reach the desired ends</p>
-                        <div class="services__details__img">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <img src="assets/img/images/services_details02.jpg" alt="">
-                                </div>
-                                <div class="col-sm-6">
-                                    <img src="assets/img/images/services_details03.jpg" alt="">
-                                </div>
-                            </div>
-                        </div>
-                        <h2 class="small-title">Nature of Business Strategy</h2>
-                        <p>A business strategy is a combination of proactive actions on the part of management, for the
-                            purpose of enhancing the company’s market position and overall performance and reactions to
-                            unexpected developments and new market.</p>
-                        <p>The maximum part of the company’s present strategy is a result of formerly initiated actions and
-                            business approaches, but when market conditions take an unanticipated turn, the company requires
-                            a strategic reaction to cope with contingencies. Hence, for unforeseen development, a part of
-                            the business strategy is formulated as a reasoned response nature of business strategy.</p>
+                        <h2 class="title">{{ $portfolio->title }}</h2>
+                        <p>{!! $portfolio->description !!}</p>
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -99,15 +60,16 @@
                         <div class="widget">
                             <h5 class="title">Project Information</h5>
                             <ul class="sidebar__contact__info">
-                                <li><span>Date :</span> January, 2021</li>
-                                <li><span>Location :</span> East Meadow NY 11554</li>
-                                <li><span>Client :</span> American</li>
+                                <li><span>Date :</span> {{ $portfolio->date->format('F, Y') }}</li>
+                                <li><span>Location :</span> {{ $portfolio->location }}</li>
+                                <li><span>Client :</span> {{ $portfolio->client }}</li>
                                 <li class="cagegory"><span>Category :</span>
-                                    <a href="portfolio.html">Photo,</a>
-                                    <a href="portfolio.html">UI/UX</a>
+                                    @foreach ($portfolio->category as $category)
+                                        <a href="{{ route('portfolio') }}">{{ $category->name }},</a>
+                                    @endforeach
                                 </li>
                                 <li><span>Project Link :</span> <a
-                                        href="portfolio-details.html">https://www.yournews.com/</a></li>
+                                        href="{{ $portfolio->link }}">{{ $portfolio->link }}</a></li>
                             </ul>
                         </div>
                         <div class="widget">
@@ -133,38 +95,4 @@
         </div>
     </section>
     <!-- portfolio-details-area-end -->
-
-
-    <!-- contact-area -->
-    <section class="homeContact homeContact__style__two">
-        <div class="container">
-            <div class="homeContact__wrap">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="section__title">
-                            <span class="sub-title">07 - Say hello</span>
-                            <h2 class="title">Any questions? Feel free <br> to contact</h2>
-                        </div>
-                        <div class="homeContact__content">
-                            <p>There are many variations of passages of Lorem Ipsum available, but the majority have
-                                suffered alteration in some form</p>
-                            <h2 class="mail"><a href="mailto:Info@webmail.com">Info@webmail.com</a></h2>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="homeContact__form">
-                            <form action="#">
-                                <input type="text" placeholder="Enter name*">
-                                <input type="email" placeholder="Enter mail*">
-                                <input type="number" placeholder="Enter number*">
-                                <textarea name="message" placeholder="Enter Massage*"></textarea>
-                                <button type="submit">Send Message</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- contact-area-end -->
 @endsection

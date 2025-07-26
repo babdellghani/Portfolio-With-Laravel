@@ -49,7 +49,7 @@
                             <div class="col-lg-6 col-md-10">
                                 <div class="portfolio__inner__content">
                                     <h2 class="title"><a href="{{ route('services.details', $service->slug) }}">{{ $service->title }}</a></h2>
-                                    <p>{{ $service->short_description }}</p>
+                                    <p>{!! $service->short_description !!}</p>
                                     <a href="{{ route('services.details', $service->slug) }}" class="link">View Case Study</a>
                                 </div>
                             </div>
