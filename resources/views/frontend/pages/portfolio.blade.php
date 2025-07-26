@@ -38,18 +38,17 @@
             <div class="row">
                 <div class="col-12">
                     <div class="portfolio__inner__nav">
-                        @foreach ($portfolios as $portfolio)
-                            @foreach ($portfolio->category as $category)
-                                <button class="active" data-filter="*">all</button>
-                                <button data-filter=".{{ $category }}">{{ $category }}</button>
-                            @endforeach
+                        <button class="active" data-filter="*">all</button>
+                        @foreach (\App\Models\Portfolio::getAllCategories() as $category)
+                            <button data-filter=".{{ $category }}">{{ $category }}</button>
                         @endforeach
                     </div>
                 </div>
             </div>
             <div class="portfolio__inner__active">
                 @forelse ($portfolios as $portfolio)
-                    <div class="portfolio__inner__item grid-item {{ $portfolio->category }}">
+                    <div
+                        class="portfolio__inner__item grid-item {{ implode(' ', $portfolio->category->pluck('name')->toArray()) }}">
                         <div class="row gx-0 align-items-center">
                             <div class="col-lg-6 col-md-10">
                                 <div class="portfolio__inner__thumb">

@@ -22,4 +22,25 @@ class Portfolio extends Model
         'client',
         'link',
     ];
+
+     /**
+     * Get all portfolios
+     */
+    public static function getAllPortfolios()
+    {
+        return self::all();
+    }
+
+    /**
+     * Get all unique categories from portfolios
+     */
+    public static function getAllCategories()
+    {
+        return self::whereNotNull('category')
+                   ->where('category', '!=', '')
+                   ->pluck('category')
+                   ->unique()
+                   ->values()
+                   ->toArray();
+    }
 }
