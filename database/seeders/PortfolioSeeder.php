@@ -2,19 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\Service;
+use App\Models\Portfolio;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-class ServiceSeeder extends Seeder
+class PortfolioSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Service::factory()->count(8)->create();
-        // You can adjust the count as needed
-        // This will create 10 service records in the database
+        Portfolio::factory()->count(10)->create();
     }
 }
