@@ -48,13 +48,13 @@
             <div class="portfolio__inner__active">
                 @forelse ($portfolios as $portfolio)
                     <div
-                        class="portfolio__inner__item grid-item {{ implode(' ', $portfolio->category->pluck('name')->toArray()) }}">
+                        class="portfolio__inner__item grid-item {{ implode(' ', $portfolio->category) }}">
                         <div class="row gx-0 align-items-center">
                             <div class="col-lg-6 col-md-10">
                                 <div class="portfolio__inner__thumb">
                                     <a href="portfolio-details.html">
                                         <img src="{{ $portfolio->image && str_starts_with($portfolio->image, 'defaults_images/') ? asset($portfolio->image) : asset('storage/' . $portfolio->image) }}"
-                                            alt="{{ $portfolio->title }}">
+                                            alt="{{ $portfolio->title }}" width="648" height="616">
                                     </a>
                                 </div>
                             </div>
@@ -76,10 +76,10 @@
                     </div>
                 @endforelse
             </div>
-            @if($services->hasPages())
+            @if($portfolios->hasPages())
                 <div class="pagination-wrap">
                     <nav aria-label="Page navigation example">
-                        {{ $services->links() }}
+                        {{ $portfolios->links() }}
                     </nav>
                 </div>
             @endif

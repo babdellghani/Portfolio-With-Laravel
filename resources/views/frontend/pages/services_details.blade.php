@@ -38,7 +38,8 @@
             <div class="row">
                 <div class="col-lg-8">
                     <div class="services__details__thumb">
-                        <img src="{{ $service->image && str_starts_with($service->image, 'defaults_images/') ? asset($service->image) : asset('storage/' . $service->image) }}" alt="{{ $service->title }}">
+                        <img src="{{ $service->image && str_starts_with($service->image, 'defaults_images/') ? asset($service->image) : asset('storage/' . $service->image) }}"
+                            alt="{{ $service->title }}" width="850" height="430">
                     </div>
                     <div class="services__details__content">
                         <h2 class="title">{{ $service->title }}</h2>

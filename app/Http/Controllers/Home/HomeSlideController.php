@@ -66,9 +66,7 @@ class HomeSlideController extends Controller
                 $image = $imageManager->read($homeSlide->path());
                 
                 // Resize image
-                $image->resize(636, 852, function ($constraint) {
-                    $constraint->aspectRatio();
-                })->save(public_path('storage/home_slide/' . $filename));
+                $image->resize(636, 852)->save(public_path('storage/home_slide/' . $filename));
                 
                 // Save image
                 $slideNew['home_slide'] = 'home_slide/' . $filename;
@@ -76,8 +74,6 @@ class HomeSlideController extends Controller
                 return redirect()->back()->withErrors(['home_slide' => 'Error processing image: ' . $e->getMessage()]);
             }
         }
-
-        // Video URL is handled directly as it's just a URL string, no file processing needed
         
         $slide->update($slideNew);
 

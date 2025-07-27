@@ -22,8 +22,8 @@ class ServiceFactory extends Factory
         return [
             'title' => $this->faker->sentence(3),
             'slug' => $this->faker->unique()->slug(),
-            'icon' => $this->faker->imageUrl(64, 64, 'abstract'),
-            'image' => $this->faker->imageUrl(640, 480, 'business'),
+            'icon' => 'defaults_images/portfolio_services_img.jpg',
+            'image' => 'defaults_images/portfolio_services_details.jpg',
             'short_description' => $this->faker->text(200),
             'description' => $this->faker->randomHtml(6, 10) . 
                 '<img src="' . $this->faker->imageUrl(800, 400, 'business') . '" alt="Service Image" class="img-fluid my-3">' .

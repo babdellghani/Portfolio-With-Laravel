@@ -13,8 +13,6 @@ class ServiceSeeder extends Seeder
      */
     public function run(): void
     {
-        Service::factory()->count(8)->create();
-        // You can adjust the count as needed
-        // This will create 10 service records in the database
+        Service::factory()->count(30)->create();
     }
 }

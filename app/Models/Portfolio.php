@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -23,7 +22,11 @@ class Portfolio extends Model
         'link',
     ];
 
-     /**
+    protected $casts = [
+        'category' => 'array',
+    ];
+
+    /**
      * Get all portfolios
      */
     public static function getAllPortfolios()
@@ -37,10 +40,10 @@ class Portfolio extends Model
     public static function getAllCategories()
     {
         return self::whereNotNull('category')
-                   ->where('category', '!=', '')
-                   ->pluck('category')
-                   ->unique()
-                   ->values()
-                   ->toArray();
+            ->where('category', '!=', '')
+            ->pluck('category')
+            ->unique()
+            ->values()
+            ->toArray();
     }
 }

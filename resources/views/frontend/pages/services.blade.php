@@ -42,13 +42,16 @@
                             <div class="col-lg-6 col-md-10">
                                 <div class="portfolio__inner__thumb">
                                     <a href="portfolio-details.html">
-                                        <img src="{{ $service->image && str_starts_with($service->image, 'defaults_images/') ? asset($service->image) : asset('storage/' . $service->image) }}" alt="{{ $service->title }}">
+                                        <img src="{{ $service->image && str_starts_with($service->image, 'defaults_images/') ? asset($service->image) : asset('storage/' . $service->image) }}"
+                                            alt="{{ $service->title }}" width="648" height="616">
                                     </a>
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-10">
                                 <div class="portfolio__inner__content">
-                                    <h2 class="title"><a href="{{ route('services.details', $service->slug) }}">{{ $service->title }}</a></h2>
+                                    <h2 class="title"><a
+                                            href="{{ route('services.details', $service->slug) }}">{{ $service->title }}</a>
+                                    </h2>
                                     <p>{!! $service->short_description !!}</p>
                                     <a href="{{ route('services.details', $service->slug) }}" class="link">View Case Study</a>
                                 </div>
@@ -56,7 +59,7 @@
                         </div>
                     </div>
                 @empty
-                    <div class="portfolio__inner__item"></div>
+                        <div class="portfolio__inner__item"></div>
                         <div class="row gx-0 align-items-center">
                             <div class="col-lg-6 col-md-10">
                                 <div class="portfolio__inner__thumb">
@@ -72,14 +75,14 @@
                         </div>
                     </div>
                 @endforelse
+        </div>
+        @if($services->hasPages())
+            <div class="pagination-wrap">
+                <nav aria-label="Page navigation example">
+                    {{ $services->links() }}
+                </nav>
             </div>
-            @if($services->hasPages())
-                <div class="pagination-wrap">
-                    <nav aria-label="Page navigation example">
-                        {{ $services->links() }}
-                    </nav>
-                </div>
-            @endif
+        @endif
         </div>
     </section>
     <!-- portfolio-area-end -->

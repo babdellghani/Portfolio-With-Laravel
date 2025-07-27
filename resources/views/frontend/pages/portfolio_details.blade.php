@@ -39,7 +39,7 @@
                 <div class="col-lg-8">
                     <div class="services__details__thumb">
                         <img src="{{ $portfolio->image && str_starts_with($portfolio->image, 'defaults_images/') ? asset($portfolio->image) : asset('storage/' . $portfolio->image) }}"
-                                            alt="{{ $portfolio->title }}">
+                            alt="{{ $portfolio->title }}" width="850" height="430">
                     </div>
                     <div class="services__details__content">
                         <h2 class="title">{{ $portfolio->title }}</h2>
@@ -68,8 +68,8 @@
                                         <a href="{{ route('portfolio') }}">{{ $category->name }},</a>
                                     @endforeach
                                 </li>
-                                <li><span>Project Link :</span> <a
-                                        href="{{ $portfolio->link }}">{{ $portfolio->link }}</a></li>
+                                <li><span>Project Link :</span> <a href="{{ $portfolio->link }}">{{ $portfolio->link }}</a>
+                                </li>
                             </ul>
                         </div>
                         <div class="widget">
