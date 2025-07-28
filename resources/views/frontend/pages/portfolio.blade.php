@@ -40,7 +40,7 @@
                     <div class="portfolio__inner__nav">
                         <button class="active" data-filter="*">all</button>
                         @foreach (\App\Models\Portfolio::getAllCategories() as $category)
-                            <button data-filter=".{{ $category }}">{{ $category }}</button>
+                            <button data-filter=".{{ str_replace(' ', '_', $category) }}">{{ $category }}</button>
                         @endforeach
                     </div>
                 </div>
@@ -48,13 +48,13 @@
             <div class="portfolio__inner__active">
                 @forelse ($portfolios as $portfolio)
                     <div
-                        class="portfolio__inner__item grid-item {{ implode(' ', $portfolio->category) }}">
+                        class="portfolio__inner__item grid-item {{ implode(' ', str_replace(' ', '_', $portfolio->category)) }}">
                         <div class="row gx-0 align-items-center">
                             <div class="col-lg-6 col-md-10">
                                 <div class="portfolio__inner__thumb">
-                                    <a href="portfolio-details.html">
+                                    <a href="{{ route('portfolio.details', $portfolio->slug) }}">
                                         <img src="{{ $portfolio->image && str_starts_with($portfolio->image, 'defaults_images/') ? asset($portfolio->image) : asset('storage/' . $portfolio->image) }}"
-                                            alt="{{ $portfolio->title }}" width="648" height="616">
+                                            alt="{{ $portfolio->title }}" width="648" height="616" style="object-fit: cover;">
                                     </a>
                                 </div>
                             </div>

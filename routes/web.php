@@ -80,12 +80,12 @@ Route::prefix('/admin')->group(function () {
     Route::delete('/services/delete/{service}', [ServiceController::class, 'destroy'])->name('service.destroy');
 
     // portfolio
-    Route::get('/portfolios', [\App\Http\Controllers\PortfolioController::class, 'index'])->name('portfolio');
-    Route::post('/portfolios', [\App\Http\Controllers\PortfolioController::class, 'store'])->name('portfolio.store');
-    Route::get('/portfolios/edit/{portfolio}', [\App\Http\Controllers\PortfolioController::class, 'edit'])->name('portfolio.edit');
-    Route::put('/portfolios/update/{portfolio}', [\App\Http\Controllers\PortfolioController::class, 'update'])->name('portfolio.update');
-    Route::patch('/portfolios/status/{portfolio}', [\App\Http\Controllers\PortfolioController::class, 'status'])->name('portfolio.status');
-    Route::delete('/portfolios/delete/{portfolio}', [\App\Http\Controllers\PortfolioController::class, 'destroy'])->name('portfolio.destroy');
+    Route::get('/portfolios', [PortfolioController::class, 'index'])->name('admin.portfolio');
+    Route::post('/portfolios', [PortfolioController::class, 'store'])->name('portfolio.store');
+    Route::get('/portfolios/edit/{portfolio}', [PortfolioController::class, 'edit'])->name('portfolio.edit');
+    Route::put('/portfolios/update/{portfolio}', [PortfolioController::class, 'update'])->name('portfolio.update');
+    Route::patch('/portfolios/status/{portfolio}', [PortfolioController::class, 'status'])->name('portfolio.status');
+    Route::delete('/portfolios/delete/{portfolio}', [PortfolioController::class, 'destroy'])->name('portfolio.destroy');
 });
 
 require __DIR__ . '/auth.php';

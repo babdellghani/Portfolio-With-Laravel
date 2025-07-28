@@ -27,7 +27,7 @@ class Portfolio extends Model
     ];
 
     /**
-     * Get all unique categories from portfolios
+     * Get all unique categories from portfolios status 1.
      */
     public static function getAllCategories()
     {
@@ -35,6 +35,7 @@ class Portfolio extends Model
         
         self::whereNotNull('category')
             ->where('category', '!=', '')
+            ->where('status', 1)
             ->get()
             ->each(function ($portfolio) use (&$categories) {
                 if (is_array($portfolio->category)) {

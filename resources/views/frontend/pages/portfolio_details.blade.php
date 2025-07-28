@@ -8,10 +8,10 @@
             <div class="row justify-content-center">
                 <div class="col-xl-6 col-lg-8 col-md-10">
                     <div class="breadcrumb__wrap__content">
-                        <h2 class="title">Case Details</h2>
+                        <h2 class="title">{{ $portfolio->title }}</h2>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">Details</li>
                             </ol>
                         </nav>
@@ -39,7 +39,7 @@
                 <div class="col-lg-8">
                     <div class="services__details__thumb">
                         <img src="{{ $portfolio->image && str_starts_with($portfolio->image, 'defaults_images/') ? asset($portfolio->image) : asset('storage/' . $portfolio->image) }}"
-                            alt="{{ $portfolio->title }}" width="850" height="430">
+                            alt="{{ $portfolio->title }}" width="850" height="430" style="object-fit: cover;">
                     </div>
                     <div class="services__details__content">
                         <h2 class="title">{{ $portfolio->title }}</h2>
@@ -60,12 +60,12 @@
                         <div class="widget">
                             <h5 class="title">Project Information</h5>
                             <ul class="sidebar__contact__info">
-                                <li><span>Date :</span> {{ $portfolio->date->format('F, Y') }}</li>
+                                <li><span>Date :</span> {{ \Carbon\Carbon::parse($portfolio->date)->format('F, Y') }}</li>
                                 <li><span>Location :</span> {{ $portfolio->location }}</li>
                                 <li><span>Client :</span> {{ $portfolio->client }}</li>
                                 <li class="cagegory"><span>Category :</span>
                                     @foreach ($portfolio->category as $category)
-                                        <a href="{{ route('portfolio') }}">{{ $category->name }},</a>
+                                        <a href="{{ route('portfolio') }}">{{ $category }},</a>
                                     @endforeach
                                 </li>
                                 <li><span>Project Link :</span> <a href="{{ $portfolio->link }}">{{ $portfolio->link }}</a>

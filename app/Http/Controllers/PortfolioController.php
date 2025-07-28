@@ -1,11 +1,10 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Portfolio;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PortfolioController extends Controller
 {
@@ -23,7 +22,7 @@ class PortfolioController extends Controller
      */
     public function home()
     {
-        $portfolios = Portfolio::latest()->get();
+        $portfolios = Portfolio::latest()->where('status', 1)->get();
         return view('frontend.pages.portfolio', compact('portfolios'));
     }
 
@@ -39,21 +38,27 @@ class PortfolioController extends Controller
     public function store(Request $request)
     {
         $portfolio = $request->validate([
-            'title' => 'required',
-            'slug' => 'required|unique:portfolios',
-            'image' => 'required|image|mimes:png,jpg,jpeg|max:2048',
+            'title'             => 'required',
+            'slug'              => 'required|unique:portfolios',
+            'image'             => 'required|image|mimes:png,jpg,jpeg|max:2048',
             'short_description' => 'required|max:255|string',
-            'description' => 'required|string',
-            'status' => 'nullable|in:0,1|bool',
-            'category' => 'required',
-            'date' => 'nullable|date',
-            'location' => 'nullable|string',
-            'client' => 'nullable|string',
-            'link' => 'nullable|string|url',
+            'description'       => 'required|string',
+            'status'            => 'nullable|in:0,1|bool',
+            'category'          => 'required|string',
+            'date'              => 'nullable|date',
+            'location'          => 'nullable|string',
+            'client'            => 'nullable|string',
+            'link'              => 'nullable|string|url',
         ]);
 
         $portfolio['status'] = $request->input('status', 0);
-        $portfolio['slug'] = Str::slug($portfolio['slug']);
+        $portfolio['slug']   = Str::slug($portfolio['slug']);
+
+        // Convert comma-separated category string to array
+        if ($request->has('category')) {
+            $categories            = array_map('trim', explode(',', $request->category));
+            $portfolio['category'] = array_filter($categories); // Remove empty values
+        }
 
         if ($request->hasFile('image')) {
             $portfolio['image'] = $request->file('image')->store('portfolio', 'public');
@@ -62,7 +67,7 @@ class PortfolioController extends Controller
         Portfolio::create($portfolio);
 
         return redirect()->back()->with([
-            'message' => 'Portfolio created successfully',
+            'message'    => 'Portfolio created successfully',
             'alert-type' => 'success',
         ]);
     }
@@ -81,21 +86,27 @@ class PortfolioController extends Controller
     public function update(Request $request, Portfolio $portfolio)
     {
         $portfolioNew = $request->validate([
-            'title' => 'required',
-            'slug' => 'required|unique:portfolios,slug,' . $portfolio->id,
-            'image' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
+            'title'             => 'required',
+            'slug'              => 'required|unique:portfolios,slug,' . $portfolio->id,
+            'image'             => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
             'short_description' => 'required|max:255|string',
-            'description' => 'required|string',
-            'status' => 'nullable|in:0,1|bool',
-            'category' => 'required',
-            'date' => 'nullable|date',
-            'location' => 'nullable|string',
-            'client' => 'nullable|string',
-            'link' => 'nullable|string|url',
+            'description'       => 'required|string',
+            'status'            => 'nullable|in:0,1|bool',
+            'category'          => 'required|string',
+            'date'              => 'nullable|date',
+            'location'          => 'nullable|string',
+            'client'            => 'nullable|string',
+            'link'              => 'nullable|string|url',
         ]);
 
         $portfolioNew['status'] = $request->input('status', 0);
-        $portfolioNew['slug'] = Str::slug($portfolioNew['slug']);
+        $portfolioNew['slug']   = Str::slug($portfolioNew['slug']);
+
+        // Convert comma-separated category string to array
+        if ($request->has('category')) {
+            $categories               = array_map('trim', explode(',', $request->category));
+            $portfolioNew['category'] = array_filter($categories); // Remove empty values
+        }
 
         if ($request->hasFile('image')) {
             Storage::delete('public/' . $portfolio->image);
@@ -123,7 +134,7 @@ class PortfolioController extends Controller
         }
 
         return redirect()->back()->with([
-            'message' => 'Portfolio status updated successfully',
+            'message'    => 'Portfolio status updated successfully',
             'alert-type' => 'success',
         ]);
     }
@@ -137,7 +148,7 @@ class PortfolioController extends Controller
         $portfolio->delete();
 
         return redirect()->back()->with([
-            'message' => 'Portfolio deleted successfully',
+            'message'    => 'Portfolio deleted successfully',
             'alert-type' => 'success',
         ]);
     }
