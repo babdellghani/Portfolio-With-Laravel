@@ -77,11 +77,7 @@
                 @endforelse
         </div>
         @if($services->hasPages())
-            <div class="pagination-wrap">
-                <nav aria-label="Page navigation example">
-                    {{ $services->links() }}
-                </nav>
-            </div>
+            {{ $services->links('custom-pagination') }}
         @endif
         </div>
     </section>

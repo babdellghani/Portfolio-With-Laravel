@@ -23,7 +23,7 @@ class PortfolioController extends Controller
      */
     public function home()
     {
-        $portfolios = Portfolio::latest()->paginate(6);
+        $portfolios = Portfolio::latest()->get();
         return view('frontend.pages.portfolio', compact('portfolios'));
     }
 

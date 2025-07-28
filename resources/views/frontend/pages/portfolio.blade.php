@@ -76,13 +76,6 @@
                     </div>
                 @endforelse
             </div>
-            @if($portfolios->hasPages())
-                <div class="pagination-wrap">
-                    <nav aria-label="Page navigation example">
-                        {{ $portfolios->links() }}
-                    </nav>
-                </div>
-            @endif
         </div>
     </section>
     <!-- portfolio-area-end -->

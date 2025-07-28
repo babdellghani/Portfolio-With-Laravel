@@ -27,23 +27,21 @@ class Portfolio extends Model
     ];
 
     /**
-     * Get all portfolios
-     */
-    public static function getAllPortfolios()
-    {
-        return self::all();
-    }
-
-    /**
      * Get all unique categories from portfolios
      */
     public static function getAllCategories()
     {
-        return self::whereNotNull('category')
+        $categories = [];
+        
+        self::whereNotNull('category')
             ->where('category', '!=', '')
-            ->pluck('category')
-            ->unique()
-            ->values()
-            ->toArray();
+            ->get()
+            ->each(function ($portfolio) use (&$categories) {
+                if (is_array($portfolio->category)) {
+                    $categories = array_merge($categories, $portfolio->category);
+                }
+            });
+            
+        return array_unique($categories);
     }
 }
