@@ -135,7 +135,7 @@
                                                                 <td style="width: 80px">{{ $service->id }}</td>
                                                                 <td style="width: 100px">
                                                                     @if ($service->image != null)
-                                                                        <img src="{{ asset('storage/' . $service->image) }}"
+                                                                        <img src="{{ $service->image && str_starts_with($service->image, 'defaults_images/') ? asset($service->image) : asset('storage/' . $service->image) }}"
                                                                             alt="{{ $service->title }}" class="img-thumbnail"
                                                                             style="width: 100px">
                                                                     @else
@@ -144,7 +144,7 @@
                                                                 </td>
                                                                 <td style="width: 100px">
                                                                     @if ($service->icon != null)
-                                                                        <img src="{{ asset('storage/' . $service->icon) }}"
+                                                                        <img src="{{ $service->icon && str_starts_with($service->icon, 'defaults_images/') ? asset($service->icon) : asset('storage/' . $service->icon) }}"
                                                                             alt="{{ $service->title }}" class="img-thumbnail"
                                                                             style="width: 100px">
                                                                     @else

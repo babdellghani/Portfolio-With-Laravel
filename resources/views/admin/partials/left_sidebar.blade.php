@@ -61,7 +61,7 @@
                 </li>
 
                 <li>
-                    <a href="{{ route('portfolio') }}" class="waves-effect">
+                    <a href="{{ route('admin.portfolio') }}" class="waves-effect">
                         <i class="ri-briefcase-line"></i>
                         <span>Portfolio</span>
                     </a>

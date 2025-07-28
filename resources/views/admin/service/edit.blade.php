@@ -78,7 +78,7 @@
                                                 <div id="image-preview">
                                                     <div class="mt-4 mt-md-0">
                                                         <img id="showImage" class="rounded img-thumbnail w-100 h-100"
-                                                            src="{{ Storage::url($service->image) }}" alt="image"
+                                                            src="{{ $service->image && str_starts_with($service->image, 'defaults_images/') ? asset($service->image) : asset('storage/' . $service->image) }}" alt="image"
                                                             data-holder-rendered="true">
                                                     </div>
                                                 </div>
@@ -106,7 +106,7 @@
                                                 <div id="icon-preview">
                                                     <div class="mt-4 mt-md-0">
                                                         <img id="showIcon" class="rounded img-thumbnail w-100 h-100"
-                                                            src="{{ Storage::url($service->icon) }}" alt="icon"
+                                                            src="{{ $service->icon && str_starts_with($service->icon, 'defaults_images/') ? asset($service->icon) : asset('storage/' . $service->icon) }}" alt="icon"
                                                             data-holder-rendered="true">
                                                     </div>
                                                 </div>

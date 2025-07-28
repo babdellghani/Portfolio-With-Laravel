@@ -41,7 +41,7 @@
                         <div class="row gx-0 align-items-center">
                             <div class="col-lg-6 col-md-10">
                                 <div class="portfolio__inner__thumb">
-                                    <a href="portfolio-details.html">
+                                    <a href="{{ route('services.details', $service->slug) }}">
                                         <img src="{{ $service->image && str_starts_with($service->image, 'defaults_images/') ? asset($service->image) : asset('storage/' . $service->image) }}"
                                             alt="{{ $service->title }}" width="648" height="616">
                                     </a>
