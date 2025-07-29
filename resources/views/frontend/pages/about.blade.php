@@ -8,7 +8,124 @@
     <!-- breadcrumb-area-end -->
 
     <!-- about-area -->
-    <x-about.about />
+    <section class="about about__style__two">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="about__image">
+                        <img src="{{ $about->about_image && str_starts_with($about->about_image, 'defaults_images/') ? asset($about->about_image) : asset('storage/' . $about->about_image) }}"
+                            alt="About Image" class="img-fluid">
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="about__content">
+                        <div class="section__title">
+                            <span class="sub-title">01 - About me</span>
+                            <h2 class="title">{{ $about->title }}</h2>
+                        </div>
+                        <div class="about__exp">
+                            <div class="about__exp__icon">
+                                <img src="{{ asset('defaults_images/about_icon.png') }}" alt="">
+                            </div>
+                            <div class="about__exp__content">
+                                <p><span>{!! $about->short_title !!}</p>
+                            </div>
+                        </div>
+                        <p class="desc">{{ $about->short_description }}</p>
+                        <a href="{{ $about->cv_file && str_starts_with($about->cv_file, 'defaults_images/') ? asset($about->cv_file) : asset('storage/' . $about->cv_file) }}"
+                            class="btn" download="CV">Download my resume</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="about__info__wrap">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="about-tab" data-bs-toggle="tab" data-bs-target="#about"
+                                    type="button" role="tab" aria-controls="about" aria-selected="true">About</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="skills-tab" data-bs-toggle="tab" data-bs-target="#skills"
+                                    type="button" role="tab" aria-controls="skills" aria-selected="false">Skills</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="awards-tab" data-bs-toggle="tab" data-bs-target="#awards"
+                                    type="button" role="tab" aria-controls="awards" aria-selected="false">Awards</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="education-tab" data-bs-toggle="tab" data-bs-target="#education"
+                                    type="button" role="tab" aria-controls="education"
+                                    aria-selected="false">Education</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="about" role="tabpanel" aria-labelledby="about-tab">
+                                {!! $about->long_description !!}
+                            </div>
+                            <div class="tab-pane fade" id="skills" role="tabpanel" aria-labelledby="skills-tab">
+                                <div class="about__skill__wrap">
+                                    <div class="row">
+                                        @foreach ($skills as $skill)
+                                            <div class="col-md-6">
+                                                <div class="about__skill__item">
+                                                    <h5 class="title">{{ $skill->name }}</h5>
+                                                    <div class="progress">
+                                                        <div class="progress-bar" role="progressbar"
+                                                            style="width: {{ $skill->value }}%;"
+                                                            aria-valuenow="{{ $skill->value }}" aria-valuemin="0"
+                                                            aria-valuemax="100"><span
+                                                                class="percentage">{{ $skill->value }}%</span></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="awards" role="tabpanel" aria-labelledby="awards-tab">
+                                <div class="about__award__wrap">
+                                    <div class="row justify-content-center">
+                                        @foreach ($award as $item)
+                                            <div class="col-md-6 col-sm-9">
+                                                <div class="about__award__item">
+                                                    <div class="award__logo">
+                                                        <img src="{{ $item->image && str_starts_with($item->image, 'defaults_images/') ? asset($item->image) : asset('storage/' . $item->image) }}"
+                                                            alt="">
+                                                    </div>
+                                                    <div class="award__content">
+                                                        <h5 class="title">{{ $item->title }} {{ $item->year }}</h5>
+                                                        <p>{{ $item->description }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="education" role="tabpanel" aria-labelledby="education-tab">
+                                <div class="about__education__wrap">
+                                    <div class="row">
+                                        @foreach ($education as $item)
+                                            <div class="col-md-6">
+                                                <div class="about__education__item">
+                                                    <h3 class="title">{{ $item->name }}</h3>
+                                                    <span class="date">{{ $item->start_date }} – {{ $item->end_date }}</span>
+                                                    <p>{{ $item->description }}</p>
+                                                </div>
+                                            </div>
+
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     <!-- about-area-end -->
 
     <!-- services-area -->
@@ -24,114 +141,25 @@
             </div>
             <div class="services__style__two__wrap">
                 <div class="row gx-0">
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="services__style__two__item">
-                            <div class="services__style__two__icon">
-                                <img src="assets/img/icons/services_light_icon01.png" alt="">
-                            </div>
-                            <div class="services__style__two__content">
-                                <h3 class="title"><a href="services-details.html">Business Strategy</a></h3>
-                                <p>There are many variations of passages of Lorem Ipsum available, but the majority.</p>
-                                <a href="services-details.html" class="services__btn"><i
-                                        class="far fa-long-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="services__style__two__item">
-                            <div class="services__style__two__icon">
-                                <img src="assets/img/icons/services_light_icon02.png" alt="">
-                            </div>
-                            <div class="services__style__two__content">
-                                <h3 class="title"><a href="services-details.html">Visual Design</a></h3>
-                                <p>Strategy is a forward-looking plan for your brand’s behavior.Strategy is a
-                                    forward-looking plan.</p>
-                                <a href="services-details.html" class="services__btn"><i
-                                        class="far fa-long-arrow-right"></i></a>
+                    @forelse ($service as $item)
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="services__style__two__item">
+                                <div class="services__style__two__icon">
+                                    <img src="{{ $item->icon && str_starts_with($item->icon, 'defaults_images/') ? asset($item->icon) : asset('storage/' . $item->icon) }}" alt="{{ $item->title }}">
+                                </div>
+                                <div class="services__style__two__content">
+                                    <h3 class="title"><a href="{{ route('services.details', $item->slug) }}">{{ $item->title }}</a></h3>
+                                    <p>{!! $item->short_description !!}</p>
+                                    <a href="{{ route('services.details', $item->slug) }}" class="services__btn"><i
+                                            class="far fa-long-arrow-right"></i></a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="services__style__two__item">
-                            <div class="services__style__two__icon">
-                                <img src="assets/img/icons/services_light_icon03.png" alt="">
-                            </div>
-                            <div class="services__style__two__content">
-                                <h3 class="title"><a href="services-details.html">Product Design</a></h3>
-                                <p>There are many variations of passages of Lorem Ipsum available, but the majority.</p>
-                                <a href="services-details.html" class="services__btn"><i
-                                        class="far fa-long-arrow-right"></i></a>
-                            </div>
+                    @empty
+                        <div class="col-12">
+                            <p>No services found.</p>
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="services__style__two__item">
-                            <div class="services__style__two__icon">
-                                <img src="assets/img/icons/services_light_icon05.png" alt="">
-                            </div>
-                            <div class="services__style__two__content">
-                                <h3 class="title"><a href="services-details.html">Animation</a></h3>
-                                <p>Strategy is a forward-looking plan for your brand’s behavior.Strategy is a
-                                    forward-looking plan.</p>
-                                <a href="services-details.html" class="services__btn"><i
-                                        class="far fa-long-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="services__style__two__item">
-                            <div class="services__style__two__icon">
-                                <img src="assets/img/icons/services_light_icon06.png" alt="">
-                            </div>
-                            <div class="services__style__two__content">
-                                <h3 class="title"><a href="services-details.html">Marketing</a></h3>
-                                <p>There are many variations of passages of Lorem Ipsum available, but the majority.</p>
-                                <a href="services-details.html" class="services__btn"><i
-                                        class="far fa-long-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="services__style__two__item">
-                            <div class="services__style__two__icon">
-                                <img src="assets/img/icons/services_light_icon05.png" alt="">
-                            </div>
-                            <div class="services__style__two__content">
-                                <h3 class="title"><a href="services-details.html">Brand strategy</a></h3>
-                                <p>Strategy is a forward-looking plan for your brand’s behavior.Strategy is a
-                                    forward-looking plan.</p>
-                                <a href="services-details.html" class="services__btn"><i
-                                        class="far fa-long-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="services__style__two__item">
-                            <div class="services__style__two__icon">
-                                <img src="assets/img/icons/services_light_icon04.png" alt="">
-                            </div>
-                            <div class="services__style__two__content">
-                                <h3 class="title"><a href="services-details.html">Graphic Design</a></h3>
-                                <p>There are many variations of passages of Lorem Ipsum available, but the majority.</p>
-                                <a href="services-details.html" class="services__btn"><i
-                                        class="far fa-long-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="services__style__two__item">
-                            <div class="services__style__two__icon">
-                                <img src="assets/img/icons/services_light_icon07.png" alt="">
-                            </div>
-                            <div class="services__style__two__content">
-                                <h3 class="title"><a href="services-details.html">Visual Design</a></h3>
-                                <p>Strategy is a forward-looking plan for your brand’s behavior.Strategy is a
-                                    forward-looking plan.</p>
-                                <a href="services-details.html" class="services__btn"><i
-                                        class="far fa-long-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
             </div>
         </div>
@@ -203,7 +231,7 @@
     <!-- testimonial-area-end -->
 
     <!-- blog-area -->
-    <section class="blog blog__style__two">
+    <section class="blog blog__style__two" style="padding-bottom: 10px !important;">
         <div class="container">
             <div class="row gx-0 justify-content-center">
                 <div class="col-lg-4 col-md-6 col-sm-9">
@@ -264,38 +292,5 @@
         </div>
     </section>
     <!-- blog-area-end -->
-
-    <!-- contact-area -->
-    <section class="homeContact">
-        <div class="container">
-            <div class="homeContact__wrap">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="section__title">
-                            <span class="sub-title">07 - Say hello</span>
-                            <h2 class="title">Any questions? Feel free <br> to contact</h2>
-                        </div>
-                        <div class="homeContact__content">
-                            <p>There are many variations of passages of Lorem Ipsum available, but the majority have
-                                suffered alteration in some form</p>
-                            <h2 class="mail"><a href="mailto:Info@webmail.com">Info@webmail.com</a></h2>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="homeContact__form">
-                            <form action="#">
-                                <input type="text" placeholder="Enter name*">
-                                <input type="email" placeholder="Enter mail*">
-                                <input type="number" placeholder="Enter number*">
-                                <textarea name="message" placeholder="Enter Massage*"></textarea>
-                                <button type="submit">Send Message</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- contact-area-end -->
 
 @endsection

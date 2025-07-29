@@ -15,9 +15,7 @@ Route::get('/', function () {
     return view('frontend.pages.home');
 })->name('home');
 
-Route::get('/about', function() {
-    return view('frontend.pages.about');
-})->name('about');
+Route::get('/about', [AboutController::class, 'home'])->name('about');
 
 Route::get('/services', [ServiceController::class, 'home'])->name('services');
 Route::get('/services/{service:slug}', [ServiceController::class, 'details'])->name('services.details');

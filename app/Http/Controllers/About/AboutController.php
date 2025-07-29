@@ -3,10 +3,17 @@
 namespace App\Http\Controllers\About;
 
 use App\Models\About;
+use App\Models\Award;
+use App\Models\Skill;
+use App\Models\Service;
+use App\Models\Education;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Database\Seeders\About\AboutSeeder;
+use Database\Seeders\About\AwardSeeder;
+use Database\Seeders\About\SkillSeeder;
 use Illuminate\Support\Facades\Storage;
+use Database\Seeders\About\EducationSeeder;
 
 class AboutController extends Controller
 {
@@ -23,6 +30,38 @@ class AboutController extends Controller
         }
 
         return view('admin.about.about', compact('about'));
+    }
+
+    /**
+     * Show the form for frontend.
+     */
+    public function home()
+    {
+        $about = About::latest()->first();
+        $award = Award::latest()->get();
+        $education = Education::latest()->get();
+        $skills = Skill::latest()->get();
+
+        $service = Service::latest()->get();
+
+        if (!$about) {
+            (new AboutSeeder())->run();
+            $about = About::latest()->first();
+        }
+        if ($award->count() === 0) {
+            (new AwardSeeder())->run();
+            $award = Award::latest()->get();
+        }
+        if ($education->count() === 0) {
+            (new EducationSeeder())->run();
+            $education = Education::latest()->get();
+        }
+        if ($skills->count() === 0) {
+            (new SkillSeeder())->run();
+            $skills = Skill::latest()->get();
+        }
+        
+        return view('frontend.pages.about', compact('about', 'award', 'education', 'skills', 'service'));
     }
 
     /**
