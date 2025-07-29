@@ -68,6 +68,13 @@
                 </li>
 
                 <li>
+                    <a href="{{ route('testimonial') }}" class="waves-effect">
+                        <i class="ri-chat-quote-line"></i>
+                        <span>Testimonials</span>
+                    </a>
+                </li>
+
+                <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-layout-3-line"></i>
                         <span>Layouts</span>
