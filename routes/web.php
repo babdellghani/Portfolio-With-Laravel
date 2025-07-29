@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\About\AboutController;
 use App\Http\Controllers\About\AwardController;
@@ -11,9 +12,7 @@ use App\Http\Controllers\Home\HomeSlideController;
 use App\Http\Controllers\About\EducationController;
 
 // -------------- Frontend --------------- //
-Route::get('/', function () {
-    return view('frontend.pages.home');
-})->name('home');
+Route::get('/', [HomeController::class,'index'])->name('home');
 
 Route::get('/about', [AboutController::class, 'home'])->name('about');
 

@@ -5,7 +5,7 @@
     <div class="py-5">
         <div class="container">
             <div class="row">
-                <div class="col-12 col-sm-8 offset-sm-2">
+                <div class="col-12 col-sm-8" style="width: 100% !important;">
                     <div class="card shadow-sm rounded">
                         <div class="card-body">
                             <section>
@@ -62,7 +62,7 @@
 
                     <div class="mb-3">
                         <x-input-label for="video_url" :value="__('YouTube Video URL')" class="form-label" />
-                        
+
                         @if($slide->video_url)
                             <div class="mb-3">
                                 <div class="ratio ratio-16x9">
@@ -71,7 +71,7 @@
                                 <small class="text-muted">Current video preview</small>
                             </div>
                         @endif
-                        
+
                         <x-text-input id="video_url" name="video_url" type="url" class="form-control"
                             :value="old('video_url', $slide->video_url)" placeholder="https://www.youtube.com/watch?v=example or https://youtu.be/example" />
                         <x-input-error class="text-danger small mt-1" :messages="$errors->get('video_url')" />
@@ -98,7 +98,7 @@
         $(document).ready(function() {
             $('#image').change(function() {
                 const file = this.files[0];
-                
+
                 // Validate file type
                 const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
                 if (file && !allowedTypes.includes(file.type)) {
@@ -106,14 +106,14 @@
                     this.value = '';
                     return;
                 }
-                
+
                 // Validate file size (2MB = 2 * 1024 * 1024 bytes)
                 if (file && file.size > 2 * 1024 * 1024) {
                     alert('File size must be less than 2MB');
                     this.value = '';
                     return;
                 }
-                
+
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = function(e) {
@@ -127,10 +127,10 @@
         $(document).ready(function() {
             $('#video_url').on('input', function() {
                 const url = this.value;
-                
+
                 // Basic YouTube URL validation
                 const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/)|youtu\.be\/)[\w-]+(&[\w=]*)?$/;
-                
+
                 if (url && !youtubeRegex.test(url)) {
                     $(this).addClass('is-invalid');
                     $(this).next('.text-danger').remove();
@@ -139,7 +139,7 @@
                 } else {
                     $(this).removeClass('is-invalid');
                     $(this).next('.text-danger').remove();
-                    
+
                     if (url && youtubeRegex.test(url)) {
                         // Extract video ID and show preview
                         let videoId = '';
@@ -147,7 +147,7 @@
                         if (match) {
                             videoId = match[1];
                             const embedUrl = `https://www.youtube.com/embed/${videoId}`;
-                            
+
                             if (!$('#video-preview').length) {
                                 $(this).after(`
                                     <div id="video-preview" class="mt-3">

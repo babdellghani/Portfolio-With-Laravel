@@ -5,7 +5,7 @@
     <div class="py-5">
         <div class="container">
             <div class="row">
-                <div class="col-12 col-sm-8 offset-sm-2">
+                <div class="col-12 col-sm-8" style="width: 100% !important;">
                     <div class="card shadow-sm rounded">
                         <div class="card-body">
                             <section class="mb-4">
