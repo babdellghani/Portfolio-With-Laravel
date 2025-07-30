@@ -75,6 +75,20 @@
                 </li>
 
                 <li>
+                    <a href="{{ route('partner') }}" class="waves-effect">
+                        <i class="ri-team-line"></i>
+                        <span>Partners</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('technology') }}" class="waves-effect">
+                        <i class="ri-code-s-slash-line"></i>
+                        <span>Technologies</span>
+                    </a>
+                </li>
+
+                <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-layout-3-line"></i>
                         <span>Layouts</span>

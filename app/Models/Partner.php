@@ -1,0 +1,34 @@
+<?php
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Partner extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'light_logo',
+        'dark_logo',
+        'website_url',
+        'status',
+        'order',
+    ];
+
+    protected $casts = [
+        'status' => 'boolean',
+        'order'  => 'integer',
+    ];
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', true);
+    }
+
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('order', 'asc')->orderBy('id', 'asc');
+    }
+}

@@ -177,40 +177,32 @@
                             <h2 class="title">Some happy clients feedback</h2>
                         </div>
                         <div class="testimonial__two__active">
+                        @forelse ($testimonials as $item)
                             <div class="testimonial__item">
                                 <div class="testimonial__icon">
                                     <i class="fas fa-quote-left"></i>
                                 </div>
                                 <div class="testimonial__content">
-                                    <p>We are motivated by the satisfaction of our clients. Put your trust in us &share in
-                                        our H.Spond Asset Management is made up of a team of expert, committed and
-                                        experienced people with a passion for financial markets. Our goal is to achieve
-                                        continuous.</p>
-                                    <div class="testimonial__avatar">
-                                        <span>WPBakery/ uSA</span>
-                                        <div class="testi__avatar__img">
-                                            <img src="assets/img/images/testi_avatar01.png" alt="">
+                                    <p>{{ $item->message }}</p>
+                                    <div class="testimonial__avatar" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                                        <span>{{ $item->name }}</span>
+                                        <div class="testi__avatar__img" style="display: flex; align-items: center; justify-content: center; width: 70px; height: 70px; border-radius: 50%; overflow: hidden;">
+                                            @if ($item->image == null || $item->image == '')
+                                                <img src="{{ asset('frontend/assets/img/images/testi_img01.png') }}"
+                                                    alt="Testimonial Image">
+                                            @else
+                                                <img src="{{ $item->image && str_starts_with($item->image, 'defaults_images/') ? asset($item->image) : asset('storage/' . $item->image) }}"
+                                                    alt="{{ $item->name }}" width="70" height="70" style="object-fit: cover;">
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="testimonial__item">
-                                <div class="testimonial__icon">
-                                    <i class="fas fa-quote-left"></i>
-                                </div>
-                                <div class="testimonial__content">
-                                    <p>We are motivated by the satisfaction of our clients. Put your trust in us &share in
-                                        our H.Spond Asset Management is made up of a team of expert, committed and
-                                        experienced people with a passion for financial markets. Our goal is to achieve
-                                        continuous.</p>
-                                    <div class="testimonial__avatar">
-                                        <span>Adobe Photoshop</span>
-                                        <div class="testi__avatar__img">
-                                            <img src="assets/img/images/testi_avatar02.png" alt="">
-                                        </div>
-                                    </div>
-                                </div>
+                        @empty
+                            <div class="col-12">
+                                <p>No testimonials found.</p>
                             </div>
+                        @endforelse
                         </div>
                         <div class="testimonial__arrow"></div>
                     </div>

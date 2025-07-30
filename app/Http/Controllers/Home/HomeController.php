@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Home;
 use App\Http\Controllers\Controller;
 use App\Models\About;
 use App\Models\HomeSlide;
+use App\Models\Partner;
 use App\Models\Portfolio;
 use App\Models\Service;
+use App\Models\Technology;
 use App\Models\Testimonial;
 use Illuminate\Support\Facades\Artisan;
 
@@ -36,6 +38,10 @@ class HomeController extends Controller
 
         $testimonials = Testimonial::where('status', true)->latest()->get();
 
-        return view('frontend.pages.home', compact('homeSlide', 'about', 'services', 'portfolio', 'testimonials'));
+        $partners = Partner::active()->ordered()->get();
+
+        $technologies = Technology::active()->ordered()->get();
+
+        return view('frontend.pages.home', compact('homeSlide', 'about', 'services', 'portfolio', 'testimonials', 'partners', 'technologies'));
     }
 }

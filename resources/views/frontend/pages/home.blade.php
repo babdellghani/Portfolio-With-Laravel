@@ -40,39 +40,58 @@
             <div class="row align-items-center">
                 <div class="col-lg-6">
                     <ul class="about__icons__wrap">
-                        <li>
-                            <img class="light" src="{{ asset('frontend/assets/img/icons/xd_light.png') }}" alt="XD">
-                            <img class="dark" src="{{ asset('frontend/assets/img/icons/xd.png') }}" alt="XD">
-                        </li>
-                        <li>
-                            <img class="light" src="{{ asset('frontend/assets/img/icons/skeatch_light.png') }}"
-                                alt="Skeatch">
-                            <img class="dark" src="{{ asset('frontend/assets/img/icons/skeatch.png') }}" alt="Skeatch">
-                        </li>
-                        <li>
-                            <img class="light" src="{{ asset('frontend/assets/img/icons/illustrator_light.png') }}"
-                                alt="Illustrator">
-                            <img class="dark" src="{{ asset('frontend/assets/img/icons/illustrator.png') }}"
-                                alt="Illustrator">
-                        </li>
-                        <li>
-                            <img class="light" src="{{ asset('frontend/assets/img/icons/hotjar_light.png') }}" alt="Hotjar">
-                            <img class="dark" src="{{ asset('frontend/assets/img/icons/hotjar.png') }}" alt="Hotjar">
-                        </li>
-                        <li>
-                            <img class="light" src="{{ asset('frontend/assets/img/icons/invision_light.png') }}"
-                                alt="Invision">
-                            <img class="dark" src="{{ asset('frontend/assets/img/icons/invision.png') }}" alt="Invision">
-                        </li>
-                        <li>
-                            <img class="light" src="{{ asset('frontend/assets/img/icons/photoshop_light.png') }}"
-                                alt="Photoshop">
-                            <img class="dark" src="{{ asset('frontend/assets/img/icons/photoshop.png') }}" alt="Photoshop">
-                        </li>
-                        <li>
-                            <img class="light" src="{{ asset('frontend/assets/img/icons/figma_light.png') }}" alt="Figma">
-                            <img class="dark" src="{{ asset('frontend/assets/img/icons/figma.png') }}" alt="Figma">
-                        </li>
+                        @forelse ($technologies as $technology)
+                            <li>
+                                <img class="light"
+                                    src="{{ $technology->light_icon && str_starts_with($technology->light_icon, 'defaults_images/') ? asset($technology->light_icon) : asset('storage/' . $technology->light_icon) }}"
+                                    alt="{{ $technology->name }}">
+                                <img class="dark"
+                                    src="{{ $technology->dark_icon && str_starts_with($technology->dark_icon, 'defaults_images/') ? asset($technology->dark_icon) : asset('storage/' . $technology->dark_icon) }}"
+                                    alt="{{ $technology->name }}">
+                            </li>
+                        @empty
+                            <li>
+                                <img class="light" src="{{ asset('frontend/assets/img/icons/xd_light.png') }}"
+                                    alt="XD">
+                                <img class="dark" src="{{ asset('frontend/assets/img/icons/xd.png') }}" alt="XD">
+                            </li>
+                            <li>
+                                <img class="light" src="{{ asset('frontend/assets/img/icons/skeatch_light.png') }}"
+                                    alt="Sketch">
+                                <img class="dark" src="{{ asset('frontend/assets/img/icons/skeatch.png') }}"
+                                    alt="Sketch">
+                            </li>
+                            <li>
+                                <img class="light" src="{{ asset('frontend/assets/img/icons/illustrator_light.png') }}"
+                                    alt="Illustrator">
+                                <img class="dark" src="{{ asset('frontend/assets/img/icons/illustrator.png') }}"
+                                    alt="Illustrator">
+                            </li>
+                            <li>
+                                <img class="light" src="{{ asset('frontend/assets/img/icons/hotjar_light.png') }}"
+                                    alt="Hotjar">
+                                <img class="dark" src="{{ asset('frontend/assets/img/icons/hotjar.png') }}"
+                                    alt="Hotjar">
+                            </li>
+                            <li>
+                                <img class="light" src="{{ asset('frontend/assets/img/icons/invision_light.png') }}"
+                                    alt="Invision">
+                                <img class="dark" src="{{ asset('frontend/assets/img/icons/invision.png') }}"
+                                    alt="Invision">
+                            </li>
+                            <li>
+                                <img class="light" src="{{ asset('frontend/assets/img/icons/photoshop_light.png') }}"
+                                    alt="Photoshop">
+                                <img class="dark" src="{{ asset('frontend/assets/img/icons/photoshop.png') }}"
+                                    alt="Photoshop">
+                            </li>
+                            <li>
+                                <img class="light" src="{{ asset('frontend/assets/img/icons/figma_light.png') }}"
+                                    alt="Figma">
+                                <img class="dark" src="{{ asset('frontend/assets/img/icons/figma.png') }}"
+                                    alt="Figma">
+                            </li>
+                        @endforelse
                     </ul>
                 </div>
                 <div class="col-lg-6">
@@ -122,7 +141,8 @@
                             <div class="services__thumb">
                                 <a href="{{ route('services.details', $service->slug) }}"><img
                                         src="{{ $service->image && str_starts_with($service->image, 'defaults_images/') ? asset($service->image) : asset('storage/' . $service->image) }}"
-                                        alt="{{ $service->title }}" width="323" height="240" style="object-fit: cover;"></a>
+                                        alt="{{ $service->title }}" width="323" height="240"
+                                        style="object-fit: cover;"></a>
                             </div>
                             <div class="services__content">
                                 <div class="services__icon">
@@ -134,9 +154,11 @@
                                         alt="{{ $service->title }}">
                                 </div>
                                 <h3 class="title"><a
-                                        href="{{ route('services.details', $service->slug) }}">{{ $service->title }}</a></h3>
+                                        href="{{ route('services.details', $service->slug) }}">{{ $service->title }}</a>
+                                </h3>
                                 <p>{!! $service->short_description !!}</p>
-                                <a href="{{ route('services.details', $service->slug) }}" class="btn border-btn">Read more</a>
+                                <a href="{{ route('services.details', $service->slug) }}" class="btn border-btn">
+                                    <span>Read more</span></a>
                             </div>
                         </div>
                     </div>
@@ -170,8 +192,10 @@
                     <div class="work__process__item">
                         <span class="work__process_step">Step - 01</span>
                         <div class="work__process__icon">
-                            <img class="light" src="{{ asset('frontend/assets/img/icons/wp_light_icon01.png') }}" alt="">
-                            <img class="dark" src="{{ asset('frontend/assets/img/icons/wp_icon01.png') }}" alt="">
+                            <img class="light" src="{{ asset('frontend/assets/img/icons/wp_light_icon01.png') }}"
+                                alt="">
+                            <img class="dark" src="{{ asset('frontend/assets/img/icons/wp_icon01.png') }}"
+                                alt="">
                         </div>
                         <div class="work__process__content">
                             <h4 class="title">Discover</h4>
@@ -183,8 +207,10 @@
                     <div class="work__process__item">
                         <span class="work__process_step">Step - 02</span>
                         <div class="work__process__icon">
-                            <img class="light" src="{{ asset('frontend/assets/img/icons/wp_light_icon02.png') }}" alt="">
-                            <img class="dark" src="{{ asset('frontend/assets/img/icons/wp_icon02.png') }}" alt="">
+                            <img class="light" src="{{ asset('frontend/assets/img/icons/wp_light_icon02.png') }}"
+                                alt="">
+                            <img class="dark" src="{{ asset('frontend/assets/img/icons/wp_icon02.png') }}"
+                                alt="">
                         </div>
                         <div class="work__process__content">
                             <h4 class="title">Define</h4>
@@ -196,8 +222,10 @@
                     <div class="work__process__item">
                         <span class="work__process_step">Step - 03</span>
                         <div class="work__process__icon">
-                            <img class="light" src="{{ asset('frontend/assets/img/icons/wp_light_icon03.png') }}" alt="">
-                            <img class="dark" src="{{ asset('frontend/assets/img/icons/wp_icon03.png') }}" alt="">
+                            <img class="light" src="{{ asset('frontend/assets/img/icons/wp_light_icon03.png') }}"
+                                alt="">
+                            <img class="dark" src="{{ asset('frontend/assets/img/icons/wp_icon03.png') }}"
+                                alt="">
                         </div>
                         <div class="work__process__content">
                             <h4 class="title">Develop</h4>
@@ -209,8 +237,10 @@
                     <div class="work__process__item">
                         <span class="work__process_step">Step - 04</span>
                         <div class="work__process__icon">
-                            <img class="light" src="{{ asset('frontend/assets/img/icons/wp_light_icon04.png') }}" alt="">
-                            <img class="dark" src="{{ asset('frontend/assets/img/icons/wp_icon04.png') }}" alt="">
+                            <img class="light" src="{{ asset('frontend/assets/img/icons/wp_light_icon04.png') }}"
+                                alt="">
+                            <img class="dark" src="{{ asset('frontend/assets/img/icons/wp_icon04.png') }}"
+                                alt="">
                         </div>
                         <div class="work__process__content">
                             <h4 class="title">Deliver</h4>
@@ -245,20 +275,23 @@
                                     <div class="portfolio__item">
                                         <div class="portfolio__thumb">
                                             <img src="{{ $item->image && str_starts_with($item->image, 'defaults_images/') ? asset($item->image) : asset('storage/' . $item->image) }}"
-                                                alt="{{ $item->title }}" width="1020" height="519" style="object-fit: cover;">
+                                                alt="{{ $item->title }}" width="1020" height="519"
+                                                style="object-fit: cover;">
                                         </div>
                                         <div class="portfolio__overlay__content">
                                             <span>{{ $item->category[0] }}</span>
                                             <h4 class="title"><a
                                                     href="{{ route('portfolio.details', $item->slug) }}">{{ $item->title }}</a>
                                             </h4>
-                                            <a href="{{ route('portfolio.details', $item->slug) }}" class="link">Case Study</a>
+                                            <a href="{{ route('portfolio.details', $item->slug) }}" class="link">Case
+                                                Study</a>
                                         </div>
                                     </div>
                                 @empty
                                     <div class="portfolio__item">
                                         <div class="portfolio__thumb">
-                                            <img src="{{ asset('frontend/assets/img/portfolio/portfolio_img01.jpg') }}" alt="">
+                                            <img src="{{ asset('frontend/assets/img/portfolio/portfolio_img01.jpg') }}"
+                                                alt="">
                                         </div>
                                         <div class="portfolio__overlay__content">
                                             <span>No portfolio items found</span>
@@ -281,30 +314,59 @@
             <div class="row align-items-center">
                 <div class="col-lg-6">
                     <ul class="partner__logo__wrap">
-                        <li>
-                            <img class="light" src="{{ asset('frontend/assets/img/icons/partner_light01.png') }}" alt="">
-                            <img class="dark" src="{{ asset('frontend/assets/img/icons/partner_01.png') }}" alt="">
-                        </li>
-                        <li>
-                            <img class="light" src="{{ asset('frontend/assets/img/icons/partner_light02.png') }}" alt="">
-                            <img class="dark" src="{{ asset('frontend/assets/img/icons/partner_02.png') }}" alt="">
-                        </li>
-                        <li>
-                            <img class="light" src="{{ asset('frontend/assets/img/icons/partner_light03.png') }}" alt="">
-                            <img class="dark" src="{{ asset('frontend/assets/img/icons/partner_03.png') }}" alt="">
-                        </li>
-                        <li>
-                            <img class="light" src="{{ asset('frontend/assets/img/icons/partner_light04.png') }}" alt="">
-                            <img class="dark" src="{{ asset('frontend/assets/img/icons/partner_04.png') }}" alt="">
-                        </li>
-                        <li>
-                            <img class="light" src="{{ asset('frontend/assets/img/icons/partner_light05.png') }}" alt="">
-                            <img class="dark" src="{{ asset('frontend/assets/img/icons/partner_05.png') }}" alt="">
-                        </li>
-                        <li>
-                            <img class="light" src="{{ asset('frontend/assets/img/icons/partner_light06.png') }}" alt="">
-                            <img class="dark" src="{{ asset('frontend/assets/img/icons/partner_06.png') }}" alt="">
-                        </li>
+                        @forelse ($partners as $partner)
+                            <li>
+                                @if ($partner->website_url)
+                                    <a href="{{ $partner->website_url }}" target="_blank">
+                                @endif
+                                <img class="light"
+                                    src="{{ $partner->light_logo && str_starts_with($partner->light_logo, 'defaults_images/') ? asset($partner->light_logo) : asset('storage/' . $partner->light_logo) }}"
+                                    alt="{{ $partner->name }}">
+                                <img class="dark"
+                                    src="{{ $partner->dark_logo && str_starts_with($partner->dark_logo, 'defaults_images/') ? asset($partner->dark_logo) : asset('storage/' . $partner->dark_logo) }}"
+                                    alt="{{ $partner->name }}">
+                                @if ($partner->website_url)
+                                    </a>
+                                @endif
+                            </li>
+                        @empty
+                            <li>
+                                <img class="light" src="{{ asset('frontend/assets/img/icons/partner_light01.png') }}"
+                                    alt="">
+                                <img class="dark" src="{{ asset('frontend/assets/img/icons/partner_01.png') }}"
+                                    alt="">
+                            </li>
+                            <li>
+                                <img class="light" src="{{ asset('frontend/assets/img/icons/partner_light02.png') }}"
+                                    alt="">
+                                <img class="dark" src="{{ asset('frontend/assets/img/icons/partner_02.png') }}"
+                                    alt="">
+                            </li>
+                            <li>
+                                <img class="light" src="{{ asset('frontend/assets/img/icons/partner_light03.png') }}"
+                                    alt="">
+                                <img class="dark" src="{{ asset('frontend/assets/img/icons/partner_03.png') }}"
+                                    alt="">
+                            </li>
+                            <li>
+                                <img class="light" src="{{ asset('frontend/assets/img/icons/partner_light04.png') }}"
+                                    alt="">
+                                <img class="dark" src="{{ asset('frontend/assets/img/icons/partner_04.png') }}"
+                                    alt="">
+                            </li>
+                            <li>
+                                <img class="light" src="{{ asset('frontend/assets/img/icons/partner_light05.png') }}"
+                                    alt="">
+                                <img class="dark" src="{{ asset('frontend/assets/img/icons/partner_05.png') }}"
+                                    alt="">
+                            </li>
+                            <li>
+                                <img class="light" src="{{ asset('frontend/assets/img/icons/partner_light06.png') }}"
+                                    alt="">
+                                <img class="dark" src="{{ asset('frontend/assets/img/icons/partner_06.png') }}"
+                                    alt="">
+                            </li>
+                        @endforelse
                     </ul>
                 </div>
                 <div class="col-lg-6">
@@ -331,9 +393,18 @@
                 <div class="col-lg-6 order-0 order-lg-2">
                     <ul class="testimonial__avatar__img">
                         @forelse ($testimonials as $testimonial)
-                            <li><img src="{{ $testimonial->image && str_starts_with($testimonial->image, 'defaults_images/') ? asset($testimonial->image) : asset('storage/' . $testimonial->image) }}" alt="{{ $testimonial->name }}"></li>
+                            @if ($testimonial->image == null || $testimonial->image == '')
+                                <li><img src="{{ asset('frontend/assets/img/images/testi_img01.png') }}"
+                                        alt="Testimonial Image"></li>
+                            @else
+                                <li><img src="{{ $testimonial->image && str_starts_with($testimonial->image, 'defaults_images/') ? asset($testimonial->image) : asset('storage/' . $testimonial->image) }}"
+                                        alt="{{ $testimonial->name }}" style="object-fit: cover;" width="100"
+                                        height="100"></li>
+                            @endif
                         @empty
-                            <li><img src="{{ asset('frontend/assets/img/images/testi_img01.png') }}" alt="Testimonial Image"></li>
+                            <li><img src="{{ asset('frontend/assets/img/images/testi_img01.png') }}"
+                                    alt="Testimonial Image">
+                            </li>
                         @endforelse
 
                     </ul>
@@ -354,7 +425,7 @@
                                         <p>{{ $testimonial->message }}</p>
                                         <div class="testimonial__avatar">
                                             <span>{{ $testimonial->name }}</span>
-                                            @if($testimonial->title)
+                                            @if ($testimonial->title)
                                                 <small class="text-muted d-block">{{ $testimonial->title }}</small>
                                             @endif
                                         </div>
@@ -366,7 +437,8 @@
                                         <i class="fas fa-quote-left"></i>
                                     </div>
                                     <div class="testimonial__content">
-                                        <p>We are motivated by the satisfaction of our clients. Put your trust in us &share in
+                                        <p>We are motivated by the satisfaction of our clients. Put your trust in us &share
+                                            in
                                             our H.Spond Asset Management is made up of a team of expert, committed and
                                             experienced people with a passion for financial markets. Our goal is to achieve
                                             continuous.</p>
@@ -393,7 +465,8 @@
                     <div class="blog__post__item">
                         <div class="blog__post__thumb">
                             <a href="blog-details.html"><img
-                                    src="{{ asset('frontend/assets/img/blog/blog_post_thumb01.jpg') }}" alt=""></a>
+                                    src="{{ asset('frontend/assets/img/blog/blog_post_thumb01.jpg') }}"
+                                    alt=""></a>
                             <div class="blog__post__tags">
                                 <a href="blog.html">Story</a>
                             </div>
@@ -410,7 +483,8 @@
                     <div class="blog__post__item">
                         <div class="blog__post__thumb">
                             <a href="blog-details.html"><img
-                                    src="{{ asset('frontend/assets/img/blog/blog_post_thumb02.jpg') }}" alt=""></a>
+                                    src="{{ asset('frontend/assets/img/blog/blog_post_thumb02.jpg') }}"
+                                    alt=""></a>
                             <div class="blog__post__tags">
                                 <a href="blog.html">Social</a>
                             </div>
@@ -427,7 +501,8 @@
                     <div class="blog__post__item">
                         <div class="blog__post__thumb">
                             <a href="blog-details.html"><img
-                                    src="{{ asset('frontend/assets/img/blog/blog_post_thumb03.jpg') }}" alt=""></a>
+                                    src="{{ asset('frontend/assets/img/blog/blog_post_thumb03.jpg') }}"
+                                    alt=""></a>
                             <div class="blog__post__tags">
                                 <a href="blog.html">Work</a>
                             </div>

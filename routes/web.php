@@ -6,9 +6,11 @@ use App\Http\Controllers\About\EducationController;
 use App\Http\Controllers\About\SkillController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Home\HomeSlideController;
+use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\TechnologyController;
 use App\Http\Controllers\TestimonialController;
 use Illuminate\Support\Facades\Route;
 
@@ -92,6 +94,22 @@ Route::prefix('/admin')->group(function () {
     Route::put('/testimonials/update/{testimonial}', [TestimonialController::class, 'update'])->name('testimonial.update');
     Route::patch('/testimonials/status/{testimonial}', [TestimonialController::class, 'status'])->name('testimonial.status');
     Route::delete('/testimonials/delete/{testimonial}', [TestimonialController::class, 'destroy'])->name('testimonial.destroy');
+
+    // partners
+    Route::get('/partners', [PartnerController::class, 'index'])->name('partner');
+    Route::post('/partners', [PartnerController::class, 'store'])->name('partner.store');
+    Route::get('/partners/edit/{partner}', [PartnerController::class, 'edit'])->name('partner.edit');
+    Route::put('/partners/update/{partner}', [PartnerController::class, 'update'])->name('partner.update');
+    Route::patch('/partners/status/{partner}', [PartnerController::class, 'status'])->name('partner.status');
+    Route::delete('/partners/delete/{partner}', [PartnerController::class, 'destroy'])->name('partner.destroy');
+
+    // technologies
+    Route::get('/technologies', [TechnologyController::class, 'index'])->name('technology');
+    Route::post('/technologies', [TechnologyController::class, 'store'])->name('technology.store');
+    Route::get('/technologies/edit/{technology}', [TechnologyController::class, 'edit'])->name('technology.edit');
+    Route::put('/technologies/update/{technology}', [TechnologyController::class, 'update'])->name('technology.update');
+    Route::patch('/technologies/status/{technology}', [TechnologyController::class, 'status'])->name('technology.status');
+    Route::delete('/technologies/delete/{technology}', [TechnologyController::class, 'destroy'])->name('technology.destroy');
 });
 
 require __DIR__ . '/auth.php';

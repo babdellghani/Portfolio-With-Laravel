@@ -7,6 +7,7 @@ use App\Models\Award;
 use App\Models\Skill;
 use App\Models\Service;
 use App\Models\Education;
+use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Database\Seeders\About\AboutSeeder;
@@ -44,6 +45,8 @@ class AboutController extends Controller
 
         $service = Service::latest()->get();
 
+        $testimonials = Testimonial::where('status', true)->latest()->get();
+
         if (!$about) {
             (new AboutSeeder())->run();
             $about = About::latest()->first();
@@ -61,7 +64,7 @@ class AboutController extends Controller
             $skills = Skill::latest()->get();
         }
         
-        return view('frontend.pages.about', compact('about', 'award', 'education', 'skills', 'service'));
+        return view('frontend.pages.about', compact('about', 'award', 'education', 'skills', 'service', 'testimonials'));
     }
 
     /**
