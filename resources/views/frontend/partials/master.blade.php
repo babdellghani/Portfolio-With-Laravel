@@ -8,7 +8,7 @@
     <meta name="description" content="Ab. Dev.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('frontend/assets/img/favicon.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ $websiteInfo && $websiteInfo->favicon ? ($websiteInfo->favicon && str_starts_with($websiteInfo->favicon, 'defaults_images/') ? asset($websiteInfo->favicon) : asset('storage/' . $websiteInfo->favicon)) : asset('defaults_images/favicon.ico') }}">
     <!-- Place favicon.ico in the root directory -->
 
     <!-- CSS here -->
@@ -57,7 +57,7 @@
                             <div class="homeContact__content">
                                 <p>There are many variations of passages of Lorem Ipsum available, but the majority have
                                     suffered alteration in some form</p>
-                                <h2 class="mail"><a href="mailto:Info@webmail.com">Info@webmail.com</a></h2>
+                                <h2 class="mail"><a href="mailto:{{ $websiteInfo && $websiteInfo->email ? $websiteInfo->email : 'Info@webmail.com' }}">{{ $websiteInfo && $websiteInfo->email ? $websiteInfo->email : 'Info@webmail.com' }}</a></h2>
                             </div>
                         </div>
                         <div class="col-lg-6">

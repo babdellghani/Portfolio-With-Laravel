@@ -12,6 +12,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TechnologyController;
 use App\Http\Controllers\TestimonialController;
+use App\Http\Controllers\WebsiteInfoController;
 use Illuminate\Support\Facades\Route;
 
 // -------------- Frontend --------------- //
@@ -110,6 +111,10 @@ Route::prefix('/admin')->group(function () {
     Route::put('/technologies/update/{technology}', [TechnologyController::class, 'update'])->name('technology.update');
     Route::patch('/technologies/status/{technology}', [TechnologyController::class, 'status'])->name('technology.status');
     Route::delete('/technologies/delete/{technology}', [TechnologyController::class, 'destroy'])->name('technology.destroy');
+
+    // website information
+    Route::get('/website-info', [WebsiteInfoController::class, 'index'])->name('website-info');
+    Route::put('/website-info/{websiteInfo}', [WebsiteInfoController::class, 'update'])->name('website-info.update');
 });
 
 require __DIR__ . '/auth.php';

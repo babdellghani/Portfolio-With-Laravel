@@ -7,10 +7,14 @@
                     <div class="menu__wrap">
                         <nav class="menu__nav">
                             <div class="logo">
-                                <a href="{{ route('home') }}" class="logo__black"><img
-                                        src="{{ asset('frontend/assets/img/logo/logo_black.png') }}" alt="logo"></a>
-                                <a href="{{ route('home') }}" class="logo__white"><img
-                                        src="{{ asset('frontend/assets/img/logo/logo_white.png') }}" alt="logo"></a>
+                                <a href="{{ route('home') }}" class="logo__black">
+                                    <img src="{{ $websiteInfo && $websiteInfo->logo_black ? ($websiteInfo->logo_black && str_starts_with($websiteInfo->logo_black, 'defaults_images/') ? asset($websiteInfo->logo_black) : asset('storage/' . $websiteInfo->logo_black)) : asset('frontend/assets/img/logo/logo_black.png') }}"
+                                        alt="{{ $websiteInfo ? $websiteInfo->site_name : 'Logo' }}">
+                                </a>
+                                <a href="{{ route('home') }}" class="logo__white">
+                                    <img src="{{ $websiteInfo && $websiteInfo->logo_white ? ($websiteInfo->logo_white && str_starts_with($websiteInfo->logo_white, 'defaults_images/') ? asset($websiteInfo->logo_white) : asset('storage/' . $websiteInfo->logo_white)) : asset('frontend/assets/img/logo/logo_white.png') }}"
+                                        alt="{{ $websiteInfo ? $websiteInfo->site_name : 'Logo' }}">
+                                </a>
                             </div>
                             <div class="navbar__wrap main__menu d-none d-xl-flex">
                                 <ul class="navigation">
@@ -41,21 +45,54 @@
                         <nav class="menu__box">
                             <div class="close__btn"><i class="fal fa-times"></i></div>
                             <div class="nav-logo">
-                                <a href="{{ route('home') }}" class="logo__black"><img
-                                        src="{{ asset('frontend/assets/img/logo/logo_black.png') }}" alt="logo"></a>
-                                <a href="{{ route('home') }}" class="logo__white"><img
-                                        src="{{ asset('frontend/assets/img/logo/logo_white.png') }}" alt="logo"></a>
+                                <a href="{{ route('home') }}" class="logo__black">
+                                    <img src="{{ $websiteInfo && $websiteInfo->logo_black ? ($websiteInfo->logo_black && str_starts_with($websiteInfo->logo_black, 'defaults_images/') ? asset($websiteInfo->logo_black) : asset('storage/' . $websiteInfo->logo_black)) : asset('frontend/assets/img/logo/logo_black.png') }}"
+                                        alt="{{ $websiteInfo ? $websiteInfo->site_name : 'Logo' }}">
+                                </a>
+                                <a href="{{ route('home') }}" class="logo__white">
+                                    <img src="{{ $websiteInfo && $websiteInfo->logo_white ? ($websiteInfo->logo_white && str_starts_with($websiteInfo->logo_white, 'defaults_images/') ? asset($websiteInfo->logo_white) : asset('storage/' . $websiteInfo->logo_white)) : asset('frontend/assets/img/logo/logo_white.png') }}"
+                                        alt="{{ $websiteInfo ? $websiteInfo->site_name : 'Logo' }}">
+                                </a>
                             </div>
                             <div class="menu__outer">
                                 <!--Here Menu Will Come Automatically Via Javascript / Same Menu as in Header-->
                             </div>
                             <div class="social-links">
                                 <ul class="clearfix">
-                                    <li><a href="#"><span class="fab fa-twitter"></span></a></li>
-                                    <li><a href="#"><span class="fab fa-facebook-square"></span></a></li>
-                                    <li><a href="#"><span class="fab fa-pinterest-p"></span></a></li>
-                                    <li><a href="#"><span class="fab fa-instagram"></span></a></li>
-                                    <li><a href="#"><span class="fab fa-youtube"></span></a></li>
+                                    @if ($websiteInfo && $websiteInfo->twitter_url)
+                                        <li><a href="{{ $websiteInfo->twitter_url }}" target="_blank"><span
+                                                    class="fab fa-twitter"></span></a></li>
+                                    @endif
+                                    @if ($websiteInfo && $websiteInfo->facebook_url)
+                                        <li><a href="{{ $websiteInfo->facebook_url }}" target="_blank"><span
+                                                    class="fab fa-facebook-square"></span></a></li>
+                                    @endif
+                                    @if ($websiteInfo && $websiteInfo->pinterest_url)
+                                        <li><a href="{{ $websiteInfo->pinterest_url }}" target="_blank"><span
+                                                    class="fab fa-pinterest-p"></span></a></li>
+                                    @endif
+                                    @if ($websiteInfo && $websiteInfo->instagram_url)
+                                        <li><a href="{{ $websiteInfo->instagram_url }}" target="_blank"><span
+                                                    class="fab fa-instagram"></span></a></li>
+                                    @endif
+                                    @if ($websiteInfo && $websiteInfo->youtube_url)
+                                        <li><a href="{{ $websiteInfo->youtube_url }}" target="_blank"><span
+                                                    class="fab fa-youtube"></span></a></li>
+                                    @endif
+                                    @if (
+                                        !$websiteInfo ||
+                                            (!$websiteInfo->twitter_url &&
+                                                !$websiteInfo->facebook_url &&
+                                                !$websiteInfo->pinterest_url &&
+                                                !$websiteInfo->instagram_url &&
+                                                !$websiteInfo->youtube_url))
+                                        <!-- Fallback static links -->
+                                        <li><a href="#"><span class="fab fa-twitter"></span></a></li>
+                                        <li><a href="#"><span class="fab fa-facebook-square"></span></a></li>
+                                        <li><a href="#"><span class="fab fa-pinterest-p"></span></a></li>
+                                        <li><a href="#"><span class="fab fa-instagram"></span></a></li>
+                                        <li><a href="#"><span class="fab fa-youtube"></span></a></li>
+                                    @endif
                                 </ul>
                             </div>
                         </nav>

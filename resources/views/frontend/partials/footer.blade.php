@@ -5,12 +5,12 @@
                 <div class="footer__widget">
                     <div class="fw-title">
                         <h5 class="sub-title">Contact us</h5>
-                        <h4 class="title">+81383 766 284</h4>
+                        <h4 class="title">
+                            {{ $websiteInfo && $websiteInfo->phone ? $websiteInfo->phone : '+81383 766 284' }}</h4>
                     </div>
                     <div class="footer__widget__text">
-                        <p>There are many variations of passages of lorem ipsum
-                            available but the majority have suffered alteration
-                            in some form is also here.</p>
+                        <p>{{ $websiteInfo && $websiteInfo->site_description ? $websiteInfo->site_description : 'Professional web developer with expertise in Laravel, React, and modern web technologies. Creating digital solutions that make a difference.' }}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -18,11 +18,20 @@
                 <div class="footer__widget">
                     <div class="fw-title">
                         <h5 class="sub-title">my address</h5>
-                        <h4 class="title">AUSTRALIA</h4>
+                        <h4 class="title">
+                            {{ $websiteInfo && $websiteInfo->country ? strtoupper($websiteInfo->country) : 'AUSTRALIA' }}
+                        </h4>
                     </div>
                     <div class="footer__widget__address">
-                        <p>Level 13, 2 Elizabeth Steereyt set <br> Melbourne, Victoria 3000</p>
-                        <a href="mailto:noreply@envato.com" class="mail">noreply@envato.com</a>
+                        <p>{{ $websiteInfo && $websiteInfo->address ? $websiteInfo->address : 'Level 13, 2 Elizabeth Steereyt set' }}
+                            @if ($websiteInfo && $websiteInfo->city)
+                                <br> {{ $websiteInfo->city }}
+                            @else
+                                <br> Melbourne, Victoria 3000
+                            @endif
+                        </p>
+                        <a href="mailto:{{ $websiteInfo && $websiteInfo->email ? $websiteInfo->email : 'noreply@envato.com' }}"
+                            class="mail">{{ $websiteInfo && $websiteInfo->email ? $websiteInfo->email : 'noreply@envato.com' }}</a>
                     </div>
                 </div>
             </div>
@@ -33,13 +42,45 @@
                         <h4 class="title">socially connect</h4>
                     </div>
                     <div class="footer__widget__social">
-                        <p>Lorem ipsum dolor sit amet enim. <br> Etiam ullamcorper.</p>
+                        <p>{{ $websiteInfo && $websiteInfo->footer_text ? $websiteInfo->footer_text : 'Lorem ipsum dolor sit amet enim.' }}
+                            <br>
+                            {{ $websiteInfo && $websiteInfo->site_title ? $websiteInfo->site_title : 'Etiam ullamcorper.' }}
+                        </p>
                         <ul class="footer__social__list">
-                            <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-                            <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                            <li><a href="#"><i class="fab fa-behance"></i></a></li>
-                            <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
-                            <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                            @if ($websiteInfo && $websiteInfo->facebook_url)
+                                <li><a href="{{ $websiteInfo->facebook_url }}" target="_blank"><i
+                                            class="fab fa-facebook-f"></i></a></li>
+                            @endif
+                            @if ($websiteInfo && $websiteInfo->twitter_url)
+                                <li><a href="{{ $websiteInfo->twitter_url }}" target="_blank"><i
+                                            class="fab fa-twitter"></i></a></li>
+                            @endif
+                            @if ($websiteInfo && $websiteInfo->behance_url)
+                                <li><a href="{{ $websiteInfo->behance_url }}" target="_blank"><i
+                                            class="fab fa-behance"></i></a></li>
+                            @endif
+                            @if ($websiteInfo && $websiteInfo->linkedin_url)
+                                <li><a href="{{ $websiteInfo->linkedin_url }}" target="_blank"><i
+                                            class="fab fa-linkedin-in"></i></a></li>
+                            @endif
+                            @if ($websiteInfo && $websiteInfo->instagram_url)
+                                <li><a href="{{ $websiteInfo->instagram_url }}" target="_blank"><i
+                                            class="fab fa-instagram"></i></a></li>
+                            @endif
+                            @if (
+                                !$websiteInfo ||
+                                    (!$websiteInfo->facebook_url &&
+                                        !$websiteInfo->twitter_url &&
+                                        !$websiteInfo->behance_url &&
+                                        !$websiteInfo->linkedin_url &&
+                                        !$websiteInfo->instagram_url))
+                                <!-- Fallback static links -->
+                                <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                                <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                                <li><a href="#"><i class="fab fa-behance"></i></a></li>
+                                <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                                <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                            @endif
                         </ul>
                     </div>
                 </div>
@@ -49,7 +90,8 @@
             <div class="row">
                 <div class="col-12">
                     <div class="copyright__text text-center">
-                        <p>Copyright @ Theme_Pure 2021 All right Reserved</p>
+                        <p>{{ $websiteInfo && $websiteInfo->copyright_text ? $websiteInfo->copyright_text : 'Copyright @ Ab. Dev 2025 All right Reserved' }}
+                        </p>
                     </div>
                 </div>
             </div>

@@ -89,6 +89,13 @@
                 </li>
 
                 <li>
+                    <a href="{{ route('website-info') }}" class="waves-effect">
+                        <i class="ri-settings-4-line"></i>
+                        <span>Website Info</span>
+                    </a>
+                </li>
+
+                <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-layout-3-line"></i>
                         <span>Layouts</span>
