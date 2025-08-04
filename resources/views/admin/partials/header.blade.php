@@ -5,21 +5,23 @@
             <div class="navbar-brand-box">
                 <a href="index.html" class="logo logo-dark">
                     <span class="logo-sm">
-                        <img src="{{ $websiteInfo && $websiteInfo->favicon ? ($websiteInfo->favicon && str_starts_with($websiteInfo->favicon, 'defaults_images/') ? asset($websiteInfo->favicon) : asset('storage/' . $websiteInfo->favicon)) : asset('defaults_images/favicon.ico') }}" alt="logo-sm" height="22">
+                        <img src="{{ $websiteInfo && $websiteInfo->favicon ? ($websiteInfo->favicon && str_starts_with($websiteInfo->favicon, 'defaults_images/') ? asset($websiteInfo->favicon) : asset('storage/' . $websiteInfo->favicon)) : asset('defaults_images/favicon.ico') }}"
+                            alt="logo-sm" height="22">
                     </span>
                     <span class="logo-lg">
                         <img src="{{ $websiteInfo && $websiteInfo->logo_black ? ($websiteInfo->logo_black && str_starts_with($websiteInfo->logo_black, 'defaults_images/') ? asset($websiteInfo->logo_black) : asset('storage/' . $websiteInfo->logo_black)) : asset('frontend/assets/img/logo/logo_black.png') }}"
-                                        alt="{{ $websiteInfo ? $websiteInfo->site_name : 'Logo' }}" height="20">
+                            alt="{{ $websiteInfo ? $websiteInfo->site_name : 'Logo' }}" height="20">
                     </span>
                 </a>
 
                 <a href="index.html" class="logo logo-light">
                     <span class="logo-sm">
-                        <img src="{{ $websiteInfo && $websiteInfo->favicon ? ($websiteInfo->favicon && str_starts_with($websiteInfo->favicon, 'defaults_images/') ? asset($websiteInfo->favicon) : asset('storage/' . $websiteInfo->favicon)) : asset('defaults_images/favicon.ico') }}" alt="logo-sm-light" height="22">
+                        <img src="{{ $websiteInfo && $websiteInfo->favicon ? ($websiteInfo->favicon && str_starts_with($websiteInfo->favicon, 'defaults_images/') ? asset($websiteInfo->favicon) : asset('storage/' . $websiteInfo->favicon)) : asset('defaults_images/favicon.ico') }}"
+                            alt="logo-sm-light" height="22">
                     </span>
                     <span class="logo-lg">
                         <img src="{{ $websiteInfo && $websiteInfo->logo_white ? ($websiteInfo->logo_white && str_starts_with($websiteInfo->logo_white, 'defaults_images/') ? asset($websiteInfo->logo_white) : asset('storage/' . $websiteInfo->logo_white)) : asset('frontend/assets/img/logo/logo_white.png') }}"
-                                        alt="{{ $websiteInfo ? $websiteInfo->site_name : 'Logo' }}" height="20">
+                            alt="{{ $websiteInfo ? $websiteInfo->site_name : 'Logo' }}" height="20">
                     </span>
                 </a>
             </div>
@@ -164,24 +166,25 @@
             </div>
 
             <div class="dropdown d-inline-block user-dropdown">
-                <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
+                <button type="button" class="btn header-item waves-effect d-flex align-items-center justify-content-center" id="page-header-user-dropdown"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="rounded-circle header-profile-user"
-                        src="{{ asset('backend/assets/images/users/avatar-1.jpg') }}" alt="Header Avatar">
-                    <span class="d-none d-xl-inline-block ms-1">Julia</span>
+                    @if (Auth::user()->avatar)
+                        <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="Header Avatar"
+                            class="rounded-circle header-profile-user">
+                    @else
+                        <div
+                            class="rounded-circle header-profile-user bg-primary d-flex align-items-center justify-content-center">
+                            <i class="ri-user-line text-white"></i>
+                        </div>
+                    @endif
+                    <span class="d-none d-xl-inline-block ms-1">{{ Auth::user()->name }}</span>
                     <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end">
                     <!-- item-->
-                    <a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="ri-user-line align-middle me-1"></i>
+                    <a class="dropdown-item" href="{{ route('profile.edit') }}"><i
+                            class="ri-user-line align-middle me-1"></i>
                         Profile</a>
-                    <a class="dropdown-item" href="#"><i class="ri-wallet-2-line align-middle me-1"></i> My
-                        Wallet</a>
-                    <a class="dropdown-item d-block" href="#"><span
-                            class="badge bg-success float-end mt-1">11</span><i
-                            class="ri-settings-2-line align-middle me-1"></i> Settings</a>
-                    <a class="dropdown-item" href="#"><i class="ri-lock-unlock-line align-middle me-1"></i>
-                        Lock screen</a>
                     <div class="dropdown-divider"></div>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
