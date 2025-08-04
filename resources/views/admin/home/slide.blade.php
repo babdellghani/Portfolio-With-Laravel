@@ -2,88 +2,106 @@
 @section('title', 'Home Slide')
 
 @section('content')
-    <div class="py-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 col-sm-8" style="width: 100% !important;">
-                    <div class="card shadow-sm rounded">
-                        <div class="card-body">
-                            <section>
+    <div class="container-fluid">
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                    <h4 class="mb-sm-0">Home Slide</h4>
 
-                                <header>
-                                    <h2 class="fs-4 fw-medium text-dark">
-                                        {{ __('Home Slide') }}
-                                    </h2>
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                            <li class="breadcrumb-item active">{{ __('Home Slide') }}</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end page title -->
+        <div class="row">
+            <div class="col-12 col-sm-8" style="width: 100% !important;">
+                <div class="card shadow-sm rounded">
+                    <div class="card-body">
+                        <section>
 
-                                    <p class="mt-1 text-muted small">
-                                        {{ __('Update your Home Slide') }}
-                                    </p>
-                                </header>
+                            <header>
+                                <h2 class="fs-4 fw-medium text-dark">
+                                    {{ __('Home Slide') }}
+                                </h2>
 
-                                <form method="post" action="{{ route('home.slide.store') }}" class="mt-4"
-                                    enctype="multipart/form-data">
-                                    @csrf
+                                <p class="mt-1 text-muted small">
+                                    {{ __('Update your Home Slide') }}
+                                </p>
+                            </header>
 
-                                    <div class="mb-3">
-                                        <x-input-label for="title" :value="__('Title')" class="form-label" />
-                                        <x-text-input id="title" name="title" type="text" class="form-control"
-                                            :value="old('title', $slide->title)" placeholder="Title" required autofocus autocomplete="title" />
-                                        <x-input-error class="text-danger small mt-1" :messages="$errors->get('title')" />
-                                    </div>
+                            <form method="post" action="{{ route('home.slide.store') }}" class="mt-4"
+                                enctype="multipart/form-data">
+                                @csrf
 
-                                    <div class="mb-3">
-                                        <x-input-label for="short_title" :value="__('Short Title')" class="form-label" />
-                                        <x-text-input id="short_title" name="short_title" type="text"
-                                            class="form-control" :value="old('short_title', $slide->short_title)" placeholder="Short Title" required
-                                            autofocus autocomplete="short_title" />
-                                        <x-input-error class="text-danger small mt-1" :messages="$errors->get('short_title')" />
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <x-input-label for="home_slide" :value="__('Home Slide (636px x 852px)')" class="form-label" />
-
-                                        <div class="d-flex flex-column align-items-center gap-3">
-                                            <div>
-                                                <div class="mt-4 mt-md-0">
-                                                        <img id="showImage" class="rounded img-thumbnail w-100 h-100"
-                                                            alt="{{ $slide->home_slide ? 'Slide Image' : 'No Image' }}"
-                                                            src="{{ $slide->home_slide && str_starts_with($slide->home_slide, 'defaults_images/') ? asset($slide->home_slide) : asset('storage/' . $slide->home_slide) }}"
-                                                            data-holder-rendered="true">
-                                                </div>
-                                            </div>
-                                            <div class="input-group">
-                                                <input type="file" id="image" name="home_slide" class="form-control"
-                                                    accept="image/jpeg,image/jpg,image/png" id="customFile">
-                                            </div>
-                                            <x-input-error class="text-danger small mt-1" :messages="$errors->get('home_slide')" />
-                                            <small class="text-muted">Supported formats: JPG, JPEG, PNG. Max size: 2MB</small>
-                                        </div>
-                                    </div>
-
-                    <div class="mb-3">
-                        <x-input-label for="video_url" :value="__('YouTube Video URL')" class="form-label" />
-
-                        @if($slide->video_url)
-                            <div class="mb-3">
-                                <div class="ratio ratio-16x9">
-                                    <iframe src="{{ $slide->youtube_embed_url }}" allowfullscreen class="rounded"></iframe>
+                                <div class="mb-3">
+                                    <x-input-label for="title" :value="__('Title')" class="form-label" />
+                                    <x-text-input id="title" name="title" type="text" class="form-control"
+                                        :value="old('title', $slide->title)" placeholder="Title" required autofocus autocomplete="title" />
+                                    <x-input-error class="text-danger small mt-1" :messages="$errors->get('title')" />
                                 </div>
-                                <small class="text-muted">Current video preview</small>
-                            </div>
-                        @endif
 
-                        <x-text-input id="video_url" name="video_url" type="url" class="form-control"
-                            :value="old('video_url', $slide->video_url)" placeholder="https://www.youtube.com/watch?v=example or https://youtu.be/example" />
-                        <x-input-error class="text-danger small mt-1" :messages="$errors->get('video_url')" />
-                        <small class="text-muted">Enter a valid YouTube URL (e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ or https://youtu.be/dQw4w9WgXcQ)</small>
-                    </div>                                    <div class="d-flex align-items-center gap-3">
-                                        <x-primary-button class="btn btn-primary">{{ __('Save') }}</x-primary-button>
+                                <div class="mb-3">
+                                    <x-input-label for="short_title" :value="__('Short Title')" class="form-label" />
+                                    <x-text-input id="short_title" name="short_title" type="text" class="form-control"
+                                        :value="old('short_title', $slide->short_title)" placeholder="Short Title" required autofocus
+                                        autocomplete="short_title" />
+                                    <x-input-error class="text-danger small mt-1" :messages="$errors->get('short_title')" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <x-input-label for="home_slide" :value="__('Home Slide (636px x 852px)')" class="form-label" />
+
+                                    <div class="d-flex flex-column align-items-center gap-3">
+                                        <div>
+                                            <div class="mt-4 mt-md-0">
+                                                <img id="showImage" class="rounded img-thumbnail w-100 h-100"
+                                                    alt="{{ $slide->home_slide ? 'Slide Image' : 'No Image' }}"
+                                                    src="{{ $slide->home_slide && str_starts_with($slide->home_slide, 'defaults_images/') ? asset($slide->home_slide) : asset('storage/' . $slide->home_slide) }}"
+                                                    data-holder-rendered="true">
+                                            </div>
+                                        </div>
+                                        <div class="input-group">
+                                            <input type="file" id="image" name="home_slide" class="form-control"
+                                                accept="image/jpeg,image/jpg,image/png" id="customFile">
+                                        </div>
+                                        <x-input-error class="text-danger small mt-1" :messages="$errors->get('home_slide')" />
+                                        <small class="text-muted">Supported formats: JPG, JPEG, PNG. Max size: 2MB</small>
                                     </div>
-                                </form>
+                                </div>
 
-                            </section>
+                                <div class="mb-3">
+                                    <x-input-label for="video_url" :value="__('YouTube Video URL')" class="form-label" />
 
-                        </div>
+                                    @if ($slide->video_url)
+                                        <div class="mb-3">
+                                            <div class="ratio ratio-16x9">
+                                                <iframe src="{{ $slide->youtube_embed_url }}" allowfullscreen
+                                                    class="rounded"></iframe>
+                                            </div>
+                                            <small class="text-muted">Current video preview</small>
+                                        </div>
+                                    @endif
+
+                                    <x-text-input id="video_url" name="video_url" type="url" class="form-control"
+                                        :value="old('video_url', $slide->video_url)"
+                                        placeholder="https://www.youtube.com/watch?v=example or https://youtu.be/example" />
+                                    <x-input-error class="text-danger small mt-1" :messages="$errors->get('video_url')" />
+                                    <small class="text-muted">Enter a valid YouTube URL (e.g.,
+                                        https://www.youtube.com/watch?v=dQw4w9WgXcQ or https://youtu.be/dQw4w9WgXcQ)</small>
+                                </div>
+                                <div class="d-flex align-items-center gap-3">
+                                    <x-primary-button class="btn btn-primary">{{ __('Save') }}</x-primary-button>
+                                </div>
+                            </form>
+
+                        </section>
+
                     </div>
                 </div>
             </div>
@@ -129,12 +147,14 @@
                 const url = this.value;
 
                 // Basic YouTube URL validation
-                const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/)|youtu\.be\/)[\w-]+(&[\w=]*)?$/;
+                const youtubeRegex =
+                    /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/)|youtu\.be\/)[\w-]+(&[\w=]*)?$/;
 
                 if (url && !youtubeRegex.test(url)) {
                     $(this).addClass('is-invalid');
                     $(this).next('.text-danger').remove();
-                    $(this).after('<div class="text-danger small mt-1">Please enter a valid YouTube URL</div>');
+                    $(this).after(
+                        '<div class="text-danger small mt-1">Please enter a valid YouTube URL</div>');
                     $('#video-preview').hide();
                 } else {
                     $(this).removeClass('is-invalid');
@@ -143,7 +163,9 @@
                     if (url && youtubeRegex.test(url)) {
                         // Extract video ID and show preview
                         let videoId = '';
-                        const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
+                        const match = url.match(
+                            /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/
+                        );
                         if (match) {
                             videoId = match[1];
                             const embedUrl = `https://www.youtube.com/embed/${videoId}`;

@@ -11,7 +11,7 @@
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                             <li class="breadcrumb-item active">Partners</li>
                         </ol>
                     </div>
@@ -78,8 +78,8 @@
                                     <label for="status" class="form-label">Status</label>
                                     <div class="form-check form-switch">
                                         <div class="square-switch">
-                                            <input type="checkbox" id="square-switch3" value="1" switch="bool" name="status"
-                                                @checked(old('status', true)) />
+                                            <input type="checkbox" id="square-switch3" value="1" switch="bool"
+                                                name="status" @checked(old('status', true)) />
                                             <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
                                         </div>
                                     </div>
