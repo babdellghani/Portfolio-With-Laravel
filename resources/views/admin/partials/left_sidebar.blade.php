@@ -4,9 +4,15 @@
 
         <!-- User details -->
         <div class="user-profile text-center mt-3">
-            <div class="">
-                <img src="{{ asset('backend/assets/images/users/avatar-1.jpg') }}" alt=""
-                    class="avatar-md rounded-circle">
+            <div class="d-flex align-items-center justify-content-center text-center">
+                @if(Auth::user()->avatar)
+                    <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt=""
+                        class="avatar-md rounded-circle">
+                @else
+                    <div class="avatar-md rounded-circle bg-primary d-flex align-items-center justify-content-center">
+                        <i class="ri-user-line text-white" style="font-size: 2rem;"></i>
+                    </div>
+                @endif
             </div>
             <div class="mt-3">
                 <h4 class="font-size-16 mb-1">{{ Auth::user()->name }}</h4>
@@ -96,34 +102,10 @@
                 </li>
 
                 <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="ri-layout-3-line"></i>
-                        <span>Layouts</span>
+                    <a href="{{ route('profile.edit') }}" class="waves-effect">
+                        <i class="ri-user-settings-line"></i>
+                        <span>Profile Settings</span>
                     </a>
-                    <ul class="sub-menu" aria-expanded="true">
-                        <li>
-                            <a href="javascript: void(0);" class="has-arrow">Vertical</a>
-                            <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="layouts-dark-sidebar.html">Dark Sidebar</a></li>
-                                <li><a href="layouts-compact-sidebar.html">Compact Sidebar</a></li>
-                                <li><a href="layouts-icon-sidebar.html">Icon Sidebar</a></li>
-                                <li><a href="layouts-boxed.html">Boxed Layout</a></li>
-                                <li><a href="layouts-preloader.html">Preloader</a></li>
-                                <li><a href="layouts-colored-sidebar.html">Colored Sidebar</a></li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            <a href="javascript: void(0);" class="has-arrow">Horizontal</a>
-                            <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="layouts-horizontal.html">Horizontal</a></li>
-                                <li><a href="layouts-hori-topbar-light.html">Topbar light</a></li>
-                                <li><a href="layouts-hori-boxed-width.html">Boxed width</a></li>
-                                <li><a href="layouts-hori-preloader.html">Preloader</a></li>
-                                <li><a href="layouts-hori-colored-header.html">Colored Header</a></li>
-                            </ul>
-                        </li>
-                    </ul>
                 </li>
             </ul>
         </div>

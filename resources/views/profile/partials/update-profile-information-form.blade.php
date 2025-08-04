@@ -71,10 +71,6 @@
                         @if ($user->avatar)
                             <img id="showImage" class="rounded-circle avatar-md" alt="200x200"
                                 src="{{ '/storage/' . $user->avatar }}" data-holder-rendered="true">
-                        @else
-                            <img id="showImage" class="rounded-circle avatar-md" alt="200x200"
-                                src="{{ asset('backend/assets/images/users/avatar-1.jpg') }}"
-                                data-holder-rendered="true">
                         @endif
                     </div>
                 </div>
