@@ -43,23 +43,46 @@
     <!-- contact-area -->
     <div class="contact-area">
         <div class="container">
-            <form action="#" class="contact__form">
+            <form action="{{ route('contact.store') }}" method="POST" class="contact__form" id="contactForm">
+                @csrf
                 <div class="row">
                     <div class="col-md-6">
-                        <input type="text" placeholder="Enter your name*">
+                        <input type="text" name="name" placeholder="Enter your name*" value="{{ old('name') }}"
+                            required>
+                        @error('name')
+                            <div class="text-danger small">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="col-md-6">
-                        <input type="email" placeholder="Enter your mail*">
+                        <input type="email" name="email" placeholder="Enter your mail*" value="{{ old('email') }}"
+                            required>
+                        @error('email')
+                            <div class="text-danger small">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="col-md-6">
-                        <input type="text" placeholder="Enter your subject*">
+                        <input type="text" name="subject" placeholder="Enter your subject*" value="{{ old('subject') }}">
+                        @error('subject')
+                            <div class="text-danger small">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="col-md-6">
-                        <input type="text" placeholder="Your Budget*">
+                        <input type="text" name="phone" placeholder="Your Phone" value="{{ old('phone') }}">
+                        @error('phone')
+                            <div class="text-danger small">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
-                <textarea name="message" id="message" placeholder="Enter your massage*"></textarea>
-                <button type="submit" class="btn">send massage</button>
+                <textarea name="message" id="message" placeholder="Enter your message*" required>{{ old('message') }}</textarea>
+                @error('message')
+                    <div class="text-danger small">{{ $message }}</div>
+                @enderror
+                <button type="submit" class="btn" id="submitBtn">
+                    <span class="btn-text">send message</span>
+                    <span class="btn-loading" style="display: none;">
+                        <i class="fa fa-spinner fa-spin"></i> Sending...
+                    </span>
+                </button>
             </form>
         </div>
     </div>
@@ -127,12 +150,37 @@
                     </div>
                     <div class="col-lg-6">
                         <div class="homeContact__form">
-                            <form action="#">
-                                <input type="text" placeholder="Enter name*">
-                                <input type="email" placeholder="Enter mail*">
-                                <input type="number" placeholder="Enter number*">
-                                <textarea name="message" placeholder="Enter Massage*"></textarea>
-                                <button type="submit">Send Message</button>
+                            <form action="{{ route('contact.store') }}" method="POST" id="homeContactForm">
+                                @csrf
+                                <input type="text" name="name" placeholder="Enter name*"
+                                    value="{{ old('name') }}" required>
+                                @error('name')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+
+                                <input type="email" name="email" placeholder="Enter mail*"
+                                    value="{{ old('email') }}" required>
+                                @error('email')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+
+                                <input type="tel" name="phone" placeholder="Enter number*"
+                                    value="{{ old('phone') }}">
+                                @error('phone')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+
+                                <textarea name="message" placeholder="Enter Message*" required>{{ old('message') }}</textarea>
+                                @error('message')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+
+                                <button type="submit" id="homeSubmitBtn">
+                                    <span class="btn-text">Send Message</span>
+                                    <span class="btn-loading" style="display: none;">
+                                        <i class="fa fa-spinner fa-spin"></i> Sending...
+                                    </span>
+                                </button>
                             </form>
                         </div>
                     </div>
@@ -141,4 +189,37 @@
         </div>
     </section>
     <!-- contact-area-end -->
+
+    @if (session('success'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                alert('{{ session('success') }}');
+            });
+        </script>
+    @endif
+
+    @if (session('error'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                alert('{{ session('error') }}');
+            });
+        </script>
+    @endif
+
+    <script>
+        // Form submission with loading states
+        document.getElementById('contactForm').addEventListener('submit', function() {
+            const btn = document.getElementById('submitBtn');
+            btn.querySelector('.btn-text').style.display = 'none';
+            btn.querySelector('.btn-loading').style.display = 'inline';
+            btn.disabled = true;
+        });
+
+        document.getElementById('homeContactForm').addEventListener('submit', function() {
+            const btn = document.getElementById('homeSubmitBtn');
+            btn.querySelector('.btn-text').style.display = 'none';
+            btn.querySelector('.btn-loading').style.display = 'inline';
+            btn.disabled = true;
+        });
+    </script>
 @endsection

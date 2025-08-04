@@ -5,7 +5,7 @@
         <!-- User details -->
         <div class="user-profile text-center mt-3">
             <div class="d-flex align-items-center justify-content-center text-center">
-                @if(Auth::user()->avatar)
+                @if (Auth::user()->avatar)
                     <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt=""
                         class="avatar-md rounded-circle">
                 @else
@@ -98,6 +98,19 @@
                     <a href="{{ route('website-info') }}" class="waves-effect">
                         <i class="ri-settings-4-line"></i>
                         <span>Website Info</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('contact') }}" class="waves-effect">
+                        <i class="ri-mail-line"></i>
+                        <span>Messages</span>
+                        @php
+                            $unreadCount = \App\Models\Contact::getUnreadCount();
+                        @endphp
+                        @if ($unreadCount > 0)
+                            <span class="badge rounded-pill bg-danger float-end">{{ $unreadCount }}</span>
+                        @endif
                     </a>
                 </li>
 

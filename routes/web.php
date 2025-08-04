@@ -4,6 +4,7 @@ use App\Http\Controllers\About\AboutController;
 use App\Http\Controllers\About\AwardController;
 use App\Http\Controllers\About\EducationController;
 use App\Http\Controllers\About\SkillController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Home\HomeSlideController;
 use App\Http\Controllers\PartnerController;
@@ -25,6 +26,9 @@ Route::get('/services/{service:slug}', [ServiceController::class, 'details'])->n
 
 Route::get('/portfolio', [PortfolioController::class, 'home'])->name('portfolio');
 Route::get('/portfolio/{portfolio:slug}', [PortfolioController::class, 'details'])->name('portfolio.details');
+
+// contact form
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 // -------------- Admin --------------- //
 Route::prefix('/admin')->group(function () {
@@ -115,6 +119,16 @@ Route::prefix('/admin')->group(function () {
     // website information
     Route::get('/website-info', [WebsiteInfoController::class, 'index'])->name('website-info');
     Route::put('/website-info/{websiteInfo}', [WebsiteInfoController::class, 'update'])->name('website-info.update');
+
+    // contacts/messages
+    Route::get('/contacts', [ContactController::class, 'index'])->name('contact');
+    Route::get('/contacts/{contact}', [ContactController::class, 'show'])->name('contact.show');
+    Route::post('/contacts/{contact}/reply', [ContactController::class, 'reply'])->name('contact.reply');
+    Route::patch('/contacts/{contact}/mark-read', [ContactController::class, 'markAsRead'])->name('contact.mark-read');
+    Route::delete('/contacts/{contact}', [ContactController::class, 'destroy'])->name('contact.destroy');
+
+    // notification endpoints
+    Route::get('/notifications/contacts', [ContactController::class, 'getNotifications'])->name('contact.notifications');
 });
 
 require __DIR__ . '/auth.php';
