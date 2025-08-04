@@ -2,6 +2,30 @@
 @section('title', 'Contact Messages')
 
 @section('content')
+    <style>
+        .message-row {
+            transition: all 0.3s ease;
+        }
+
+        .mark-read-btn:disabled {
+            opacity: 0.6;
+        }
+
+        .ri-loader-2-line {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
     <div class="container-fluid">
         <!-- start page title -->
         <div class="row">
@@ -202,10 +226,15 @@
         // Filter functionality
         function filterMessages(filter) {
             const rows = document.querySelectorAll('.message-row');
+            let visibleCount = 0;
+
+            console.log(`Filtering by: ${filter}`); // Debug
 
             rows.forEach(row => {
                 const status = row.dataset.status;
                 let show = false;
+
+                console.log(`Row status: "${status}"`); // Debug
 
                 switch (filter) {
                     case 'all':
@@ -215,41 +244,144 @@
                         show = status.includes('unread');
                         break;
                     case 'replied':
-                        show = status.includes('replied');
+                        // Check if message is replied (has 'replied' and not 'not-replied')
+                        show = status.includes('replied') && !status.includes('not-replied');
                         break;
                 }
 
                 row.style.display = show ? '' : 'none';
+                if (show) visibleCount++;
             });
+
+            console.log(`Visible rows: ${visibleCount}`); // Debug
 
             // Update button states
             document.querySelectorAll('.btn-group .btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             event.target.classList.add('active');
+
+            // Update DataTable if it exists
+            if ($.fn.DataTable.isDataTable('#contactsTable')) {
+                $('#contactsTable').DataTable().draw();
+            }
         }
 
         // Mark as read functionality
         document.querySelectorAll('.mark-read-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const contactId = this.dataset.contactId;
+                const button = this;
+                const row = button.closest('tr');
+
+                // Show loading state
+                button.innerHTML = '<i class="ri-loader-2-line"></i>';
+                button.disabled = true;
 
                 fetch(`/admin/contacts/${contactId}/mark-read`, {
                         method: 'PATCH',
                         headers: {
                             'X-CSRF-TOKEN': '{{ csrf_token() }}',
                             'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
                         }
                     })
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            location.reload();
+                            // Update the row visually
+                            const nameCell = row.querySelector('td:first-child');
+                            const statusCell = row.querySelector('td:nth-child(5)');
+
+                            // Update mail icon
+                            const mailIcon = nameCell.querySelector('i');
+                            mailIcon.className = 'ri-mail-open-line text-muted me-2';
+
+                            // Update name styling
+                            const nameStrong = nameCell.querySelector('strong');
+                            nameStrong.classList.remove('text-primary');
+
+                            // Update status badge
+                            const statusBadge = statusCell.querySelector('.badge');
+                            statusBadge.className = 'badge bg-secondary mb-1';
+                            statusBadge.textContent = 'Read';
+
+                            // Update row data attribute
+                            row.dataset.status = row.dataset.status.replace('unread', 'read');
+
+                            // Remove the mark as read button
+                            button.remove();
+
+                            // Update unread count in header
+                            updateUnreadCount(data.unread_count);
+
+                            // Show success message
+                            showToast('Message marked as read', 'success');
+                        } else {
+                            // Reset button on error
+                            button.innerHTML = '<i class="ri-check-line"></i>';
+                            button.disabled = false;
+                            showToast('Failed to mark as read', 'error');
                         }
                     })
-                    .catch(error => console.error('Error:', error));
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Reset button on error
+                        button.innerHTML = '<i class="ri-check-line"></i>';
+                        button.disabled = false;
+                        showToast('Failed to mark as read', 'error');
+                    });
             });
         });
+
+        // Function to update unread count in UI
+        function updateUnreadCount(newCount) {
+            // Update header badge
+            const headerBadge = document.querySelector('.page-title-box .badge');
+            if (headerBadge) {
+                if (newCount > 0) {
+                    headerBadge.textContent = `${newCount} Unread`;
+                } else {
+                    headerBadge.style.display = 'none';
+                }
+            }
+
+            // Update filter buttons counts
+            const totalCount = document.querySelectorAll('.message-row').length;
+            const repliedCount = document.querySelectorAll('[data-status*="replied"]:not([data-status*="not-replied"])')
+                .length;
+
+            // Update button texts
+            const allBtn = document.querySelector('.btn-outline-primary');
+            const unreadBtn = document.querySelector('.btn-outline-warning');
+            const repliedBtn = document.querySelector('.btn-outline-success');
+
+            if (allBtn) allBtn.innerHTML = `All (${totalCount})`;
+            if (unreadBtn) unreadBtn.innerHTML = `Unread (${newCount})`;
+            if (repliedBtn) repliedBtn.innerHTML = `Replied (${repliedCount})`;
+        }
+
+        // Function to show toast messages
+        function showToast(message, type) {
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className =
+                `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed`;
+            toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 300px;';
+            toast.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+
+            document.body.appendChild(toast);
+
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+            }, 3000);
+        }
 
         // Delete functionality
         document.querySelectorAll('.delete-btn').forEach(button => {
@@ -265,13 +397,39 @@
 
         // Initialize DataTable
         $(document).ready(function() {
-            $('#contactsTable').DataTable({
+            // Set up CSRF token for all AJAX requests
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            // Custom filtering function for DataTable
+            $.fn.dataTable.ext.search.push(
+                function(settings, data, dataIndex) {
+                    if (settings.nTable.id !== 'contactsTable') {
+                        return true;
+                    }
+
+                    const row = settings.aoData[dataIndex].nTr;
+                    if (!row) return true;
+
+                    // If row is hidden by our filter, don't show it in DataTable
+                    return row.style.display !== 'none';
+                }
+            );
+
+            const table = $('#contactsTable').DataTable({
                 "order": [
                     [5, "desc"]
                 ], // Sort by received date
                 "pageLength": 25,
-                "responsive": true
+                "responsive": true,
+                "dom": 'frtip', // Remove default search box since we have custom filters
             });
+
+            // Set "All" button as active by default
+            document.querySelector('.btn-outline-primary').classList.add('active');
         });
     </script>
 @endsection

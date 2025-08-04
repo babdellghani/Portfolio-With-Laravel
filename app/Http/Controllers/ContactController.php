@@ -70,35 +70,61 @@ class ContactController extends Controller
     public function reply(Request $request, Contact $contact)
     {
         $validated = $request->validate([
-            'reply' => 'required|string|max:2000',
+            'admin_reply' => 'required|string|max:2000',
         ]);
 
         // Send reply email
         try {
-            Mail::to($contact->email)->send(new ContactReplyMail($contact, $validated['reply']));
+            Mail::to($contact->email)->send(new ContactReplyMail($contact, $validated['admin_reply']));
 
             // Mark as replied in database
-            $contact->markAsReplied($validated['reply']);
+            $contact->markAsReplied($validated['admin_reply']);
+
+            // Handle AJAX requests
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Reply sent successfully!',
+                ]);
+            }
 
             return back()->with([
-                'message'    => 'Reply sent successfully!',
-                'alert-type' => 'success',
+                'success' => 'Reply sent successfully!',
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to send reply email: ' . $e->getMessage());
+
+            // Handle AJAX requests
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to send reply. Please try again.',
+                ], 500);
+            }
+
             return back()->with([
-                'message'    => 'Failed to send reply. Please try again.',
-                'alert-type' => 'error',
-            ]);
+                'error' => 'Failed to send reply. Please try again.',
+            ])->withInput();
         }
     }
 
     /**
      * Mark message as read
      */
-    public function markAsRead(Contact $contact)
+    public function markAsRead(Contact $contact, Request $request)
     {
         $contact->markAsRead();
 
+        // Handle AJAX requests
+        if ($request->ajax()) {
+            return response()->json([
+                'success'      => true,
+                'message'      => 'Message marked as read',
+                'unread_count' => Contact::getUnreadCount(),
+            ]);
+        }
+
+        // Handle regular requests
         return redirect()->back()->with([
             'message'    => 'Message marked as read',
             'alert-type' => 'success',
