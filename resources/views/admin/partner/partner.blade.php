@@ -1,4 +1,5 @@
 @extends('admin.partials.master')
+@section('title', 'Partner Management')
 
 @section('content')
     <div class="container-fluid">

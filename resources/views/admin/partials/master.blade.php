@@ -35,6 +35,10 @@
     <!-- App Css-->
     <link href="{{ asset('backend/assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
 
+    <!-- Custom Css -->
+    @stack('style')
+    @yield('style')
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
@@ -75,7 +79,7 @@
     <!-- END layout-wrapper -->
 
     <!-- ========== Right Sidebar ========== -->
-    @include('admin.partials.right_sidebar')
+    {{-- @include('admin.partials.right_sidebar') --}}
     <!-- END Right-bar -->
 
     <!-- Right bar overlay-->
@@ -135,9 +139,16 @@
                     break;
             }
         @endif
+
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                toastr.error(" {{ $error }} ");
+            @endforeach
+        @endif
     </script>
 
     @stack('scripts')
+    @yield('script')
 
 </body>
 

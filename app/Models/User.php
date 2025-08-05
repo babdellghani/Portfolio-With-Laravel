@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -22,6 +21,8 @@ class User extends Authenticatable
         'email',
         'password',
         'avatar',
+        'status',
+        'role',
     ];
 
     /**
@@ -43,7 +44,39 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
         ];
+    }
+
+    /**
+     * Check if user is admin
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if user is active
+     */
+    public function isActive(): bool
+    {
+        return $this->status === 'active';
+    }
+
+    /**
+     * Get status badge class for display
+     */
+    public function getStatusBadgeClass(): string
+    {
+        return $this->status === 'active' ? 'badge-soft-success' : 'badge-soft-danger';
+    }
+
+    /**
+     * Get role badge class for display
+     */
+    public function getRoleBadgeClass(): string
+    {
+        return $this->role === 'admin' ? 'badge-soft-primary' : 'badge-soft-secondary';
     }
 }

@@ -114,6 +114,19 @@
                     </a>
                 </li>
 
+                <li class="menu-title">User Management</li>
+
+                <li>
+                    <a href="{{ route('users.index') }}" class="waves-effect">
+                        <i class="ri-group-line"></i>
+                        <span>Users</span>
+                        @php
+                            $totalUsers = \App\Models\User::count();
+                        @endphp
+                        <span class="badge rounded-pill bg-info float-end">{{ $totalUsers }}</span>
+                    </a>
+                </li>
+
                 <li>
                     <a href="{{ route('profile.edit') }}" class="waves-effect">
                         <i class="ri-user-settings-line"></i>
