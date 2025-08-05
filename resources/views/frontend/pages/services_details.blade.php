@@ -24,11 +24,32 @@
                     <aside class="services__sidebar">
                         <div class="widget">
                             <h5 class="title">Get in Touch</h5>
-                            <form action="#" class="sidebar__contact">
-                                <input type="text" placeholder="Enter name*">
-                                <input type="email" placeholder="Enter your mail*">
-                                <textarea name="message" id="message" placeholder="Massage*"></textarea>
-                                <button type="submit" class="btn">send massage</button>
+                            <form action="{{ route('contact.store') }}" method="POST" class="sidebar__contact"
+                                id="serviceContactForm">
+                                @csrf
+                                <input type="text" name="name" placeholder="Enter name*" value="{{ old('name') }}"
+                                    required>
+                                @error('name')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+
+                                <input type="email" name="email" placeholder="Enter your mail*"
+                                    value="{{ old('email') }}" required>
+                                @error('email')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+
+                                <textarea name="message" id="message" placeholder="Message*" required>{{ old('message') }}</textarea>
+                                @error('message')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+
+                                <button type="submit" class="btn" id="serviceSubmitBtn">
+                                    <span class="btn-text">send message</span>
+                                    <span class="btn-loading" style="display: none;">
+                                        <i class="fas fa-spinner fa-spin"></i> Sending...
+                                    </span>
+                                </button>
                             </form>
                         </div>
                         <div class="widget">
@@ -36,7 +57,7 @@
                             <ul class="sidebar__contact__info">
                                 <li><span>Address :</span>
                                     {{ $websiteInfo && $websiteInfo->address ? $websiteInfo->address : 'Level 13, 2 Elizabeth Steereyt set' }}
-                                    {{ $websiteInfo && $websiteInfo->city ?  ', ' . $websiteInfo->city : ', Melbourne, Victoria 3000' }}
+                                    {{ $websiteInfo && $websiteInfo->city ? ', ' . $websiteInfo->city : ', Melbourne, Victoria 3000' }}
                                 </li>
                                 <li><span>Mail :</span>
                                     {{ $websiteInfo && $websiteInfo->email ? $websiteInfo->email : 'noreply@envato.com' }}

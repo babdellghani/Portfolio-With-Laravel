@@ -190,36 +190,4 @@
     </section>
     <!-- contact-area-end -->
 
-    @if (session('success'))
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                alert('{{ session('success') }}');
-            });
-        </script>
-    @endif
-
-    @if (session('error'))
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                alert('{{ session('error') }}');
-            });
-        </script>
-    @endif
-
-    <script>
-        // Form submission with loading states
-        document.getElementById('contactForm').addEventListener('submit', function() {
-            const btn = document.getElementById('submitBtn');
-            btn.querySelector('.btn-text').style.display = 'none';
-            btn.querySelector('.btn-loading').style.display = 'inline';
-            btn.disabled = true;
-        });
-
-        document.getElementById('homeContactForm').addEventListener('submit', function() {
-            const btn = document.getElementById('homeSubmitBtn');
-            btn.querySelector('.btn-text').style.display = 'none';
-            btn.querySelector('.btn-loading').style.display = 'inline';
-            btn.disabled = true;
-        });
-    </script>
 @endsection

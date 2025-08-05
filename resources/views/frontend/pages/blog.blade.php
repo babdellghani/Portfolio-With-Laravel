@@ -288,12 +288,47 @@
                     </div>
                     <div class="col-lg-6">
                         <div class="homeContact__form">
-                            <form action="#">
-                                <input type="text" placeholder="Enter name*">
-                                <input type="email" placeholder="Enter mail*">
-                                <input type="number" placeholder="Enter number*">
-                                <textarea name="message" placeholder="Enter Massage*"></textarea>
-                                <button type="submit">Send Message</button>
+                            <form action="{{ route('contact.store') }}" method="POST" id="blogContactForm">
+                                @csrf
+                                <input type="text" name="name" placeholder="Enter name*"
+                                    value="{{ old('name') }}" required>
+                                @error('name')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+
+                                <input type="email" name="email" placeholder="Enter mail*"
+                                    value="{{ old('email') }}" required>
+                                @error('email')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+
+                                <input type="text" name="phone" placeholder="Enter number*"
+                                    value="{{ old('phone') }}">
+                                @error('phone')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+
+                                <textarea name="message" placeholder="Enter Message*" required>{{ old('message') }}</textarea>
+                                @error('message')
+                                    <div class="text-danger small">{{ $message }}</div>
+                                @enderror
+
+                                <button type="submit" id="blogSubmitBtn">
+                                    <span class="btn-text">Send Message</span>
+                                    <span class="btn-loading" style="display: none;">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path
+                                                d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z"
+                                                opacity=".25" />
+                                            <path
+                                                d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z">
+                                                <animateTransform attributeName="transform" dur="0.75s"
+                                                    repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12" />
+                                            </path>
+                                        </svg>
+                                        Sending...
+                                    </span>
+                                </button>
                             </form>
                         </div>
                     </div>

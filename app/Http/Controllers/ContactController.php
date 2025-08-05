@@ -36,12 +36,13 @@ class ContactController extends Controller
         // Store in database
         $contact = Contact::create($validated);
 
-        // Send email notification to admin
-        $websiteInfo = WebsiteInfo::getActive();
+                                             // Send email notification to admin
+        $websiteInfo = WebsiteInfo::first(); // Get the first website info record
         $adminEmail  = $websiteInfo && $websiteInfo->email ? $websiteInfo->email : config('mail.from.address');
 
         try {
             Mail::to($adminEmail)->send(new ContactFormMail($contact));
+            Log::info('Contact form email sent successfully to: ' . $adminEmail);
         } catch (\Exception $e) {
             // Log error but don't fail the request
             Log::error('Failed to send contact email: ' . $e->getMessage());
