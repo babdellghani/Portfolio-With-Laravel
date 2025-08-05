@@ -34,6 +34,7 @@ class WebsiteInfoFactory extends Factory
             'youtube_url'      => 'https://youtube.com/@abdev',
             'behance_url'      => 'https://behance.net/abdev',
             'pinterest_url'    => 'https://pinterest.com/abdev',
+            'contact_map'      => '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d96811.54759587669!2d-74.01263924803828!3d40.6880494567041!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25bae694479a3%3A0xb9949385da52e69e!2sBarclays%20Center!5e0!3m2!1sen!2sbd!4v1636195194646" allowfullscreen loading="lazy"></iframe>',
             'footer_text'      => 'Passionate about creating innovative web solutions and helping businesses grow through technology.',
             'copyright_text'   => 'Copyright © Ab. Dev 2025 All rights reserved',
         ];

@@ -24,11 +24,7 @@
                     </div>
                     <div class="footer__widget__address">
                         <p>{{ $websiteInfo && $websiteInfo->address ? $websiteInfo->address : 'Level 13, 2 Elizabeth Steereyt set' }}
-                            @if ($websiteInfo && $websiteInfo->city)
-                                <br> {{ $websiteInfo->city }}
-                            @else
-                                <br> Melbourne, Victoria 3000
-                            @endif
+                            {{ $websiteInfo && $websiteInfo->city ? ', ' . $websiteInfo->city : ', Melbourne, Victoria 3000' }}
                         </p>
                         <a href="mailto:{{ $websiteInfo && $websiteInfo->email ? $websiteInfo->email : 'noreply@envato.com' }}"
                             class="mail">{{ $websiteInfo && $websiteInfo->email ? $websiteInfo->email : 'noreply@envato.com' }}</a>

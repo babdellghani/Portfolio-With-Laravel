@@ -47,10 +47,10 @@ class WebsiteInfoController extends Controller
             'youtube_url'      => 'nullable|url',
             'behance_url'      => 'nullable|url',
             'pinterest_url'    => 'nullable|url',
+            'contact_map'      => 'nullable|string',
             'footer_text'      => 'nullable|string',
             'copyright_text'   => 'nullable|string|max:255',
         ]);
-
 
         // Handle logo uploads
         if ($request->hasFile('logo_black')) {

@@ -27,6 +27,10 @@ Route::get('/services/{service:slug}', [ServiceController::class, 'details'])->n
 Route::get('/portfolio', [PortfolioController::class, 'home'])->name('portfolio');
 Route::get('/portfolio/{portfolio:slug}', [PortfolioController::class, 'details'])->name('portfolio.details');
 
+Route::get('/contact-us', function () {
+    return view('frontend.pages.contact');
+})->name('contact-us');
+
 // contact form
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 

@@ -283,6 +283,32 @@
                                 </div>
                             </div>
 
+                            <!-- Contact Map -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h5 class="text-primary">Contact Map</h5>
+                                    <hr>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label for="contact_map" class="form-label">Contact Map Embed Code</label>
+                                    <textarea name="contact_map" class="form-control" rows="5" id="contact_map"
+                                        placeholder="Paste your Google Maps embed iframe code here...">{{ old('contact_map', $websiteInfo->contact_map) }}</textarea>
+                                    @error('contact_map')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                    <small class="text-muted">
+                                        <strong>Instructions:</strong>
+                                        1. Go to <a href="https://maps.google.com" target="_blank">Google Maps</a><br>
+                                        2. Search for your location<br>
+                                        3. Click "Share" → "Embed a map"<br>
+                                        4. Copy the iframe code and paste it here
+                                    </small>
+                                </div>
+                            </div>
+
                             <!-- Footer Content -->
                             <div class="row mb-4">
                                 <div class="col-12">

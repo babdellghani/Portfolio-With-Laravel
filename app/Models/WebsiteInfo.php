@@ -27,6 +27,7 @@ class WebsiteInfo extends Model
         'youtube_url',
         'behance_url',
         'pinterest_url',
+        'contact_map',
         'footer_text',
         'copyright_text',
     ];
