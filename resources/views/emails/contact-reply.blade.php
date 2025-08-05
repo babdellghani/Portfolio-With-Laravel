@@ -92,7 +92,7 @@
 
         <div class="reply-message">
             <div class="label">📝 Our Response:</div>
-            <div>{{ nl2br(e($adminReply)) }}</div>
+            <div>{!! nl2br(e($adminReply)) !!}</div>
         </div>
 
         <div class="original-message">

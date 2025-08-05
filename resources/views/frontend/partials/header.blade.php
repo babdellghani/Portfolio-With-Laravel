@@ -59,39 +59,51 @@
                             </div>
                             <div class="social-links">
                                 <ul class="clearfix">
-                                    @if ($websiteInfo && $websiteInfo->twitter_url)
-                                        <li><a href="{{ $websiteInfo->twitter_url }}" target="_blank"><span
-                                                    class="fab fa-twitter"></span></a></li>
-                                    @endif
                                     @if ($websiteInfo && $websiteInfo->facebook_url)
-                                        <li><a href="{{ $websiteInfo->facebook_url }}" target="_blank"><span
-                                                    class="fab fa-facebook-square"></span></a></li>
+                                        <li><a href="{{ $websiteInfo->facebook_url }}" target="_blank"><i
+                                                    class="fab fa-facebook-f"></i></a></li>
                                     @endif
-                                    @if ($websiteInfo && $websiteInfo->pinterest_url)
-                                        <li><a href="{{ $websiteInfo->pinterest_url }}" target="_blank"><span
-                                                    class="fab fa-pinterest-p"></span></a></li>
+                                    @if ($websiteInfo && $websiteInfo->twitter_url)
+                                        <li><a href="{{ $websiteInfo->twitter_url }}" target="_blank"><i
+                                                    class="fab fa-twitter"></i></a></li>
+                                    @endif
+                                    @if ($websiteInfo && $websiteInfo->behance_url)
+                                        <li><a href="{{ $websiteInfo->behance_url }}" target="_blank"><i
+                                                    class="fab fa-behance"></i></a></li>
+                                    @endif
+                                    @if ($websiteInfo && $websiteInfo->linkedin_url)
+                                        <li><a href="{{ $websiteInfo->linkedin_url }}" target="_blank"><i
+                                                    class="fab fa-linkedin-in"></i></a></li>
                                     @endif
                                     @if ($websiteInfo && $websiteInfo->instagram_url)
-                                        <li><a href="{{ $websiteInfo->instagram_url }}" target="_blank"><span
-                                                    class="fab fa-instagram"></span></a></li>
+                                        <li><a href="{{ $websiteInfo->instagram_url }}" target="_blank"><i
+                                                    class="fab fa-instagram"></i></a></li>
                                     @endif
                                     @if ($websiteInfo && $websiteInfo->youtube_url)
-                                        <li><a href="{{ $websiteInfo->youtube_url }}" target="_blank"><span
-                                                    class="fab fa-youtube"></span></a></li>
+                                        <li><a href="{{ $websiteInfo->youtube_url }}" target="_blank"><i
+                                                    class="fab fa-youtube"></i></a></li>
+                                    @endif
+                                    @if ($websiteInfo && $websiteInfo->pinterest_url)
+                                        <li><a href="{{ $websiteInfo->pinterest_url }}" target="_blank"><i
+                                                    class="fab fa-pinterest"></i></a></li>
                                     @endif
                                     @if (
                                         !$websiteInfo ||
-                                            (!$websiteInfo->twitter_url &&
-                                                !$websiteInfo->facebook_url &&
-                                                !$websiteInfo->pinterest_url &&
+                                            (!$websiteInfo->facebook_url &&
+                                                !$websiteInfo->twitter_url &&
+                                                !$websiteInfo->behance_url &&
+                                                !$websiteInfo->linkedin_url &&
                                                 !$websiteInfo->instagram_url &&
-                                                !$websiteInfo->youtube_url))
+                                                !$websiteInfo->youtube_url &&
+                                                !$websiteInfo->pinterest_url))
                                         <!-- Fallback static links -->
-                                        <li><a href="#"><span class="fab fa-twitter"></span></a></li>
-                                        <li><a href="#"><span class="fab fa-facebook-square"></span></a></li>
-                                        <li><a href="#"><span class="fab fa-pinterest-p"></span></a></li>
-                                        <li><a href="#"><span class="fab fa-instagram"></span></a></li>
-                                        <li><a href="#"><span class="fab fa-youtube"></span></a></li>
+                                        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                                        <li><a href="#"><i class="fab fa-behance"></i></a></li>
+                                        <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                                        <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                                        <li><a href="#"><i class="fab fa-youtube"></i></a></li>
+                                        <li><a href="#"><i class="fab fa-pinterest"></i></a></li>
                                     @endif
                                 </ul>
                             </div>

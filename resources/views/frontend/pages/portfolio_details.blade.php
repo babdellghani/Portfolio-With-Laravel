@@ -2,7 +2,7 @@
 @section('title', 'Portfolio Details')
 
 @section('content')
-     <!-- breadcrumb-area -->
+    <!-- breadcrumb-area -->
     <x-pages.breadcrumb title="{{ $portfolio->title }}" active="Details" />
     <!-- breadcrumb-area-end -->
 
@@ -49,18 +49,64 @@
                         <div class="widget">
                             <h5 class="title">Contact Information</h5>
                             <ul class="sidebar__contact__info">
-                                <li><span>Address :</span> 8638 Amarica Stranfod, <br> Mailbon Star</li>
-                                <li><span>Mail :</span> yourmail@gmail.com</li>
-                                <li><span>Phone :</span> +7464 0187 3535 645</li>
-                                <li><span>Fax id :</span> +9 659459 49594</li>
+                                <li><span>Address :</span>
+                                    {{ $websiteInfo && $websiteInfo->address ? $websiteInfo->address : 'Level 13, 2 Elizabeth Steereyt set' }}
+                                    {{ $websiteInfo && $websiteInfo->city ?  ', ' . $websiteInfo->city : ', Melbourne, Victoria 3000' }}
+                                </li>
+                                <li><span>Mail :</span>
+                                    {{ $websiteInfo && $websiteInfo->email ? $websiteInfo->email : 'noreply@envato.com' }}
+                                </li>
+                                <li><span>Phone :</span>
+                                    {{ $websiteInfo && $websiteInfo->phone ? $websiteInfo->phone : '+7464 0187 3535 645' }}
+                                </li>
                             </ul>
                             <ul class="sidebar__contact__social">
-                                <li><a href="#"><i class="fab fa-dribbble"></i></a></li>
-                                <li><a href="#"><i class="fab fa-behance"></i></a></li>
-                                <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
-                                <li><a href="#"><i class="fab fa-pinterest"></i></a></li>
-                                <li><a href="#"><i class="fab fa-facebook"></i></a></li>
-                                <li><a href="#"><i class="fab fa-youtube"></i></a></li>
+                                @if ($websiteInfo && $websiteInfo->facebook_url)
+                                    <li><a href="{{ $websiteInfo->facebook_url }}" target="_blank"><i
+                                                class="fab fa-facebook-f"></i></a></li>
+                                @endif
+                                @if ($websiteInfo && $websiteInfo->twitter_url)
+                                    <li><a href="{{ $websiteInfo->twitter_url }}" target="_blank"><i
+                                                class="fab fa-twitter"></i></a></li>
+                                @endif
+                                @if ($websiteInfo && $websiteInfo->behance_url)
+                                    <li><a href="{{ $websiteInfo->behance_url }}" target="_blank"><i
+                                                class="fab fa-behance"></i></a></li>
+                                @endif
+                                @if ($websiteInfo && $websiteInfo->linkedin_url)
+                                    <li><a href="{{ $websiteInfo->linkedin_url }}" target="_blank"><i
+                                                class="fab fa-linkedin-in"></i></a></li>
+                                @endif
+                                @if ($websiteInfo && $websiteInfo->instagram_url)
+                                    <li><a href="{{ $websiteInfo->instagram_url }}" target="_blank"><i
+                                                class="fab fa-instagram"></i></a></li>
+                                @endif
+                                @if ($websiteInfo && $websiteInfo->youtube_url)
+                                    <li><a href="{{ $websiteInfo->youtube_url }}" target="_blank"><i
+                                                class="fab fa-youtube"></i></a></li>
+                                @endif
+                                @if ($websiteInfo && $websiteInfo->pinterest_url)
+                                    <li><a href="{{ $websiteInfo->pinterest_url }}" target="_blank"><i
+                                                class="fab fa-pinterest"></i></a></li>
+                                @endif
+                                @if (
+                                    !$websiteInfo ||
+                                        (!$websiteInfo->facebook_url &&
+                                            !$websiteInfo->twitter_url &&
+                                            !$websiteInfo->behance_url &&
+                                            !$websiteInfo->linkedin_url &&
+                                            !$websiteInfo->instagram_url &&
+                                            !$websiteInfo->youtube_url &&
+                                            !$websiteInfo->pinterest_url))
+                                    <!-- Fallback static links -->
+                                    <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                                    <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                                    <li><a href="#"><i class="fab fa-behance"></i></a></li>
+                                    <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                                    <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                                    <li><a href="#"><i class="fab fa-youtube"></i></a></li>
+                                    <li><a href="#"><i class="fab fa-pinterest"></i></a></li>
+                                @endif
                             </ul>
                         </div>
                     </aside>
