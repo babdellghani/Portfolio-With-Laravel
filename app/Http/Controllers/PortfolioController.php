@@ -9,16 +9,18 @@ use Illuminate\Support\Str;
 class PortfolioController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource (Admin only)
      */
     public function index()
     {
+        $this->requireAdmin();
+
         $portfolios = Portfolio::latest()->get();
         return view('admin.portfolio.index', compact('portfolios'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new resource (Public)
      */
     public function home()
     {
@@ -26,6 +28,9 @@ class PortfolioController extends Controller
         return view('frontend.pages.portfolio', compact('portfolios'));
     }
 
+    /**
+     * Display portfolio details (Public)
+     */
     public function details($slug)
     {
         $portfolio = Portfolio::where('slug', $slug)->firstOrFail();
@@ -33,10 +38,11 @@ class PortfolioController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource in storage (Admin only)
      */
     public function store(Request $request)
     {
+        $this->requireAdmin();
         $portfolio = $request->validate([
             'title'             => 'required',
             'slug'              => 'required|unique:portfolios',
@@ -73,18 +79,21 @@ class PortfolioController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified resource (Admin only)
      */
     public function edit(Portfolio $portfolio)
     {
+        $this->requireAdmin();
+
         return view('admin.portfolio.edit', compact('portfolio'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified resource in storage (Admin only)
      */
     public function update(Request $request, Portfolio $portfolio)
     {
+        $this->requireAdmin();
         $portfolioNew = $request->validate([
             'title'             => 'required',
             'slug'              => 'required|unique:portfolios,slug,' . $portfolio->id,
@@ -119,10 +128,12 @@ class PortfolioController extends Controller
     }
 
     /**
-     * Update the status of the specified resource in storage.
+     * Update the status of the specified resource in storage (Admin only)
      */
     public function status(Request $request, Portfolio $portfolio)
     {
+        $this->requireAdmin();
+
         $request->validate([
             'status' => 'nullable|in:0,1|bool',
         ]);
@@ -140,10 +151,12 @@ class PortfolioController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from storage (Admin only)
      */
     public function destroy(Portfolio $portfolio)
     {
+        $this->requireAdmin();
+
         Storage::delete('public/' . $portfolio->image);
         $portfolio->delete();
 

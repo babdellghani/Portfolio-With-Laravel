@@ -12,10 +12,12 @@ use Illuminate\Support\Facades\Mail;
 class ContactController extends Controller
 {
     /**
-     * Display a listing of contact messages (Admin)
+     * Display a listing of contact messages (Admin only)
      */
     public function index()
     {
+        $this->requireAdmin();
+
         $contacts    = Contact::latest()->get();
         $unreadCount = Contact::getUnreadCount();
         return view('admin.contact.index', compact('contacts', 'unreadCount'));
@@ -55,10 +57,12 @@ class ContactController extends Controller
     }
 
     /**
-     * Display the specified contact message
+     * Display the specified contact message (Admin only)
      */
     public function show(Contact $contact)
     {
+        $this->requireAdmin();
+
         // Mark as read when viewed
         $contact->markAsRead();
 
@@ -66,10 +70,12 @@ class ContactController extends Controller
     }
 
     /**
-     * Send reply to contact message
+     * Send reply to contact message (Admin only)
      */
     public function reply(Request $request, Contact $contact)
     {
+        $this->requireAdmin();
+
         $validated = $request->validate([
             'admin_reply' => 'required|string|max:2000',
         ]);
@@ -110,10 +116,12 @@ class ContactController extends Controller
     }
 
     /**
-     * Mark message as read
+     * Mark message as read (Admin only)
      */
     public function markAsRead(Contact $contact, Request $request)
     {
+        $this->requireAdmin();
+
         $contact->markAsRead();
 
         // Handle AJAX requests
@@ -133,10 +141,12 @@ class ContactController extends Controller
     }
 
     /**
-     * Remove the specified contact message
+     * Remove the specified contact message (Admin only)
      */
     public function destroy(Contact $contact)
     {
+        $this->requireAdmin();
+
         $contact->delete();
 
         return back()->with([
@@ -146,10 +156,12 @@ class ContactController extends Controller
     }
 
     /**
-     * Get notifications for header (AJAX)
+     * Get notifications for header (Admin only - AJAX)
      */
     public function getNotifications()
     {
+        $this->requireAdmin();
+
         $unreadCount  = Contact::getUnreadCount();
         $recentUnread = Contact::getRecentUnread(5);
 

@@ -9,10 +9,12 @@ use Illuminate\Support\Facades\Storage;
 class TestimonialController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource (Admin only)
      */
     public function index()
     {
+        $this->requireAdmin();
+
         $testimonials = Testimonial::latest()->get();
 
         if ($testimonials->count() === 0) {
@@ -24,10 +26,11 @@ class TestimonialController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource in storage (Admin only)
      */
     public function store(Request $request)
     {
+        $this->requireAdmin();
         $testimonial = $request->validate([
             'name'    => 'required|string|max:255',
             'title'   => 'nullable|string|max:255',
@@ -52,18 +55,21 @@ class TestimonialController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified resource (Admin only)
      */
     public function edit(Testimonial $testimonial)
     {
+        $this->requireAdmin();
+
         return view('admin.testimonial.testimonial-edit', compact('testimonial'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified resource in storage (Admin only)
      */
     public function update(Request $request, Testimonial $testimonial)
     {
+        $this->requireAdmin();
         $testimonialNew = $request->validate([
             'name'    => 'required|string|max:255',
             'title'   => 'nullable|string|max:255',
@@ -91,10 +97,12 @@ class TestimonialController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from storage (Admin only)
      */
     public function destroy(Testimonial $testimonial)
     {
+        $this->requireAdmin();
+
         if ($testimonial->image && ! str_starts_with($testimonial->image, 'defaults_images/')) {
             Storage::delete('public/' . $testimonial->image);
         }
@@ -108,10 +116,12 @@ class TestimonialController extends Controller
     }
 
     /**
-     * Toggle testimonial status.
+     * Toggle testimonial status (Admin only)
      */
     public function status(Testimonial $testimonial)
     {
+        $this->requireAdmin();
+
         $testimonial->status = ! $testimonial->status;
         $testimonial->save();
 

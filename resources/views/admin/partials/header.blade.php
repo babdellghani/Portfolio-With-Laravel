@@ -157,19 +157,83 @@
                             <i class="ri-user-line text-white"></i>
                         </div>
                     @endif
-                    <span class="d-none d-xl-inline-block ms-1">{{ Auth::user()->name }}</span>
+                    <span class="d-none d-xl-inline-block ms-1">
+                        {{ Auth::user()->name }}
+                        <small class="d-block text-muted">
+                            <span
+                                class="badge badge-soft-{{ Auth::user()->isAdmin() ? 'primary' : 'secondary' }} badge-sm">
+                                {{ ucfirst(Auth::user()->role) }}
+                            </span>
+                        </small>
+                    </span>
                     <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end">
-                    <!-- item-->
-                    <a class="dropdown-item" href="{{ route('profile.edit') }}"><i
-                            class="ri-user-line align-middle me-1"></i>
-                        Profile</a>
+                    <!-- User Info -->
+                    <div class="dropdown-item-text">
+                        <div class="d-flex align-items-center">
+                            @if (Auth::user()->avatar)
+                                <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="User Avatar"
+                                    class="rounded-circle me-2" style="width: 32px; height: 32px; object-fit: cover;">
+                            @else
+                                <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center me-2"
+                                    style="width: 32px; height: 32px;">
+                                    <i class="ri-user-line text-white" style="font-size: 14px;"></i>
+                                </div>
+                            @endif
+                            <div>
+                                <div class="fw-bold">{{ Auth::user()->name }}</div>
+                                <small class="text-muted">{{ Auth::user()->email }}</small>
+                                <div>
+                                    <span
+                                        class="badge badge-soft-{{ Auth::user()->isAdmin() ? 'primary' : 'secondary' }} badge-sm">
+                                        {{ ucfirst(Auth::user()->role) }}
+                                    </span>
+                                    <span
+                                        class="badge badge-soft-{{ Auth::user()->getStatusBadgeClass() === 'badge-soft-success' ? 'success' : 'danger' }} badge-sm">
+                                        {{ ucfirst(Auth::user()->status) }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+
+                    <!-- Profile -->
+                    <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                        <i class="ri-user-line align-middle me-1"></i> Profile Settings
+                    </a>
+
+                    @if (Auth::user()->isAdmin())
+                        <!-- Admin Only Items -->
+                        <a class="dropdown-item" href="{{ route('dashboard') }}">
+                            <i class="ri-dashboard-line align-middle me-1"></i> Dashboard
+                        </a>
+                        <a class="dropdown-item" href="{{ route('users.index') }}">
+                            <i class="ri-group-line align-middle me-1"></i> User Management
+                        </a>
+                        <a class="dropdown-item" href="{{ route('contact') }}">
+                            <i class="ri-mail-line align-middle me-1"></i> Messages
+                            @php
+                                $unreadCount = \App\Models\Contact::getUnreadCount();
+                            @endphp
+                            @if ($unreadCount > 0)
+                                <span class="badge badge-soft-danger badge-sm ms-1">{{ $unreadCount }}</span>
+                            @endif
+                        </a>
+                    @endif
+
+                    <!-- Website Link -->
+                    <a class="dropdown-item" href="{{ route('home') }}" target="_blank">
+                        <i class="ri-external-link-line align-middle me-1"></i> View Website
+                    </a>
+
                     <div class="dropdown-divider"></div>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
-                        <button class="dropdown-item text-danger" type="submit"><i
-                                class="ri-shut-down-line align-middle me-1 text-danger"></i> Logout</button>
+                        <button class="dropdown-item text-danger" type="submit">
+                            <i class="ri-shut-down-line align-middle me-1 text-danger"></i> Logout
+                        </button>
                     </form>
                 </div>
             </div>

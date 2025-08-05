@@ -9,10 +9,12 @@ use Illuminate\Support\Facades\Storage;
 class PartnerController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource (Admin only)
      */
     public function index()
     {
+        $this->requireAdmin();
+
         $partners = Partner::ordered()->get();
 
         if ($partners->count() === 0) {
@@ -24,10 +26,11 @@ class PartnerController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource in storage (Admin only)
      */
     public function store(Request $request)
     {
+        $this->requireAdmin();
         $partner = $request->validate([
             'name'        => 'required|string|max:255',
             'light_logo'  => 'required|image|mimes:png,jpg,jpeg|max:2048',
@@ -56,18 +59,21 @@ class PartnerController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified resource (Admin only)
      */
     public function edit(Partner $partner)
     {
+        $this->requireAdmin();
+
         return view('admin.partner.partner-edit', compact('partner'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified resource in storage (Admin only)
      */
     public function update(Request $request, Partner $partner)
     {
+        $this->requireAdmin();
         $partnerNew = $request->validate([
             'name'        => 'required|string|max:255',
             'light_logo'  => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
@@ -102,10 +108,12 @@ class PartnerController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from storage (Admin only)
      */
     public function destroy(Partner $partner)
     {
+        $this->requireAdmin();
+
         if ($partner->light_logo && ! str_starts_with($partner->light_logo, 'defaults_images/')) {
             Storage::delete('public/' . $partner->light_logo);
         }
@@ -123,10 +131,12 @@ class PartnerController extends Controller
     }
 
     /**
-     * Toggle partner status.
+     * Toggle partner status (Admin only)
      */
     public function status(Partner $partner)
     {
+        $this->requireAdmin();
+
         $partner->status = ! $partner->status;
         $partner->save();
 

@@ -17,6 +17,7 @@ class HomeSlideController extends Controller
      */
     public function index()
     {
+        $this->requireAdmin();
         $slide = HomeSlide::latest()->first();
         
         if (!$slide) {
@@ -33,6 +34,7 @@ class HomeSlideController extends Controller
      */
     public function store(Request $request)
     {
+        $this->requireAdmin();
         $slideNew = $request->validate([
             'title' => 'required',
             'short_title' => 'nullable',

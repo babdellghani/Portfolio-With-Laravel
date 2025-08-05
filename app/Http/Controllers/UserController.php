@@ -10,27 +10,33 @@ use Illuminate\Validation\Rule;
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource (Admin only)
      */
     public function index()
     {
+        $this->requireAdmin();
+
         $users = User::latest()->get();
         return view('admin.users.index', compact('users'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new resource (Admin only)
      */
     public function create()
     {
+        $this->requireAdmin();
+
         return view('admin.users.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource in storage (Admin only)
      */
     public function store(Request $request)
     {
+        $this->requireAdmin();
+
         $validated = $request->validate([
             'name'     => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
@@ -58,26 +64,32 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified resource (Admin only)
      */
     public function show(User $user)
     {
+        $this->requireAdmin();
+
         return view('admin.users.show', compact('user'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified resource (Admin only)
      */
     public function edit(User $user)
     {
+        $this->requireAdmin();
+
         return view('admin.users.edit', compact('user'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified resource in storage (Admin only)
      */
     public function update(Request $request, User $user)
     {
+        $this->requireAdmin();
+
         $validated = $request->validate([
             'name'     => 'required|string|max:255',
             'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->id)],
@@ -113,10 +125,12 @@ class UserController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from storage (Admin only)
      */
     public function destroy(User $user)
     {
+        $this->requireAdmin();
+
         // Prevent deleting the last admin
         if ($user->isAdmin() && User::where('role', 'admin')->count() === 1) {
             return back()->with([
@@ -139,10 +153,12 @@ class UserController extends Controller
     }
 
     /**
-     * Toggle user status
+     * Toggle user status (Admin only)
      */
     public function toggleStatus(User $user)
     {
+        $this->requireAdmin();
+
         $user->status = $user->status === 'active' ? 'inactive' : 'active';
         $user->save();
 

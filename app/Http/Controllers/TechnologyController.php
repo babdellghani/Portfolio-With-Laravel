@@ -9,10 +9,12 @@ use Illuminate\Support\Facades\Storage;
 class TechnologyController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource (Admin only)
      */
     public function index()
     {
+        $this->requireAdmin();
+
         $technologies = Technology::ordered()->get();
 
         if ($technologies->count() === 0) {
@@ -24,10 +26,11 @@ class TechnologyController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource in storage (Admin only)
      */
     public function store(Request $request)
     {
+        $this->requireAdmin();
         $technology = $request->validate([
             'name'       => 'required|string|max:255',
             'light_icon' => 'required|image|mimes:png,jpg,jpeg,svg|max:2048',
@@ -56,18 +59,21 @@ class TechnologyController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified resource (Admin only)
      */
     public function edit(Technology $technology)
     {
+        $this->requireAdmin();
+
         return view('admin.technology.technology-edit', compact('technology'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified resource in storage (Admin only)
      */
     public function update(Request $request, Technology $technology)
     {
+        $this->requireAdmin();
         $technologyNew = $request->validate([
             'name'       => 'required|string|max:255',
             'light_icon' => 'nullable|image|mimes:png,jpg,jpeg,svg|max:2048',
@@ -102,10 +108,12 @@ class TechnologyController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from storage (Admin only)
      */
     public function destroy(Technology $technology)
     {
+        $this->requireAdmin();
+
         if ($technology->light_icon && ! str_starts_with($technology->light_icon, 'defaults_images/')) {
             Storage::delete('public/' . $technology->light_icon);
         }
@@ -123,10 +131,12 @@ class TechnologyController extends Controller
     }
 
     /**
-     * Toggle technology status.
+     * Toggle technology status (Admin only)
      */
     public function status(Technology $technology)
     {
+        $this->requireAdmin();
+
         $technology->status = ! $technology->status;
         $technology->save();
 

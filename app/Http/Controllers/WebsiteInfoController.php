@@ -9,10 +9,12 @@ use Illuminate\Support\Facades\Storage;
 class WebsiteInfoController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource (Admin only)
      */
     public function index()
     {
+        $this->requireAdmin();
+
         $websiteInfo = WebsiteInfo::first();
 
         if (! $websiteInfo) {
@@ -24,10 +26,11 @@ class WebsiteInfoController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified resource in storage (Admin only)
      */
     public function update(Request $request, WebsiteInfo $websiteInfo)
     {
+        $this->requireAdmin();
         $validated = $request->validate([
             'site_name'        => 'required|string|max:255',
             'site_title'       => 'nullable|string|max:255',
