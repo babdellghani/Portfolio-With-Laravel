@@ -37,10 +37,12 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 
 // -------------- Admin --------------- //
 Route::prefix('/admin')->group(function () {
-    // dashboard - admin only
-    Route::get('/dashboard', function () {
-        return view('admin.index');
-    })->name('dashboard');
+    // dashboard
+    Route::middleware(['auth', 'user.status'])->group(function () {
+        Route::get('/dashboard', function () {
+            return view('admin.index');
+        })->name('dashboard');
+    });
 
     // profile - accessible to both admin and users (but must be active)
     Route::middleware(['auth', 'user.status'])->group(function () {

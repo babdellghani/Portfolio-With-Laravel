@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -25,11 +24,10 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
 
         return redirect()->intended(route('dashboard', absolute: false))->with([
-            'message' => 'You are now logged in.',
+            'message'    => 'You are now logged in.',
             'alert-type' => 'success',
         ]);
     }

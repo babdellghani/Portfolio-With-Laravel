@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Contact extends Model
 {
@@ -30,6 +31,11 @@ class Contact extends Model
      */
     public static function getUnreadCount()
     {
+        // Only allow admins to access unread count
+        if (! Auth::check() || ! Auth::user()->isAdmin()) {
+            return 0; // Return 0 instead of throwing exception to avoid breaking the UI
+        }
+
         return static::where('is_read', false)->count();
     }
 
@@ -38,6 +44,11 @@ class Contact extends Model
      */
     public static function getRecentUnread($limit = 5)
     {
+        // Only allow admins to access recent unread messages
+        if (! Auth::check() || ! Auth::user()->isAdmin()) {
+            return collect(); // Return empty collection instead of throwing exception
+        }
+
         return static::where('is_read', false)
             ->latest()
             ->limit($limit)

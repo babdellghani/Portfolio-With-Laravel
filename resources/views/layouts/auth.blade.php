@@ -20,6 +20,10 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
 </head>
 
 <body class="auth-body-bg">
@@ -62,8 +66,67 @@
 
     <script src="{{ asset('backend/assets/js/app.js') }}"></script>
 
-</body>
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
-</html>
+    <script>
+        // Configure toastr options
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+
+        // Show success messages
+        @if (session('message'))
+            @if (session('alert-type') == 'success')
+                toastr.success("{{ session('message') }}");
+            @elseif (session('alert-type') == 'error')
+                toastr.error("{{ session('message') }}");
+            @elseif (session('alert-type') == 'warning')
+                toastr.warning("{{ session('message') }}");
+            @elseif (session('alert-type') == 'info')
+                toastr.info("{{ session('message') }}");
+            @else
+                toastr.success("{{ session('message') }}");
+            @endif
+        @endif
+
+        // Show validation errors
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                toastr.error("{{ $error }}");
+            @endforeach
+        @endif
+
+        // Show status messages
+        @if (session('status'))
+            toastr.info("{{ session('status') }}");
+        @endif
+
+        // Show general error messages
+        @if (session('error'))
+            toastr.error("{{ session('error') }}");
+        @endif
+
+        // Show general success messages
+        @if (session('success'))
+            toastr.success("{{ session('success') }}");
+        @endif
+    </script>
+
+</body>
 
 </html>
