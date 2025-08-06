@@ -14,6 +14,7 @@ class Contact extends Model
         'email',
         'phone',
         'message',
+        'user_id', // Add user_id to track who sent the message
         'is_read',
         'is_replied',
         'admin_reply',
@@ -25,6 +26,22 @@ class Contact extends Model
         'is_replied' => 'boolean',
         'replied_at' => 'datetime',
     ];
+
+    /**
+     * Get the user who sent this contact message
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get all replies for this contact message
+     */
+    public function replies()
+    {
+        return $this->hasMany(ContactReply::class);
+    }
 
     /**
      * Get unread messages count

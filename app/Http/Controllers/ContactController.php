@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 use App\Mail\ContactFormMail;
 use App\Mail\ContactReplyMail;
 use App\Models\Contact;
+use App\Models\ContactReply;
+use App\Models\User;
 use App\Models\WebsiteInfo;
+use App\Notifications\AdminRepliedToContact;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -34,6 +38,11 @@ class ContactController extends Controller
             'phone'   => 'nullable|string|max:20',
             'message' => 'required|string|max:2000',
         ]);
+
+        // Add user_id if user is logged in
+        if (Auth::check()) {
+            $validated['user_id'] = Auth::id();
+        }
 
         // Store in database
         $contact = Contact::create($validated);
@@ -66,6 +75,9 @@ class ContactController extends Controller
         // Mark as read when viewed
         $contact->markAsRead();
 
+        // Load replies with admin information
+        $contact->load(['replies.admin']);
+
         return view('admin.contact.show', compact('contact'));
     }
 
@@ -80,12 +92,33 @@ class ContactController extends Controller
             'admin_reply' => 'required|string|max:2000',
         ]);
 
+        // Create a new reply record
+        $reply = ContactReply::create([
+            'contact_id' => $contact->id,
+            'admin_id'   => Auth::id(),
+            'message'    => $validated['admin_reply'],
+        ]);
+
         // Send reply email
         try {
             Mail::to($contact->email)->send(new ContactReplyMail($contact, $validated['admin_reply']));
 
-            // Mark as replied in database
-            $contact->markAsReplied($validated['admin_reply']);
+            // Mark contact as replied if this is the first reply
+            if (! $contact->is_replied) {
+                $contact->update([
+                    'is_replied' => true,
+                    'replied_at' => now(),
+                    'is_read'    => true,
+                ]);
+            }
+
+            // Send notification to user if they are registered and have account
+            if ($contact->user_id) {
+                $user = User::find($contact->user_id);
+                if ($user) {
+                    $user->notify(new AdminRepliedToContact($contact));
+                }
+            }
 
             // Handle AJAX requests
             if ($request->ajax()) {
@@ -169,5 +202,43 @@ class ContactController extends Controller
             'unread_count'    => $unreadCount,
             'recent_messages' => $recentUnread,
         ]);
+    }
+
+    /**
+     * Display user's own contact messages (User only)
+     */
+    public function userMessages()
+    {
+        $this->requireActiveUser();
+
+        $contacts = Contact::where('user_id', Auth::id())
+            ->with(['replies'])
+            ->latest()
+            ->paginate(10);
+
+        return view('admin.contact.user-messages', compact('contacts'));
+    }
+
+    /**
+     * Display user's specific contact message (User only)
+     */
+    public function userMessageShow(Contact $contact)
+    {
+        $this->requireActiveUser();
+
+        // Ensure user can only see their own messages
+        if ($contact->user_id !== Auth::id()) {
+            abort(404);
+        }
+
+        // Mark notifications related to this contact as read for the current user
+        Auth::user()->unreadNotifications()
+            ->where('data->contact_id', $contact->id)
+            ->update(['read_at' => now()]);
+
+        // Load replies with admin information
+        $contact->load(['replies.admin']);
+
+        return view('admin.contact.user-message-show', compact('contact'));
     }
 }

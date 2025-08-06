@@ -140,6 +140,21 @@
 
                 @if (!auth()->user()->isAdmin())
                     <li>
+                        <a href="{{ route('user.messages') }}" class="waves-effect">
+                            <i class="ri-mail-line"></i>
+                            <span>My Messages</span>
+                            @php
+                                $userMessagesCount = \App\Models\Contact::where('user_id', auth()->id())->count();
+                                $userRepliesCount = \App\Models\Contact::where('user_id', auth()->id())
+                                    ->where('is_replied', true)
+                                    ->count();
+                            @endphp
+                            @if ($userMessagesCount > 0)
+                                <span class="badge rounded-pill bg-primary float-end">{{ $userMessagesCount }}</span>
+                            @endif
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('home') }}" class="waves-effect">
                             <i class="ri-home-4-line"></i>
                             <span>View Website</span>

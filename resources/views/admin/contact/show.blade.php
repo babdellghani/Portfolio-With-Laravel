@@ -92,19 +92,39 @@
                             </div>
                         </div>
 
-                        @if ($contact->is_replied && $contact->admin_reply)
+                        @if ($contact->is_replied && ($contact->admin_reply || $contact->replies->count() > 0))
                             <div class="row mb-3">
                                 <div class="col-sm-3">
-                                    <strong>Your Reply:</strong>
+                                    <strong>Admin Replies:</strong>
                                 </div>
                                 <div class="col-sm-9">
-                                    <div class="bg-success bg-opacity-10 p-3 rounded border-start border-success border-3">
-                                        {!! nl2br(e($contact->admin_reply)) !!}
-                                    </div>
-                                    <small class="text-muted">
-                                        Replied on
-                                        {{ $contact->replied_at ? $contact->replied_at->format('F j, Y \a\t g:i A') : 'Unknown' }}
-                                    </small>
+                                    {{-- Legacy single reply --}}
+                                    @if ($contact->admin_reply)
+                                        <div
+                                            class="bg-success bg-opacity-10 p-3 rounded border-start border-success border-3 mb-3">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <strong>Legacy Reply:</strong>
+                                                <small class="text-muted">
+                                                    {{ $contact->replied_at ? $contact->replied_at->format('F j, Y \a\t g:i A') : 'Unknown' }}
+                                                </small>
+                                            </div>
+                                            {!! nl2br(e($contact->admin_reply)) !!}
+                                        </div>
+                                    @endif
+
+                                    {{-- New multiple replies --}}
+                                    @foreach ($contact->replies as $reply)
+                                        <div
+                                            class="bg-success bg-opacity-10 p-3 rounded border-start border-success border-3 mb-3">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <strong>{{ $reply->admin->name }}:</strong>
+                                                <small class="text-muted">
+                                                    {{ $reply->created_at->format('F j, Y \a\t g:i A') }}
+                                                </small>
+                                            </div>
+                                            {!! nl2br(e($reply->message)) !!}
+                                        </div>
+                                    @endforeach
                                 </div>
                             </div>
                         @endif
@@ -254,24 +274,6 @@
             </div>
         </div>
     </div>
-
-    @if (session('success'))
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                toastr.success('{{ session('success') }}');
-            });
-        </script>
-    @endif
-
-    @if ($errors->any())
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                @foreach ($errors->all() as $error)
-                    toastr.error('{{ $error }}');
-                @endforeach
-            });
-        </script>
-    @endif
 
     <script>
         // Mark as read functionality

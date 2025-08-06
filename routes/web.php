@@ -50,6 +50,27 @@ Route::prefix('/admin')->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+        // user contact messages - accessible to users to see their own messages
+        Route::get('/my-messages', [ContactController::class, 'userMessages'])->name('user.messages');
+        Route::get('/my-messages/{contact}', [ContactController::class, 'userMessageShow'])->name('user.messages.show');
+
+        // notification routes - accessible to all authenticated users
+        Route::post('/notifications/{id}/read', function ($id) {
+            Auth::user()->notifications()->where('id', $id)->first()?->markAsRead();
+            return response()->json(['status' => 'success']);
+        })->name('notifications.read');
+        Route::post('/notifications/mark-all-read', function () {
+            // Mark all user notifications as read
+            Auth::user()->unreadNotifications()->update(['read_at' => now()]);
+
+            // Mark all contact messages as read (only for admins)
+            if (Auth::user()->isAdmin()) {
+                \App\Models\Contact::where('is_read', false)->update(['is_read' => true]);
+            }
+
+            return response()->json(['status' => 'success', 'message' => 'All notifications marked as read']);
+        })->name('notifications.mark-all-read');
     });
 
     // Admin-only routes
@@ -140,19 +161,6 @@ Route::prefix('/admin')->group(function () {
 
         // notification endpoints
         Route::get('/notifications/contacts', [ContactController::class, 'getNotifications'])->name('contact.notifications');
-        Route::post('/notifications/{id}/read', function ($id) {
-            Auth::user()->notifications()->where('id', $id)->first()?->markAsRead();
-            return response()->json(['status' => 'success']);
-        })->name('notifications.read');
-        Route::post('/notifications/mark-all-read', function () {
-            // Mark all user notifications as read
-            Auth::user()->unreadNotifications()->update(['read_at' => now()]);
-
-            // Mark all contact messages as read
-            \App\Models\Contact::where('is_read', false)->update(['is_read' => true]);
-
-            return response()->json(['status' => 'success', 'message' => 'All notifications marked as read']);
-        })->name('notifications.mark-all-read');
 
         // user management
         Route::resource('users', UserController::class);
