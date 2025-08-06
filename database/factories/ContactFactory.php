@@ -2,6 +2,7 @@
 namespace Database\Factories;
 
 use App\Models\Contact;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -36,7 +37,8 @@ class ContactFactory extends Factory
             'email'       => $this->faker->unique()->safeEmail(),
             'phone'       => $this->faker->optional(0.7)->phoneNumber(),
             'message'     => $this->faker->randomElement($messages) . ' ' . $this->faker->sentence(),
-            'is_read'     => $this->faker->boolean(30), // 30% chance of being read
+            'user_id'     => $this->faker->optional(0.6)->randomElement(User::where('role', 'user')->pluck('id')->toArray()), // 60% chance of having a user_id
+            'is_read'     => $this->faker->boolean(30),                                                                       // 30% chance of being read
             'is_replied'  => false,
             'admin_reply' => null,
             'replied_at'  => null,

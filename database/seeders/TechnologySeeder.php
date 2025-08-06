@@ -11,6 +11,7 @@ class TechnologySeeder extends Seeder
      */
     public function run(): void
     {
+        // Create specific technologies using factory with custom data
         $technologies = [
             ['name' => 'Adobe XD', 'light' => 'xd_light.png', 'dark' => 'xd.png', 'order' => 1],
             ['name' => 'Sketch', 'light' => 'skeatch_light.png', 'dark' => 'skeatch.png', 'order' => 2],
@@ -22,7 +23,7 @@ class TechnologySeeder extends Seeder
         ];
 
         foreach ($technologies as $tech) {
-            Technology::create([
+            Technology::factory()->create([
                 'name'       => $tech['name'],
                 'light_icon' => 'defaults_images/icons/' . $tech['light'],
                 'dark_icon'  => 'defaults_images/icons/' . $tech['dark'],
@@ -30,5 +31,8 @@ class TechnologySeeder extends Seeder
                 'order'      => $tech['order'],
             ]);
         }
+
+        // Create additional random technologies using factory
+        Technology::factory(5)->create();
     }
 }

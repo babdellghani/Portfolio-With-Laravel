@@ -18,7 +18,8 @@ class TechnologyFactory extends Factory
      */
     public function definition(): array
     {
-        $technologies = [
+        $additionalTechnologies
+        = [
             ['name' => 'Adobe XD', 'light' => 'xd_light.png', 'dark' => 'xd.png'],
             ['name' => 'Sketch', 'light' => 'skeatch_light.png', 'dark' => 'skeatch.png'],
             ['name' => 'Illustrator', 'light' => 'illustrator_light.png', 'dark' => 'illustrator.png'],
@@ -28,14 +29,14 @@ class TechnologyFactory extends Factory
             ['name' => 'Figma', 'light' => 'figma_light.png', 'dark' => 'figma.png'],
         ];
 
-        $tech = $this->faker->randomElement($technologies);
+        $tech = $this->faker->randomElement($additionalTechnologies);
 
         return [
-            'name'       => $tech['name'],
+            'name'       => $tech['name'] . ' Tool',
             'light_icon' => 'defaults_images/icons/' . $tech['light'],
             'dark_icon'  => 'defaults_images/icons/' . $tech['dark'],
-            'status'     => true,
-            'order'      => $this->faker->numberBetween(1, 10),
+            'status'     => $this->faker->boolean(90), // 90% chance of being active
+            'order'      => $this->faker->numberBetween(8, 20),
         ];
     }
 }

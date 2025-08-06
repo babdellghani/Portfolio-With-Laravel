@@ -1,11 +1,22 @@
 <?php
-
 namespace Database\Seeders;
 
-use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
+use Database\Seeders\UserSeeder;
+use Database\Seeders\ContactSeeder;
+use Database\Seeders\PartnerSeeder;
+use Database\Seeders\ServiceSeeder;
+use Database\Seeders\HomeSlideSeeder;
+use Database\Seeders\PortfolioSeeder;
+use Database\Seeders\TechnologySeeder;
+use Database\Seeders\About\AboutSeeder;
+use Database\Seeders\About\AwardSeeder;
+use Database\Seeders\About\SkillSeeder;
+use Database\Seeders\TestimonialSeeder;
+use Database\Seeders\WebsiteInfoSeeder;
+use Database\Seeders\About\EducationSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,17 +25,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'username' => 'test',
-            'email' => 'test@example.com',
-            'password' => Hash::make('password'),
-        ]);
 
         $this->call([
+            UserSeeder::class,
+            AboutSeeder::class,
+            AwardSeeder::class,
+            EducationSeeder::class,
+            SkillSeeder::class,
             HomeSlideSeeder::class,
+            PartnerSeeder::class,
+            TechnologySeeder::class,
+            PortfolioSeeder::class,
+            ServiceSeeder::class,
+            TestimonialSeeder::class,
+            WebsiteInfoSeeder::class, 
+            ContactSeeder::class,
         ]);
     }
 }

@@ -11,6 +11,7 @@ class PartnerSeeder extends Seeder
      */
     public function run(): void
     {
+        // Create specific partners using factory with custom data
         $partners = [
             ['name' => 'Google', 'light' => 'partner_light01.png', 'dark' => 'partner_01.png', 'order' => 1],
             ['name' => 'Microsoft', 'light' => 'partner_light02.png', 'dark' => 'partner_02.png', 'order' => 2],
@@ -21,7 +22,7 @@ class PartnerSeeder extends Seeder
         ];
 
         foreach ($partners as $partner) {
-            Partner::create([
+            Partner::factory()->create([
                 'name'        => $partner['name'],
                 'light_logo'  => 'defaults_images/icons/' . $partner['light'],
                 'dark_logo'   => 'defaults_images/icons/' . $partner['dark'],
@@ -30,5 +31,8 @@ class PartnerSeeder extends Seeder
                 'order'       => $partner['order'],
             ]);
         }
+
+        // Create additional random partners using factory
+        Partner::factory(4)->create();
     }
 }
