@@ -1,43 +1,66 @@
 @section('title', __('Verify Email'))
 
-<x-guest-layout>
-    <h4 class="text-muted text-center font-size-18"><b>Verify Email</b></h4>
+<x-auth-layout>
+    <h4 class="text-muted text-center font-size-18"><b>Verify Your Email</b></h4>
 
     <div class="p-3">
+        <div class="text-center mb-4">
+            <div class="avatar-md mx-auto">
+                <div class="avatar-title rounded-circle bg-light">
+                    <i class="ri-mail-check-line h1 mb-0 text-primary"></i>
+                </div>
+            </div>
+        </div>
+
         <form class="form-horizontal mt-3" method="POST" action="{{ route('verification.send') }}">
             @csrf
 
             <div class="alert alert-info alert-dismissible fade show" role="alert">
-                Thanks for signing up! Before getting started, could you verify your email address by clicking on the
-                link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.
+                <strong>Email Verification!</strong><br>
+                Thanks for signing up! We've sent a verification link to <strong>{{ auth()->user()->email }}</strong>.
+                Please check your email and click the verification link to activate your account.
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
 
             @if (session('status') == 'verification-link-sent')
-                <div class="mb-4 font-medium text-sm text-green-600">
-                    {{ __('A new verification link has been sent to the email address you provided during registration.') }}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="ri-check-line me-2"></i>
+                    A new verification link has been sent to your email address!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
 
             <div class="form-group pb-2 text-center row mt-3">
                 <div class="col-12">
-                    <button class="btn btn-info w-100 waves-effect waves-light" type="submit">
-                        {{ __('Resend Verification Email') }}
+                    <a href="{{ route('dashboard') }}" class="btn btn-success w-100 waves-effect waves-light">
+                        <i class="ri-dashboard-line me-1"></i> Go to Dashboard
+                    </a>
+                </div>
+            </div>
+
+            <div class="form-group pb-2 text-center row mt-3">
+                <div class="col-12">
+                    <button class="btn btn-primary w-100 waves-effect waves-light" type="submit">
+                        <i class="ri-mail-send-line me-1"></i> Resend Verification Email
                     </button>
                 </div>
             </div>
         </form>
+
+        <div class="mt-3 text-center">
+            <p class="text-muted">Didn't receive the email? Check your spam folder</p>
+        </div>
 
         <form class="form-horizontal mt-3" method="POST" action="{{ route('logout') }}">
             @csrf
 
             <div class="form-group pb-2 text-center row mt-3">
                 <div class="col-12">
-                    <button class="btn btn-info w-100 waves-effect waves-light" type="submit">
-                        {{ __('Log Out') }}
+                    <button class="btn btn-light w-100 waves-effect waves-light" type="submit">
+                        <i class="ri-logout-box-line me-1"></i> Log Out
                     </button>
                 </div>
             </div>
         </form>
     </div>
-</x-guest-layout>
+</x-auth-layout>

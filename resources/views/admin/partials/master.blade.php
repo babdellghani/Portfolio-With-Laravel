@@ -57,14 +57,26 @@
         @include('admin.partials.left_sidebar')
         <!-- Left Sidebar End -->
 
-
-
         <!-- ============================================================== -->
         <!-- Start right Content here -->
         <!-- ============================================================== -->
         <div class="main-content">
-
             <div class="page-content">
+                <!-- Email Verification Notice -->
+                @auth
+                    @if (!auth()->user()->hasVerifiedEmail())
+                        <div class="alert alert-warning alert-dismissible fade show m-3" role="alert">
+                            <i class="ri-mail-line me-2"></i>
+                            <strong>Email Verification Required!</strong>
+                            Please verify your email address to access all features.
+                            <a href="{{ route('verification.notice') }}" class="btn btn-sm btn-outline-warning ms-2">
+                                Verify Email
+                            </a>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+                @endauth
+
                 @yield('content')
             </div>
             <!-- End Page-content -->
@@ -144,6 +156,21 @@
             @foreach ($errors->all() as $error)
                 toastr.error(" {{ $error }} ");
             @endforeach
+        @endif
+
+        // Show status messages (like verification status)
+        @if (session('status'))
+            toastr.info("{{ session('status') }}");
+        @endif
+
+        // Show general error messages
+        @if (session('error'))
+            toastr.error("{{ session('error') }}");
+        @endif
+
+        // Show general success messages
+        @if (session('success'))
+            toastr.success("{{ session('success') }}");
         @endif
     </script>
 

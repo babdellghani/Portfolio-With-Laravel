@@ -26,14 +26,14 @@
 
             <div class="form-group mb-3">
                 <div class="col-xs-12">
-                    <input class="form-control" name="password" type="password" required="" placeholder="Password">
+                    <input class="form-control" name="password" type="password" required="" placeholder="New Password">
                     <x-input-error :messages="$errors->get('password')" class="mt-2" />
                 </div>
             </div>
 
             <div class="form-group mb-3">
                 <div class="col-xs-12">
-                    <input class="form-control" name="password_confirmation" type="password" required="" placeholder="Password">
+                    <input class="form-control" name="password_confirmation" type="password" required="" placeholder="Confirm New Password">
                     <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                 </div>
             </div>
@@ -48,4 +48,4 @@
         </form>
     </div>
 
-</x-au-layout>
+</x-auth-layout>

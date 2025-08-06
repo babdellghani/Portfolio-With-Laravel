@@ -81,8 +81,10 @@
                             <i class="ri-notification-3-line"></i>
                             @php
                                 $unreadContactCount = \App\Models\Contact::getUnreadCount();
+                                $unreadNotificationsCount = Auth::user()->unreadNotifications()->count();
+                                $totalUnread = $unreadContactCount + $unreadNotificationsCount;
                             @endphp
-                            @if ($unreadContactCount > 0)
+                            @if ($totalUnread > 0)
                                 <span class="noti-dot"></span>
                             @endif
                         </button>
@@ -91,62 +93,132 @@
                             <div class="p-3">
                                 <div class="row align-items-center">
                                     <div class="col">
-                                        <h6 class="m-0">Notifications</h6>
+                                        <h6 class="m-0">Notifications ({{ $totalUnread }})</h6>
                                     </div>
                                     <div class="col-auto">
-                                        <a href="{{ route('contact') }}" class="small">View All</a>
+                                        <button onclick="markAllNotificationsAsRead()"
+                                            class="btn btn-sm btn-outline-primary">
+                                            <i class="ri-check-double-line me-1"></i>Mark All Read
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                            <div data-simplebar style="max-height: 230px;" id="notificationsList">
-                                @if ($unreadContactCount > 0)
+                            <div data-simplebar style="max-height: 300px;" id="notificationsList">
+                                <div data-simplebar style="max-height: 300px;" id="notificationsList">
+                                    {{-- User Registration Notifications --}}
                                     @php
-                                        $recentContacts = \App\Models\Contact::getRecentUnread(5);
+                                        $recentUserNotifications = Auth::user()->unreadNotifications()->take(3)->get();
                                     @endphp
-                                    @foreach ($recentContacts as $contact)
-                                        <a href="{{ route('contact.show', $contact) }}"
-                                            class="text-reset notification-item">
+                                    @foreach ($recentUserNotifications as $notification)
+                                        <a href="{{ route('users.index') }}" class="text-reset notification-item"
+                                            onclick="markNotificationAsRead('{{ $notification->id }}')">
                                             <div class="d-flex">
                                                 <div class="avatar-xs me-3">
-                                                    <span class="avatar-title bg-primary rounded-circle font-size-16">
-                                                        <i class="ri-mail-line"></i>
+                                                    <span class="avatar-title bg-success rounded-circle font-size-16">
+                                                        <i class="ri-user-add-line"></i>
                                                     </span>
                                                 </div>
                                                 <div class="flex-1">
-                                                    <h6 class="mb-1">{{ $contact->name }}</h6>
+                                                    <h6 class="mb-1">New User Registration</h6>
                                                     <div class="font-size-12 text-muted">
-                                                        <p class="mb-1">{{ Str::limit($contact->message, 50) }}</p>
+                                                        <p class="mb-1">
+                                                            {{ $notification->data['message'] ?? 'New user registered' }}
+                                                        </p>
                                                         <p class="mb-0">
                                                             <i class="mdi mdi-clock-outline"></i>
-                                                            {{ $contact->created_at->diffForHumans() }}
+                                                            {{ $notification->created_at->diffForHumans() }}
                                                         </p>
                                                     </div>
                                                 </div>
                                             </div>
                                         </a>
                                     @endforeach
-                                @else
-                                    <div class="text-center py-4">
-                                        <div class="avatar-md mx-auto mb-3">
-                                            <div class="avatar-title bg-light rounded-circle">
-                                                <i class="ri-notification-off-line text-muted"
-                                                    style="font-size: 1.5rem;"></i>
+
+                                    {{-- Contact Message Notifications --}}
+                                    @if ($unreadContactCount > 0)
+                                        @php
+                                            $recentContacts = \App\Models\Contact::getRecentUnread(3);
+                                        @endphp
+                                        @foreach ($recentContacts as $contact)
+                                            <a href="{{ route('contact.show', $contact) }}"
+                                                class="text-reset notification-item">
+                                                <div class="d-flex">
+                                                    <div class="avatar-xs me-3">
+                                                        <span class="avatar-title bg-primary rounded-circle font-size-16">
+                                                            <i class="ri-mail-line"></i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h6 class="mb-1">{{ $contact->name }}</h6>
+                                                        <div class="font-size-12 text-muted">
+                                                            <p class="mb-1">{{ Str::limit($contact->message, 50) }}</p>
+                                                            <p class="mb-0">
+                                                                <i class="mdi mdi-clock-outline"></i>
+                                                                {{ $contact->created_at->diffForHumans() }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        @endforeach
+                                    @endif
+
+                                    @if ($totalUnread === 0)
+                                        <div class="text-center py-4">
+                                            <div class="avatar-md mx-auto mb-3">
+                                                <div class="avatar-title bg-light rounded-circle">
+                                                    <i class="ri-notification-off-line text-muted"
+                                                        style="font-size: 1.5rem;"></i>
+                                                </div>
                                             </div>
+                                            <p class="text-muted">No new notifications</p>
                                         </div>
-                                        <p class="text-muted">No new notifications</p>
+                                    @endif
+                                </div>
+                                <div class="p-2 border-top">
+                                    <div class="d-grid">
+                                        <a class="btn btn-sm btn-link font-size-14 text-center"
+                                            href="{{ route('contact') }}">
+                                            <i class="mdi mdi-arrow-right-circle me-1"></i> View All Messages
+                                        </a>
                                     </div>
-                                @endif
-                            </div>
-                            <div class="p-2 border-top">
-                                <div class="d-grid">
-                                    <a class="btn btn-sm btn-link font-size-14 text-center" href="{{ route('contact') }}">
-                                        <i class="mdi mdi-arrow-right-circle me-1"></i> View All Messages
-                                    </a>
                                 </div>
                             </div>
                         </div>
                 @endif
             @endauth
+
+            <script>
+                function markNotificationAsRead(notificationId) {
+                    fetch(`/admin/notifications/${notificationId}/read`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json',
+                        }
+                    });
+                }
+
+                function markAllNotificationsAsRead() {
+                    fetch('/admin/notifications/mark-all-read', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Content-Type': 'application/json',
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                // Reload the page to update notification counts
+                                window.location.reload();
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                }
+            </script>
 
             <div class="dropdown d-inline-block user-dropdown">
                 <button type="button"
@@ -224,6 +296,16 @@
                             @endphp
                             @if ($unreadCount > 0)
                                 <span class="badge badge-soft-danger badge-sm ms-1">{{ $unreadCount }}</span>
+                            @endif
+                        </a>
+                        <a class="dropdown-item" href="{{ route('users.index') }}">
+                            <i class="ri-user-add-line align-middle me-1"></i> User Registrations
+                            @php
+                                $userNotificationsCount = Auth::user()->unreadNotifications()->count();
+                            @endphp
+                            @if ($userNotificationsCount > 0)
+                                <span
+                                    class="badge badge-soft-success badge-sm ms-1">{{ $userNotificationsCount }}</span>
                             @endif
                         </a>
                     @endif

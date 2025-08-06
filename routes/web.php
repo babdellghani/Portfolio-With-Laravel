@@ -15,6 +15,7 @@ use App\Http\Controllers\TechnologyController;
 use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WebsiteInfoController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // -------------- Frontend --------------- //
@@ -139,6 +140,19 @@ Route::prefix('/admin')->group(function () {
 
         // notification endpoints
         Route::get('/notifications/contacts', [ContactController::class, 'getNotifications'])->name('contact.notifications');
+        Route::post('/notifications/{id}/read', function ($id) {
+            Auth::user()->notifications()->where('id', $id)->first()?->markAsRead();
+            return response()->json(['status' => 'success']);
+        })->name('notifications.read');
+        Route::post('/notifications/mark-all-read', function () {
+            // Mark all user notifications as read
+            Auth::user()->unreadNotifications()->update(['read_at' => now()]);
+
+            // Mark all contact messages as read
+            \App\Models\Contact::where('is_read', false)->update(['is_read' => true]);
+
+            return response()->json(['status' => 'success', 'message' => 'All notifications marked as read']);
+        })->name('notifications.mark-all-read');
 
         // user management
         Route::resource('users', UserController::class);
