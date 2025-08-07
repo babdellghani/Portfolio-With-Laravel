@@ -12,7 +12,7 @@ class WebsiteInfoSeeder extends Seeder
     public function run(): void
     {
         // Create website info if it doesn't exist
-        if (WebsiteInfo::count() === 0) {
+        if (WebsiteInfo::count() == 0) {
             WebsiteInfo::factory()->create();
         }
     }

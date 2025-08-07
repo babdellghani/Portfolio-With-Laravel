@@ -1,9 +1,8 @@
-@extends('admin.admin_master')
+@extends('admin.partials.master')
 
 @section('title', 'Edit Blog')
 
-@section('admin')
-<div class="page-content">
+@section('content')
     <div class="container-fluid">
         <!-- Page title -->
         <div class="row">
@@ -35,8 +34,8 @@
                             <!-- Title -->
                             <div class="mb-3">
                                 <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('title') is-invalid @enderror" 
-                                       id="title" name="title" value="{{ old('title', $blog->title) }}" required>
+                                <input type="text" class="form-control @error('title') is-invalid @enderror" id="title"
+                                    name="title" value="{{ old('title', $blog->title) }}" required>
                                 @error('title')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -45,9 +44,9 @@
                             <!-- Excerpt -->
                             <div class="mb-3">
                                 <label for="excerpt" class="form-label">Excerpt</label>
-                                <textarea class="form-control @error('excerpt') is-invalid @enderror" 
-                                          id="excerpt" name="excerpt" rows="3" 
-                                          placeholder="Brief description of the blog post...">{{ old('excerpt', $blog->excerpt) }}</textarea>
+                                <textarea class="form-control @error('excerpt') is-invalid @enderror" id="excerpt"
+                                    name="excerpt" rows="3"
+                                    placeholder="Brief description of the blog post...">{{ old('excerpt', $blog->excerpt) }}</textarea>
                                 @error('excerpt')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -56,8 +55,8 @@
                             <!-- Content -->
                             <div class="mb-3">
                                 <label for="content" class="form-label">Content <span class="text-danger">*</span></label>
-                                <textarea class="form-control @error('content') is-invalid @enderror" 
-                                          id="content" name="content" rows="15" required>{{ old('content', $blog->content) }}</textarea>
+                                <textarea class="form-control @error('content') is-invalid @enderror" id="content"
+                                    name="content" rows="15" required>{{ old('content', $blog->content) }}</textarea>
                                 @error('content')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -77,8 +76,10 @@
                             <!-- Status -->
                             <div class="mb-3">
                                 <label for="status" class="form-label">Status</label>
-                                <select class="form-select @error('status') is-invalid @enderror" id="status" name="status" required>
-                                    <option value="draft" {{ old('status', $blog->status) === 'draft' ? 'selected' : '' }}>Draft</option>
+                                <select class="form-select @error('status') is-invalid @enderror" id="status" name="status"
+                                    required>
+                                    <option value="draft" {{ old('status', $blog->status) === 'draft' ? 'selected' : '' }}>
+                                        Draft</option>
                                     <option value="published" {{ old('status', $blog->status) === 'published' ? 'selected' : '' }}>Published</option>
                                 </select>
                                 @error('status')
@@ -119,24 +120,26 @@
                         <div class="card-body">
                             <!-- Current Image -->
                             @if($blog->thumbnail)
-                            <div class="mb-3">
-                                <label class="form-label">Current Image</label>
-                                <div class="current-image">
-                                    <img src="{{ asset('storage/' . $blog->thumbnail) }}" alt="Current thumbnail" class="img-fluid rounded">
+                                <div class="mb-3">
+                                    <label class="form-label">Current Image</label>
+                                    <div class="current-image">
+                                        <img src="{{ asset('storage/' . $blog->thumbnail) }}" alt="Current thumbnail"
+                                            class="img-fluid rounded">
+                                    </div>
                                 </div>
-                            </div>
                             @endif
 
                             <div class="mb-3">
-                                <label for="thumbnail" class="form-label">{{ $blog->thumbnail ? 'Replace Image' : 'Upload Thumbnail' }}</label>
-                                <input type="file" class="form-control @error('thumbnail') is-invalid @enderror" 
-                                       id="thumbnail" name="thumbnail" accept="image/*">
+                                <label for="thumbnail"
+                                    class="form-label">{{ $blog->thumbnail ? 'Replace Image' : 'Upload Thumbnail' }}</label>
+                                <input type="file" class="form-control @error('thumbnail') is-invalid @enderror"
+                                    id="thumbnail" name="thumbnail" accept="image/*">
                                 @error('thumbnail')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                                 <div class="form-text">Recommended size: 800x600px. Max size: 2MB</div>
                             </div>
-                            
+
                             <!-- Image Preview -->
                             <div id="image-preview" style="display: none;">
                                 <label class="form-label">New Image Preview</label>
@@ -156,15 +159,14 @@
                                     $selectedCategories = old('categories', $blog->categories->pluck('id')->toArray());
                                 @endphp
                                 @foreach($categories as $category)
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input @error('categories') is-invalid @enderror" 
-                                           type="checkbox" name="categories[]" value="{{ $category->id }}" 
-                                           id="category_{{ $category->id }}"
-                                           {{ in_array($category->id, $selectedCategories) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="category_{{ $category->id }}">
-                                        {{ $category->name }}
-                                    </label>
-                                </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input @error('categories') is-invalid @enderror"
+                                            type="checkbox" name="categories[]" value="{{ $category->id }}"
+                                            id="category_{{ $category->id }}" {{ in_array($category->id, $selectedCategories) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="category_{{ $category->id }}">
+                                            {{ $category->name }}
+                                        </label>
+                                    </div>
                                 @endforeach
                             </div>
                             @error('categories')
@@ -179,8 +181,8 @@
                             <h4 class="card-title mb-0">Tags</h4>
                         </div>
                         <div class="card-body">
-                            <select class="form-select select2-multiple @error('tags') is-invalid @enderror" 
-                                    name="tags[]" multiple="multiple" id="tags-select">
+                            <select class="form-select select2-multiple @error('tags') is-invalid @enderror" name="tags[]"
+                                multiple="multiple" id="tags-select">
                                 @php
                                     $selectedTags = old('tags', $blog->tags->pluck('id')->toArray());
                                 @endphp
@@ -200,51 +202,51 @@
             </div>
         </form>
     </div>
-</div>
 
-<!-- Include Select2 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <!-- Include Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+        rel="stylesheet" />
 
-<!-- Include CKEditor -->
-<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <!-- Include CKEditor -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 
-<!-- Include Select2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <!-- Include Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize CKEditor
-    ClassicEditor
-        .create(document.querySelector('#content'), {
-            toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'outdent', 'indent', '|', 'blockQuote', 'insertTable', 'undo', 'redo'],
-            height: 400
-        })
-        .catch(error => {
-            console.error(error);
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize CKEditor
+            ClassicEditor
+                .create(document.querySelector('#content'), {
+                    toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'outdent', 'indent', '|', 'blockQuote', 'insertTable', 'undo', 'redo'],
+                    height: 400
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+            // Initialize Select2 for tags
+            $('#tags-select').select2({
+                theme: 'bootstrap-5',
+                placeholder: 'Select tags...',
+                allowClear: true
+            });
+
+            // Image preview
+            document.getElementById('thumbnail').addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const preview = document.getElementById('image-preview');
+                        const img = document.getElementById('preview-image');
+                        img.src = e.target.result;
+                        preview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
         });
-
-    // Initialize Select2 for tags
-    $('#tags-select').select2({
-        theme: 'bootstrap-5',
-        placeholder: 'Select tags...',
-        allowClear: true
-    });
-
-    // Image preview
-    document.getElementById('thumbnail').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const preview = document.getElementById('image-preview');
-                const img = document.getElementById('preview-image');
-                img.src = e.target.result;
-                preview.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-});
-</script>
+    </script>
 @endsection

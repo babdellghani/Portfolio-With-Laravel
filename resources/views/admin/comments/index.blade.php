@@ -1,9 +1,8 @@
-@extends('admin.admin_master')
+@extends('admin.partials.master')
 
 @section('title', 'Manage Comments')
 
-@section('admin')
-<div class="page-content">
+@section('content')
     <div class="container-fluid">
         <!-- Page title -->
         <div class="row">
@@ -256,7 +255,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

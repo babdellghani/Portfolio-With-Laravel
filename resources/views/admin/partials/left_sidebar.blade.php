@@ -6,8 +6,7 @@
         <div class="user-profile text-center mt-3">
             <div class="d-flex align-items-center justify-content-center text-center">
                 @if (Auth::user()->avatar)
-                    <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt=""
-                        class="avatar-md rounded-circle">
+                    <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="" class="avatar-md rounded-circle">
                 @else
                     <div class="avatar-md rounded-circle bg-primary d-flex align-items-center justify-content-center">
                         <i class="ri-user-line text-white" style="font-size: 2rem;"></i>
@@ -92,6 +91,59 @@
                         <a href="{{ route('technology') }}" class="waves-effect">
                             <i class="ri-code-s-slash-line"></i>
                             <span>Technologies</span>
+                        </a>
+                    </li>
+
+                    <li class="menu-title">Blog Management</li>
+
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="ri-article-line"></i>
+                            <span>Blog Posts</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="{{ route('admin.blogs.index') }}">All Posts</a></li>
+                            <li><a href="{{ route('admin.blogs.create') }}">Add New Post</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="ri-folder-line"></i>
+                            <span>Categories</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="{{ route('admin.categories.index') }}">All Categories</a></li>
+                            <li><a href="{{ route('admin.categories.create') }}">Add Category</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('admin.tags.index') }}" class="waves-effect">
+                            <i class="ri-price-tag-3-line"></i>
+                            <span>Tags</span>
+                            @php
+                                $totalTags = \App\Models\Tag::count();
+                            @endphp
+                            @if ($totalTags > 0)
+                                <span class="badge rounded-pill bg-secondary float-end">{{ $totalTags }}</span>
+                            @endif
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('admin.comments.index') }}" class="waves-effect">
+                            <i class="ri-chat-3-line"></i>
+                            <span>Comments</span>
+                            @php
+                                $pendingComments = \App\Models\Comment::where('status', 0)->count();
+                                $totalComments = \App\Models\Comment::count();
+                            @endphp
+                            @if ($pendingComments > 0)
+                                <span class="badge rounded-pill bg-warning float-end">{{ $pendingComments }}</span>
+                            @elseif ($totalComments > 0)
+                                <span class="badge rounded-pill bg-info float-end">{{ $totalComments }}</span>
+                            @endif
                         </a>
                     </li>
 
