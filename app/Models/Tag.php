@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,6 +15,22 @@ class Tag extends Model
         'user_id',
     ];
 
+    protected $casts = [
+        'status' => 'boolean',
+    ];
+
+    // Scopes
+    public function scopeActive($query)
+    {
+        return $query->where('status', true);
+    }
+
+    public function scopeWithBlogCount($query)
+    {
+        return $query->withCount('blogs');
+    }
+
+    // Relationships
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -24,5 +39,16 @@ class Tag extends Model
     public function blogs()
     {
         return $this->belongsToMany(Blog::class);
+    }
+
+    // Helper Methods
+    public function getStatusTextAttribute()
+    {
+        return $this->status ? 'Active' : 'Inactive';
+    }
+
+    public function getBlogsCountAttribute()
+    {
+        return $this->blogs()->count();
     }
 }

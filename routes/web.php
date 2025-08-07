@@ -4,9 +4,18 @@ use App\Http\Controllers\About\AboutController;
 use App\Http\Controllers\About\AwardController;
 use App\Http\Controllers\About\EducationController;
 use App\Http\Controllers\About\SkillController;
+use App\Http\Controllers\Admin\BlogController as AdminBlogController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\CommentController as AdminCommentController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\TagController as AdminTagController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\BookmarkController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Home\HomeSlideController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProfileController;
@@ -33,6 +42,27 @@ Route::get('/contact-us', function () {
     return view('frontend.pages.contact');
 })->name('contact-us');
 
+// Blog routes
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+
+// Blog interaction routes (require authentication)
+Route::middleware('auth')->group(function () {
+    // Comments
+    Route::post('/blog/{blog}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+
+    // Likes (AJAX routes)
+    Route::post('/blog/{blog}/like', [LikeController::class, 'toggleBlog'])->name('blog.like');
+    Route::post('/comment/{comment}/like', [LikeController::class, 'toggleComment'])->name('comment.like');
+
+    // Bookmarks
+    Route::get('/bookmarks', [BookmarkController::class, 'index'])->name('bookmarks.index');
+    Route::post('/blog/{blog}/bookmark', [BookmarkController::class, 'toggle'])->name('blog.bookmark');
+    Route::delete('/bookmarks/{bookmark}', [BookmarkController::class, 'destroy'])->name('bookmarks.destroy');
+});
+
 // contact form
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
@@ -40,9 +70,7 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 Route::prefix('/admin')->group(function () {
     // dashboard
     Route::middleware(['auth', 'user.status'])->group(function () {
-        Route::get('/dashboard', function () {
-            return view('admin.index');
-        })->name('dashboard');
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     });
 
     // profile - accessible to both admin and users (but must be active)
@@ -165,6 +193,55 @@ Route::prefix('/admin')->group(function () {
         // user management
         Route::resource('users', UserController::class);
         Route::patch('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
+
+        // blog management
+        Route::get('/blogs', [AdminBlogController::class, 'index'])->name('admin.blogs.index');
+        Route::get('/blogs/create', [AdminBlogController::class, 'create'])->name('admin.blogs.create');
+        Route::post('/blogs', [AdminBlogController::class, 'store'])->name('admin.blogs.store');
+        Route::get('/blogs/{blog}', [AdminBlogController::class, 'show'])->name('admin.blogs.show');
+        Route::get('/blogs/{blog}/edit', [AdminBlogController::class, 'edit'])->name('admin.blogs.edit');
+        Route::put('/blogs/{blog}', [AdminBlogController::class, 'update'])->name('admin.blogs.update');
+        Route::delete('/blogs/{blog}', [AdminBlogController::class, 'destroy'])->name('admin.blogs.destroy');
+        Route::patch('/blogs/{blog}/toggle-status', [AdminBlogController::class, 'toggleStatus'])->name('admin.blogs.toggle-status');
+        Route::post('/blogs/bulk-action', [AdminBlogController::class, 'bulkAction'])->name('admin.blogs.bulk-action');
+        Route::get('/blogs-stats', [AdminBlogController::class, 'stats'])->name('admin.blogs.stats');
+        Route::post('/blogs/{blog}/duplicate', [AdminBlogController::class, 'duplicate'])->name('admin.blogs.duplicate');
+
+        // category management
+        Route::get('/categories', [AdminCategoryController::class, 'index'])->name('admin.categories.index');
+        Route::get('/categories/create', [AdminCategoryController::class, 'create'])->name('admin.categories.create');
+        Route::post('/categories', [AdminCategoryController::class, 'store'])->name('admin.categories.store');
+        Route::get('/categories/{category}', [AdminCategoryController::class, 'show'])->name('admin.categories.show');
+        Route::get('/categories/{category}/edit', [AdminCategoryController::class, 'edit'])->name('admin.categories.edit');
+        Route::put('/categories/{category}', [AdminCategoryController::class, 'update'])->name('admin.categories.update');
+        Route::delete('/categories/{category}', [AdminCategoryController::class, 'destroy'])->name('admin.categories.destroy');
+        Route::patch('/categories/{category}/toggle-status', [AdminCategoryController::class, 'toggleStatus'])->name('admin.categories.toggle-status');
+        Route::post('/categories/bulk-action', [AdminCategoryController::class, 'bulkAction'])->name('admin.categories.bulk-action');
+
+        // tag management
+        Route::get('/tags', [AdminTagController::class, 'index'])->name('admin.tags.index');
+        Route::get('/tags/create', [AdminTagController::class, 'create'])->name('admin.tags.create');
+        Route::post('/tags', [AdminTagController::class, 'store'])->name('admin.tags.store');
+        Route::get('/tags/{tag}', [AdminTagController::class, 'show'])->name('admin.tags.show');
+        Route::get('/tags/{tag}/edit', [AdminTagController::class, 'edit'])->name('admin.tags.edit');
+        Route::put('/tags/{tag}', [AdminTagController::class, 'update'])->name('admin.tags.update');
+        Route::delete('/tags/{tag}', [AdminTagController::class, 'destroy'])->name('admin.tags.destroy');
+        Route::patch('/tags/{tag}/toggle-status', [AdminTagController::class, 'toggleStatus'])->name('admin.tags.toggle-status');
+        Route::post('/tags/bulk-action', [AdminTagController::class, 'bulkAction'])->name('admin.tags.bulk-action');
+        Route::get('/tags/search', [AdminTagController::class, 'search'])->name('admin.tags.search');
+
+        // comment management
+        Route::get('/comments', [AdminCommentController::class, 'index'])->name('admin.comments.index');
+        Route::get('/comments/{comment}', [AdminCommentController::class, 'show'])->name('admin.comments.show');
+        Route::get('/comments/{comment}/edit', [AdminCommentController::class, 'edit'])->name('admin.comments.edit');
+        Route::put('/comments/{comment}', [AdminCommentController::class, 'update'])->name('admin.comments.update');
+        Route::delete('/comments/{comment}', [AdminCommentController::class, 'destroy'])->name('admin.comments.destroy');
+        Route::patch('/comments/{comment}/toggle-status', [AdminCommentController::class, 'toggleStatus'])->name('admin.comments.toggle-status');
+        Route::patch('/comments/{comment}/approve', [AdminCommentController::class, 'approve'])->name('admin.comments.approve');
+        Route::patch('/comments/{comment}/reject', [AdminCommentController::class, 'reject'])->name('admin.comments.reject');
+        Route::post('/comments/bulk-action', [AdminCommentController::class, 'bulkAction'])->name('admin.comments.bulk-action');
+        Route::get('/comments-stats', [AdminCommentController::class, 'stats'])->name('admin.comments.stats');
+        Route::get('/comments/export', [AdminCommentController::class, 'export'])->name('admin.comments.export');
     }); // End admin middleware group
 }); // End admin prefix group
 

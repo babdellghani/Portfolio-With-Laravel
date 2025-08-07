@@ -3,20 +3,20 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use Illuminate\Database\Seeder;
-use Database\Seeders\UserSeeder;
-use Database\Seeders\ContactSeeder;
-use Database\Seeders\PartnerSeeder;
-use Database\Seeders\ServiceSeeder;
-use Database\Seeders\HomeSlideSeeder;
-use Database\Seeders\PortfolioSeeder;
-use Database\Seeders\TechnologySeeder;
 use Database\Seeders\About\AboutSeeder;
 use Database\Seeders\About\AwardSeeder;
-use Database\Seeders\About\SkillSeeder;
-use Database\Seeders\TestimonialSeeder;
-use Database\Seeders\WebsiteInfoSeeder;
 use Database\Seeders\About\EducationSeeder;
+use Database\Seeders\About\SkillSeeder;
+use Database\Seeders\ContactSeeder;
+use Database\Seeders\HomeSlideSeeder;
+use Database\Seeders\PartnerSeeder;
+use Database\Seeders\PortfolioSeeder;
+use Database\Seeders\ServiceSeeder;
+use Database\Seeders\TechnologySeeder;
+use Database\Seeders\TestimonialSeeder;
+use Database\Seeders\UserSeeder;
+use Database\Seeders\WebsiteInfoSeeder;
+use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -38,8 +38,12 @@ class DatabaseSeeder extends Seeder
             PortfolioSeeder::class,
             ServiceSeeder::class,
             TestimonialSeeder::class,
-            WebsiteInfoSeeder::class, 
+            WebsiteInfoSeeder::class,
             ContactSeeder::class,
+            // Blog system seeders
+            CategorySeeder::class,
+            TagSeeder::class,
+            BlogSeeder::class,
         ]);
     }
 }

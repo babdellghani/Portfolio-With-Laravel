@@ -79,4 +79,61 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->role === 'admin' ? 'badge-soft-primary' : 'badge-soft-secondary';
     }
+
+    /**
+     * Blog-related relationships
+     */
+    public function blogs()
+    {
+        return $this->hasMany(Blog::class);
+    }
+
+    public function categories()
+    {
+        return $this->hasMany(Category::class);
+    }
+
+    public function tags()
+    {
+        return $this->hasMany(Tag::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
+    public function bookmarks()
+    {
+        return $this->hasMany(Bookmark::class);
+    }
+
+    /**
+     * Check if user can create blog posts
+     */
+    public function canCreateBlog(): bool
+    {
+        return $this->status === 'active' && $this->email_verified_at !== null;
+    }
+
+    /**
+     * Check if user can create blog posts (alias)
+     */
+    public function canCreateBlogs(): bool
+    {
+        return $this->canCreateBlog();
+    }
+
+    /**
+     * Check if user can comment
+     */
+    public function canComment(): bool
+    {
+        return $this->status === 'active';
+    }
 }
