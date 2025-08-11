@@ -70,14 +70,6 @@
                                     </form>
                                 </div>
                             </div>
-                            <div class="col-sm-8">
-                                <div class="text-sm-end">
-                                    <a href="{{ route('admin.tags.create') }}"
-                                        class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2">
-                                        <i class="mdi mdi-plus me-1"></i> New Tag
-                                    </a>
-                                </div>
-                            </div>
                         </div>
 
                         <!-- Status Filter -->
@@ -203,25 +195,13 @@
                                                         <a href="{{ route('admin.tags.edit', $tag) }}" class="text-success">
                                                             <i class="mdi mdi-pencil font-size-18"></i>
                                                         </a>
-                                                        <form action="{{ route('admin.tags.toggle-status', $tag) }}"
-                                                            method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('PATCH')
-                                                            <button type="submit" class="btn btn-link text-warning p-0"
-                                                                title="{{ $tag->status ? 'Deactivate' : 'Activate' }}">
-                                                                <i
-                                                                    class="mdi mdi-{{ $tag->status ? 'eye-off' : 'eye' }} font-size-18"></i>
-                                                            </button>
-                                                        </form>
-                                                        <form action="{{ route('admin.tags.destroy', $tag) }}" method="POST"
-                                                            class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-link text-danger p-0"
-                                                                onclick="return confirm('Are you sure? This will also affect all related blog posts.')">
-                                                                <i class="mdi mdi-delete font-size-18"></i>
-                                                            </button>
-                                                        </form>
+                                                        <button type="submit" form="toggle-status-form-{{ $tag->id }}" class="btn btn-link text-warning p-0">
+                                                            <i class="mdi mdi-{{ $tag->status ? 'eye-off' : 'eye' }} font-size-18"></i>
+                                                        </button>
+                                                        <button type="submit" form="delete-form-{{ $tag->id }}" class="btn btn-link text-danger p-0"
+                                                            onclick="return confirm('Are you sure?')">
+                                                            <i class="mdi mdi-delete font-size-18"></i>
+                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -243,13 +223,32 @@
                             </div>
                         </form>
 
+                        @foreach($tags as $tag)
+                            <form action="{{ route('admin.tags.toggle-status', $tag) }}" method="POST"
+                                id="toggle-status-form-{{ $tag->id }}" style="display: none;">
+                                @csrf
+                                @method('PATCH')
+                            </form>
+                            <form action="{{ route('admin.tags.destroy', $tag) }}" method="POST" id="delete-form-{{ $tag->id }}"
+                                style="display: none;">
+                                @csrf
+                                @method('DELETE')
+                            </form>
+                        @endforeach
+
                         <!-- Pagination -->
                         @if($tags->hasPages())
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <ul class="pagination pagination-rounded justify-content-end mb-2">
-                                        {{ $tags->links() }}
-                                    </ul>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <div class="text-muted">
+                                            Showing {{ $tags->firstItem() }} to {{ $tags->lastItem() }} of {{ $tags->total() }}
+                                            results
+                                        </div>
+                                        <nav aria-label="Page navigation">
+                                            {{ $tags->appends(request()->query())->links('pagination::bootstrap-4') }}
+                                        </nav>
+                                    </div>
                                 </div>
                             </div>
                         @endif

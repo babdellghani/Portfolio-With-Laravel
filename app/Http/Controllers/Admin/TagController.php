@@ -42,18 +42,6 @@ class TagController extends Controller
     }
 
     /**
-     * Show the form for creating a new tag
-     */
-    public function create()
-    {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can create tags.');
-        }
-
-        return view('admin.tags.create');
-    }
-
-    /**
      * Store a newly created tag
      */
     public function store(Request $request)
@@ -76,19 +64,6 @@ class TagController extends Controller
 
         return redirect()->route('admin.tags.index')
             ->with('success', 'Tag created successfully!');
-    }
-
-    /**
-     * Display the specified tag
-     */
-    public function show(Tag $tag)
-    {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can view tag details.');
-        }
-
-        $tag->load(['user', 'blogs.user']);
-        return view('admin.tags.show', compact('tag'));
     }
 
     /**
@@ -194,14 +169,22 @@ class TagController extends Controller
                 break;
 
             case 'delete':
+                $tagsToDelete = $tags->get();
+
                 // Check if any tag has blogs
-                $tagsWithBlogs = $tags->whereHas('blogs')->count();
-                if ($tagsWithBlogs > 0) {
+                $tagsWithBlogs = $tagsToDelete->filter(function ($tag) {
+                    return $tag->blogs()->count() > 0;
+                });
+
+                if ($tagsWithBlogs->count() > 0) {
                     return redirect()->back()
                         ->with('error', 'Cannot delete tags that have associated blog posts.');
                 }
 
-                $tags->delete();
+                $tagsToDelete->each(function ($tag) {
+                    $tag->delete();
+                });
+
                 $message = 'Tags deleted successfully!';
                 break;
         }

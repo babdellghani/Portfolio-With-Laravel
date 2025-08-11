@@ -46,6 +46,13 @@ class BlogController extends Controller
             $query->where('user_id', $request->author_id);
         }
 
+        // Filter by tag
+        if ($request->filled('tag_id')) {
+            $query->whereHas('tags', function ($q) use ($request) {
+                $q->where('tags.id', $request->tag_id);
+            });
+        }
+
         // Search functionality
         if ($request->filled('search')) {
             $searchTerm = $request->search;
@@ -57,10 +64,11 @@ class BlogController extends Controller
         }
 
         $blogs      = $query->paginate(15);
-        $categories = Category::active()->get();
+        $categories = Category::whereHas('blogs')->get();
+        $tags       = Tag::whereHas('blogs')->get();
         $authors    = User::whereHas('blogs')->get();
 
-        return view('admin.blogs.index', compact('blogs', 'categories', 'authors'));
+        return view('admin.blogs.index', compact('blogs', 'categories', 'tags', 'authors'));
     }
 
     /**

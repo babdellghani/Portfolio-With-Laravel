@@ -1,6 +1,6 @@
 @extends('admin.partials.master')
 
-@section('title', 'Edit Category')
+@section('title', 'Edit Tag')
 
 @section('content')
     <div class="container-fluid">
@@ -8,11 +8,11 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0">Edit Category</h4>
+                    <h4 class="mb-sm-0">Edit Tag</h4>
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('admin.categories.index') }}">Categories</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('admin.tags.index') }}">Tags</a></li>
                             <li class="breadcrumb-item active">Edit</li>
                         </ol>
                     </div>
@@ -20,8 +20,7 @@
             </div>
         </div>
 
-        <form action="{{ route('admin.categories.update', $category) }}" method="POST" enctype="multipart/form-data"
-            id="category-edit-form">
+        <form action="{{ route('admin.tags.update', $tag) }}" method="POST" id="tag-edit-form">
             @csrf
             @method('PUT')
             <div class="row">
@@ -29,36 +28,65 @@
                 <div class="col-lg-8">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title mb-0">Category Information</h4>
+                            <h4 class="card-title mb-0">Tag Information</h4>
                         </div>
                         <div class="card-body">
-                            <!-- Category Name -->
+                            <!-- Tag Name -->
                             <div class="mb-3">
-                                <label for="name" class="form-label">Category Name <span
-                                        class="text-danger">*</span></label>
+                                <label for="name" class="form-label">Tag Name <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
-                                    name="name" value="{{ old('name', $category->name) }}" required>
+                                    name="name" value="{{ old('name', $tag->name) }}" required>
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                                <div class="form-text">Use descriptive names that help categorize your content</div>
                             </div>
 
                             <!-- Current Slug Display -->
                             <div class="mb-3">
                                 <label class="form-label">Current Slug</label>
-                                <div class="form-control-plaintext text-muted">{{ $category->slug }}</div>
-                                <small class="text-muted">Slug will be auto-generated from the category name</small>
+                                <div class="form-control-plaintext bg-light px-3 py-2 rounded">
+                                    <code>{{ $tag->slug }}</code>
+                                </div>
+                                <small class="text-muted">Slug will be auto-generated from the tag name</small>
                             </div>
 
-                            <!-- Description -->
+                            <!-- Tag Preview -->
                             <div class="mb-3">
-                                <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control @error('description') is-invalid @enderror" id="description"
-                                    name="description" rows="4"
-                                    placeholder="Brief description of the category...">{{ old('description', $category->description) }}</textarea>
-                                @error('description')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <label class="form-label">Tag Preview</label>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-primary me-2" id="tag-preview">{{ $tag->name }}</span>
+                                    <small class="text-muted">This is how your tag will appear</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tag Guidelines -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title mb-0">Tag Guidelines</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-info">
+                                <h6 class="alert-heading">Best Practices for Tags:</h6>
+                                <ul class="mb-0 small">
+                                    <li>Keep tag names short and descriptive</li>
+                                    <li>Use lowercase for consistency</li>
+                                    <li>Avoid special characters and spaces</li>
+                                    <li>Use specific rather than generic terms</li>
+                                    <li>Consider how users might search for content</li>
+                                </ul>
+                            </div>
+
+                            <div class="alert alert-warning">
+                                <h6 class="alert-heading">Important Notes:</h6>
+                                <ul class="mb-0 small">
+                                    <li>Tag names must be unique across the system</li>
+                                    <li>Changing tag names may affect SEO and URLs</li>
+                                    <li>Deactivated tags won't appear in public areas</li>
+                                    <li>Tags with associated blogs cannot be deleted</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -78,93 +106,87 @@
                                 <div class="square-switch">
                                     <input type="hidden" name="status" value="0" />
                                     <input type="checkbox" id="square-switch3" value="1" switch="bool" name="status"
-                                        @checked(old('status', $category->status)) />
+                                        @checked(old('status', $tag->status)) />
                                     <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
                                 </div>
                                 @error('status')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                                <div class="form-text">
+                                    {{ $tag->status ? 'Active - Tag is visible and usable' : 'Inactive - Tag is hidden from public view' }}
+                                </div>
                             </div>
 
-                            <!-- Category Stats -->
+                            <!-- Tag Statistics -->
                             <div class="mb-3">
                                 <label class="form-label">Statistics</label>
-                                <div class="d-flex justify-content-between text-muted small">
-                                    <span>Blogs: {{ $category->blogs_count ?? $category->blogs()->count() }}</span>
-                                    <span>Status: {{ $category->status ? 'Active' : 'Inactive' }}</span>
+                                <div class="bg-light p-3 rounded">
+                                    <div class="row text-center">
+                                        <div class="col-6">
+                                            <h5 class="mb-1 text-primary">{{ $tag->blogs_count ?? $tag->blogs()->count() }}
+                                            </h5>
+                                            <p class="text-muted mb-0 small">Blog Posts</p>
+                                        </div>
+                                        <div class="col-6">
+                                            <h5 class="mb-1 text-{{ $tag->status ? 'success' : 'danger' }}">
+                                                {{ $tag->status ? 'Active' : 'Inactive' }}
+                                            </h5>
+                                            <p class="text-muted mb-0 small">Status</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="text-muted small mt-1">
-                                    Created: {{ $category->created_at->format('M d, Y') }}
+                            </div>
+
+                            <!-- Creation Info -->
+                            <div class="mb-3">
+                                <label class="form-label">Tag Details</label>
+                                <div class="text-muted small">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>Created by:</span>
+                                        <span>{{ $tag->user->name }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>Created on:</span>
+                                        <span>{{ $tag->created_at->format('M d, Y') }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Last updated:</span>
+                                        <span>{{ $tag->updated_at->format('M d, Y') }}</span>
+                                    </div>
                                 </div>
                             </div>
 
                             <!-- Action Buttons -->
                             <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-success" id="update-category-btn">
-                                    <i class="mdi mdi-check me-1"></i> Update Category
+                                <button type="submit" class="btn btn-success" id="update-tag-btn">
+                                    <i class="mdi mdi-check me-1"></i> Update Tag
                                 </button>
-                                <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">
-                                    <i class="mdi mdi-arrow-left me-1"></i> Back to Categories
+                                <a href="{{ route('admin.tags.index') }}" class="btn btn-secondary">
+                                    <i class="mdi mdi-arrow-left me-1"></i> Back to Tags
                                 </a>
-                                @if($category->blogs()->count() === 0)
-                                    <button type="button" class="btn btn-danger" onclick="deleteCategory()">
-                                        <i class="mdi mdi-delete me-1"></i> Delete Category
+                                @if($tag->blogs()->count() === 0)
+                                    <button type="button" class="btn btn-danger" onclick="deleteTag()">
+                                        <i class="mdi mdi-delete me-1"></i> Delete Tag
                                     </button>
                                 @else
                                     <div class="alert alert-warning small p-2 mb-0">
                                         <i class="mdi mdi-alert me-1"></i>
-                                        Cannot delete: Category has {{ $category->blogs()->count() }} blog post(s)
+                                        Cannot delete: Tag is used in {{ $tag->blogs()->count() }} blog post(s)
                                     </div>
                                 @endif
                             </div>
                         </div>
                     </div>
 
-                    <!-- Category Image -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title mb-0">Category Image</h4>
-                        </div>
-                        <div class="card-body">
-                            <!-- Current Image -->
-                            @if($category->image)
-                                <div class="mb-3">
-                                    <label class="form-label">Current Image</label>
-                                    <div class="current-image">
-                                        <img src="{{ asset('storage/' . $category->image) }}" alt="Current category image"
-                                            class="img-fluid rounded">
-                                    </div>
-                                </div>
-                            @endif
-
-                            <div class="mb-3">
-                                <label for="image"
-                                    class="form-label">{{ $category->image ? 'Replace Image' : 'Upload Image' }}</label>
-                                <input type="file" class="form-control @error('image') is-invalid @enderror" id="image"
-                                    name="image" accept="image/*">
-                                @error('image')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                                <div class="form-text">Recommended size: 400x300px. Max size: 2MB</div>
-                            </div>
-
-                            <!-- Image Preview -->
-                            <div id="image-preview" style="display: none;">
-                                <label class="form-label">New Image Preview</label>
-                                <img id="preview-image" src="" alt="Preview" class="img-fluid rounded">
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Related Blogs -->
-                    @if($category->blogs()->count() > 0)
+                    @if($tag->blogs()->count() > 0)
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title mb-0">Related Blog Posts</h4>
                             </div>
                             <div class="card-body">
                                 <div class="list-group list-group-flush">
-                                    @foreach($category->blogs()->latest()->take(5)->get() as $blog)
+                                    @foreach($tag->blogs()->latest()->take(5)->get() as $blog)
                                         <div class="list-group-item px-0 py-2">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-shrink-0 me-2">
@@ -197,8 +219,7 @@
                                                     </p>
                                                 </div>
                                                 <div class="flex-shrink-0">
-                                                    <a href="{{ route('admin.blogs.edit', $blog) }}"
-                                                        class="btn btn-sm btn-soft-primary">
+                                                    <a href="{{ route('admin.blogs.edit', $blog) }}" class="btn btn-sm btn-soft-primary">
                                                         <i class="ri-edit-line"></i>
                                                     </a>
                                                 </div>
@@ -206,54 +227,24 @@
                                         </div>
                                     @endforeach
                                 </div>
-                                @if($category->blogs()->count() > 5)
+                                @if($tag->blogs()->count() > 5)
                                     <div class="text-center mt-3">
-                                        <a href="{{ route('admin.blogs.index', ['category_id' => $category->id]) }}"
+                                        <a href="{{ route('admin.blogs.index', ['tag_id' => $tag->id]) }}"
                                             class="btn btn-soft-primary btn-sm">
                                             <i class="ri-eye-line me-1"></i>
-                                            View all {{ $category->blogs()->count() }} blog posts
+                                            View all {{ $tag->blogs()->count() }} blog posts
                                         </a>
                                     </div>
                                 @endif
                             </div>
                         </div>
                     @endif
-
-                    <!-- Category Guidelines -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title mb-0">Category Guidelines</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="alert alert-info">
-                                <h6 class="alert-heading">Tips for editing categories:</h6>
-                                <ul class="mb-0 small">
-                                    <li>Use clear, descriptive names</li>
-                                    <li>Keep names concise (2-3 words max)</li>
-                                    <li>Avoid duplicate categories</li>
-                                    <li>Add descriptions to help users understand the category purpose</li>
-                                    <li>Upload relevant images to make categories more appealing</li>
-                                </ul>
-                            </div>
-
-                            <div class="alert alert-warning">
-                                <h6 class="alert-heading">Image Requirements:</h6>
-                                <ul class="mb-0 small">
-                                    <li>Supported formats: JPEG, PNG, JPG, GIF</li>
-                                    <li>Maximum file size: 2MB</li>
-                                    <li>Recommended dimensions: 400x300px</li>
-                                    <li>Use high-quality, relevant images</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </form>
 
         <!-- Hidden Delete Form -->
-        <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" id="delete-form"
-            style="display: none;">
+        <form action="{{ route('admin.tags.destroy', $tag) }}" method="POST" id="delete-form" style="display: none;">
             @csrf
             @method('DELETE')
         </form>
@@ -262,15 +253,23 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Form submission handling
-            const form = document.getElementById('category-edit-form');
-            const updateBtn = document.getElementById('update-category-btn');
+            const form = document.getElementById('tag-edit-form');
+            const updateBtn = document.getElementById('update-tag-btn');
+            const nameInput = document.getElementById('name');
+            const tagPreview = document.getElementById('tag-preview');
 
             if (form && updateBtn) {
                 form.addEventListener('submit', function (e) {
-                    const name = document.getElementById('name').value.trim();
+                    const name = nameInput.value.trim();
 
                     if (!name) {
-                        alert('Please enter a category name');
+                        alert('Please enter a tag name');
+                        e.preventDefault();
+                        return false;
+                    }
+
+                    if (name.length < 2) {
+                        alert('Tag name must be at least 2 characters long');
                         e.preventDefault();
                         return false;
                     }
@@ -282,34 +281,25 @@
                 });
             }
 
-            // Image preview functionality
-            document.getElementById('image').addEventListener('change', function (e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const preview = document.getElementById('image-preview');
-                        const img = document.getElementById('preview-image');
-                        img.src = e.target.result;
-                        preview.style.display = 'block';
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    document.getElementById('image-preview').style.display = 'none';
-                }
-            });
+            // Real-time tag preview
+            if (nameInput && tagPreview) {
+                nameInput.addEventListener('input', function (e) {
+                    const name = e.target.value.trim();
+                    tagPreview.textContent = name || '{{ $tag->name }}';
+                });
+            }
 
             // Auto-generate slug preview
-            document.getElementById('name').addEventListener('input', function (e) {
+            nameInput.addEventListener('input', function (e) {
                 const name = e.target.value;
                 const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
                 // You can display the slug preview here if needed
             });
         });
 
-        // Delete category function
-        function deleteCategory() {
-            if (confirm('Are you sure you want to delete this category? This action cannot be undone.')) {
+        // Delete tag function
+        function deleteTag() {
+            if (confirm('Are you sure you want to delete this tag? This action cannot be undone.')) {
                 document.getElementById('delete-form').submit();
             }
         }

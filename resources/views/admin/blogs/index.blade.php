@@ -50,7 +50,7 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <form method="GET" action="{{ route('admin.blogs.index') }}" class="row g-3">
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-2">
                                         <select name="status" class="form-select">
                                             <option value="">All Status</option>
                                             <option value="published" {{ request('status') === 'published' ? 'selected' : '' }}>Published</option>
@@ -68,6 +68,16 @@
                                             @endforeach
                                         </select>
                                     </div>
+                                    <div class="col-lg-2">
+                                        <select name="tag_id" class="form-select">
+                                            <option value="">All Tags</option>
+                                            @foreach($tags as $tag)
+                                                <option value="{{ $tag->id }}" {{ request('tag_id') == $tag->id ? 'selected' : '' }}>
+                                                    {{ $tag->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                     <div class="col-lg-3">
                                         <select name="author_id" class="form-select">
                                             <option value="">All Authors</option>
@@ -78,7 +88,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-2">
                                         <button type="submit" class="btn btn-primary">
                                             <i class="bx bx-filter-alt me-1"></i> Filter
                                         </button>

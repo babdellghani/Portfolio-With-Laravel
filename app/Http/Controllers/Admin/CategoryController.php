@@ -216,17 +216,17 @@ class CategoryController extends Controller
             case 'delete':
                 // Get the actual category models first
                 $categoriesToDelete = $categories->get();
-
+                
                 // Check if any category has blogs
                 $categoriesWithBlogs = $categoriesToDelete->filter(function ($category) {
                     return $category->blogs()->count() > 0;
                 });
-
+                
                 if ($categoriesWithBlogs->count() > 0) {
                     return redirect()->back()
                         ->with('error', 'Cannot delete categories that have associated blog posts.');
                 }
-
+                
                 // Delete images for each category
                 $categoriesToDelete->each(function ($category) {
                     if ($category->image) {
@@ -235,7 +235,7 @@ class CategoryController extends Controller
                     // Delete the category record
                     $category->delete();
                 });
-
+                
                 $message = 'Categories deleted successfully!';
                 break;
         }

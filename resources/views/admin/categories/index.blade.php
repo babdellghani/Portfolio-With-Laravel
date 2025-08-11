@@ -219,9 +219,14 @@
                         @if($categories->hasPages())
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <ul class="pagination pagination-rounded justify-content-end mb-2">
-                                        {{ $categories->links() }}
-                                    </ul>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <div class="text-muted">
+                                            Showing {{ $categories->firstItem() }} to {{ $categories->lastItem() }} of {{ $categories->total() }} results
+                                        </div>
+                                        <nav aria-label="Page navigation">
+                                            {{ $categories->appends(request()->query())->links('pagination::bootstrap-4') }}
+                                        </nav>
+                                    </div>
                                 </div>
                             </div>
                         @endif
