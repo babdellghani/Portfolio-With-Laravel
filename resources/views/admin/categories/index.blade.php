@@ -167,33 +167,20 @@
                                                 <td>{{ $category->created_at->format('M d, Y') }}</td>
                                                 <td>
                                                     <div class="d-flex gap-3">
-                                                        <a href="{{ route('admin.categories.show', $category) }}"
-                                                            class="text-success">
-                                                            <i class="mdi mdi-eye font-size-18"></i>
-                                                        </a>
                                                         <a href="{{ route('admin.categories.edit', $category) }}"
                                                             class="text-success">
                                                             <i class="mdi mdi-pencil font-size-18"></i>
                                                         </a>
-                                                        <form action="{{ route('admin.categories.toggle-status', $category) }}"
-                                                            method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('PATCH')
-                                                            <button type="submit" class="btn btn-link text-warning p-0"
-                                                                title="{{ $category->status ? 'Deactivate' : 'Activate' }}">
-                                                                <i
-                                                                    class="mdi mdi-{{ $category->status ? 'eye-off' : 'eye' }} font-size-18"></i>
-                                                            </button>
-                                                        </form>
-                                                        <form action="{{ route('admin.categories.destroy', $category) }}"
-                                                            method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-link text-danger p-0"
-                                                                onclick="return confirm('Are you sure? This will also affect all related blog posts.')">
-                                                                <i class="mdi mdi-delete font-size-18"></i>
-                                                            </button>
-                                                        </form>
+                                                        <button type="submit" form="toggle-status-form-{{ $category->id }}"
+                                                            class="btn btn-link text-warning p-0">
+                                                            <i
+                                                                class="mdi mdi-{{ $category->status ? 'eye-off' : 'eye' }} font-size-18"></i>
+                                                        </button>
+                                                        <button type="submit" form="delete-form-{{ $category->id }}"
+                                                            class="btn btn-link text-danger p-0"
+                                                            onclick="return confirm('Are you sure?')">
+                                                            <i class="mdi mdi-delete font-size-18"></i>
+                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -214,6 +201,19 @@
                                 </table>
                             </div>
                         </form>
+
+                        @foreach($categories as $category)
+                            <form action="{{ route('admin.categories.toggle-status', $category) }}" method="POST"
+                                id="toggle-status-form-{{ $category->id }}" style="display: none;">
+                                @csrf
+                                @method('PATCH')
+                            </form>
+                            <form action="{{ route('admin.categories.destroy', $category) }}" method="POST"
+                                id="delete-form-{{ $category->id }}" style="display: none;">
+                                @csrf
+                                @method('DELETE')
+                            </form>
+                        @endforeach
 
                         <!-- Pagination -->
                         @if($categories->hasPages())

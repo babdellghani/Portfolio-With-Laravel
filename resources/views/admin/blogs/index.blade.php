@@ -42,10 +42,6 @@
                                         class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2">
                                         <i class="mdi mdi-plus me-1"></i> New Blog
                                     </a>
-                                    <a href="{{ route('admin.blogs.stats') }}"
-                                        class="btn btn-info btn-rounded waves-effect waves-light mb-2">
-                                        <i class="mdi mdi-chart-line me-1"></i> Statistics
-                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -152,8 +148,8 @@
                                                     <div class="d-flex align-items-center">
                                                         <div class="flex-shrink-0 me-3">
                                                             @if($blog->thumbnail)
-                                                                <img src="{{ asset('storage/' . $blog->thumbnail) }}" alt=""
-                                                                    class="avatar-sm rounded">
+                                                                <img src="{{ $blog->thumbnail && str_starts_with($blog->thumbnail, 'defaults_images/') ? asset($blog->thumbnail) : asset('storage/' . $blog->thumbnail) }}"
+                                                                    alt="" class="avatar-sm rounded">
                                                             @else
                                                                 <div class="avatar-sm">
                                                                     <span class="avatar-title rounded bg-primary">
@@ -202,9 +198,6 @@
                                                 <td>{{ $blog->created_at->format('M d, Y') }}</td>
                                                 <td>
                                                     <div class="d-flex gap-3">
-                                                        <a href="{{ route('admin.blogs.show', $blog) }}" class="text-success">
-                                                            <i class="mdi mdi-eye font-size-18"></i>
-                                                        </a>
                                                         <a href="{{ route('admin.blogs.edit', $blog) }}" class="text-success">
                                                             <i class="mdi mdi-pencil font-size-18"></i>
                                                         </a>
@@ -212,22 +205,15 @@
                                                             class="text-info">
                                                             <i class="mdi mdi-open-in-new font-size-18"></i>
                                                         </a>
-                                                        <form action="{{ route('admin.blogs.duplicate', $blog) }}" method="POST"
-                                                            class="d-inline">
-                                                            @csrf
-                                                            <button type="submit" class="btn btn-link text-warning p-0">
-                                                                <i class="mdi mdi-content-copy font-size-18"></i>
-                                                            </button>
-                                                        </form>
-                                                        <form action="{{ route('admin.blogs.destroy', $blog) }}" method="POST"
-                                                            class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-link text-danger p-0"
-                                                                onclick="return confirm('Are you sure?')">
-                                                                <i class="mdi mdi-delete font-size-18"></i>
-                                                            </button>
-                                                        </form>
+                                                        <button type="submit" form="duplicate-form-{{ $blog->id }}"
+                                                            class="btn btn-link text-warning p-0">
+                                                            <i class="mdi mdi-content-copy font-size-18"></i>
+                                                        </button>
+                                                        <button type="submit" form="delete-form-{{ $blog->id }}"
+                                                            class="btn btn-link text-danger p-0"
+                                                            onclick="return confirm('Are you sure?')">
+                                                            <i class="mdi mdi-delete font-size-18"></i>
+                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -249,13 +235,31 @@
                             </div>
                         </form>
 
+                        <!-- Individual Action Forms (Outside bulk form) -->
+                        @foreach($blogs as $blog)
+                            <form action="{{ route('admin.blogs.duplicate', $blog) }}" method="POST"
+                                id="duplicate-form-{{ $blog->id }}" style="display: none;">
+                                @csrf
+                            </form>
+                            <form action="{{ route('admin.blogs.destroy', $blog) }}" method="POST"
+                                id="delete-form-{{ $blog->id }}" style="display: none;">
+                                @csrf
+                                @method('DELETE')
+                            </form>
+                        @endforeach
+
                         <!-- Pagination -->
                         @if($blogs->hasPages())
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <ul class="pagination pagination-rounded justify-content-end mb-2">
-                                        {{ $blogs->links() }}
-                                    </ul>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <div class="text-muted">
+                                            Showing {{ $blogs->firstItem() }} to {{ $blogs->lastItem() }} of {{ $blogs->total() }} results
+                                        </div>
+                                        <nav aria-label="Page navigation">
+                                            {{ $blogs->appends(request()->query())->links('pagination::bootstrap-4') }}
+                                        </nav>
+                                    </div>
                                 </div>
                             </div>
                         @endif
@@ -265,39 +269,44 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Check All functionality
-            document.getElementById('checkAll').addEventListener('change', function () {
-                const checkboxes = document.querySelectorAll('input[name="blogs[]"]');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = this.checked;
+    <!-- Hidden forms for individual actions -->
+    <div id="hidden-forms"></div>
+
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Check All functionality
+                document.getElementById('checkAll').addEventListener('change', function () {
+                    const checkboxes = document.querySelectorAll('input[name="blogs[]"]');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = this.checked;
+                    });
+                });
+
+                // Bulk action form validation
+                document.getElementById('bulk-action-form').addEventListener('submit', function (e) {
+                    const selectedBlogs = document.querySelectorAll('input[name="blogs[]"]:checked');
+                    const action = document.querySelector('select[name="action"]').value;
+
+                    if (selectedBlogs.length === 0) {
+                        e.preventDefault();
+                        alert('Please select at least one blog.');
+                        return;
+                    }
+
+                    if (!action) {
+                        e.preventDefault();
+                        alert('Please select an action.');
+                        return;
+                    }
+
+                    if (action === 'delete') {
+                        if (!confirm('Are you sure you want to delete the selected blogs? This action cannot be undone.')) {
+                            e.preventDefault();
+                        }
+                    }
                 });
             });
-
-            // Bulk action form validation
-            document.getElementById('bulk-action-form').addEventListener('submit', function (e) {
-                const selectedBlogs = document.querySelectorAll('input[name="blogs[]"]:checked');
-                const action = document.querySelector('select[name="action"]').value;
-
-                if (selectedBlogs.length === 0) {
-                    e.preventDefault();
-                    alert('Please select at least one blog.');
-                    return;
-                }
-
-                if (!action) {
-                    e.preventDefault();
-                    alert('Please select an action.');
-                    return;
-                }
-
-                if (action === 'delete') {
-                    if (!confirm('Are you sure you want to delete the selected blogs? This action cannot be undone.')) {
-                        e.preventDefault();
-                    }
-                }
-            });
-        });
-    </script>
+        </script>
+    @endpush
 @endsection

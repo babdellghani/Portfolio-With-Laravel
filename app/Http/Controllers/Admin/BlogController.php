@@ -88,24 +88,35 @@ class BlogController extends Controller
         }
 
         $request->validate([
-            'title'        => 'required|string|max:255',
-            'content'      => 'required|string',
-            'excerpt'      => 'nullable|string|max:500',
-            'thumbnail'    => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status'       => 'required|in:draft,published',
-            'categories'   => 'required|array|min:1',
-            'categories.*' => 'exists:categories,id',
-            'tags'         => 'nullable|array',
-            'tags.*'       => 'exists:tags,id',
+            'title'             => 'required|string|max:255',
+            'content'           => 'required|string',
+            'excerpt'           => 'nullable|string|max:500',
+            'short_description' => 'nullable|string|max:255',
+            'description'       => 'nullable|string',
+            'image'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'thumbnail'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'status'            => 'required|in:draft,published',
+            'categories'        => 'required|array|min:1',
+            'categories.*'      => 'exists:categories,id',
+            'tags'              => 'nullable|array',
+            'tags.*'            => 'exists:tags,id',
         ]);
 
-        $blog          = new Blog();
-        $blog->title   = $request->input('title');
-        $blog->slug    = $this->generateUniqueSlug($request->input('title'));
-        $blog->content = $request->input('content');
-        $blog->excerpt = $request->input('excerpt');
-        $blog->status  = $request->input('status');
-        $blog->user_id = Auth::id();
+        $blog                    = new Blog();
+        $blog->title             = $request->input('title');
+        $blog->slug              = $this->generateUniqueSlug($request->input('title'));
+        $blog->content           = $request->input('content');
+        $blog->excerpt           = $request->input('excerpt');
+        $blog->short_description = $request->input('short_description');
+        $blog->description       = $request->input('description');
+        $blog->status            = $request->input('status');
+        $blog->user_id           = Auth::id();
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $imagePath   = $request->file('image')->store('blog/images', 'public');
+            $blog->image = $imagePath;
+        }
 
         // Handle thumbnail upload
         if ($request->hasFile('thumbnail')) {
@@ -123,19 +134,6 @@ class BlogController extends Controller
 
         return redirect()->route('admin.blogs.index')
             ->with('success', 'Blog post created successfully!');
-    }
-
-    /**
-     * Display the specified blog
-     */
-    public function show(Blog $blog)
-    {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can view blog details.');
-        }
-
-        $blog->load(['user', 'categories', 'tags', 'comments.user', 'likes.user', 'bookmarks.user']);
-        return view('admin.blogs.show', compact('blog'));
     }
 
     /**
@@ -162,45 +160,72 @@ class BlogController extends Controller
             abort(403, 'You can only edit your own blog posts.');
         }
 
-        $request->validate([
-            'title'        => 'required|string|max:255',
-            'content'      => 'required|string',
-            'excerpt'      => 'nullable|string|max:500',
-            'thumbnail'    => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status'       => 'required|in:draft,published',
-            'categories'   => 'required|array|min:1',
-            'categories.*' => 'exists:categories,id',
-            'tags'         => 'nullable|array',
-            'tags.*'       => 'exists:tags,id',
-        ]);
+        try {
+            $request->validate([
+                'title'             => 'required|string|max:255',
+                'content'           => 'required|string',
+                'excerpt'           => 'nullable|string|max:500',
+                'short_description' => 'nullable|string|max:255',
+                'description'       => 'nullable|string',
+                'image'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB
+                'thumbnail'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // 2MB
+                'status'            => 'required|in:draft,published',
+                'categories'        => 'required|array|min:1',
+                'categories.*'      => 'exists:categories,id',
+                'tags'              => 'nullable|array',
+                'tags.*'            => 'exists:tags,id',
+            ]);
 
-        $blog->title = $request->input('title');
-        $blog->slug  = $blog->title !== $request->input('title')
-        ? $this->generateUniqueSlug($request->input('title'), $blog->id)
-        : $blog->slug;
-        $blog->content = $request->input('content');
-        $blog->excerpt = $request->input('excerpt');
-        $blog->status  = $request->input('status');
+            $blog->title = $request->input('title');
+            $blog->slug  = $blog->title !== $request->input('title')
+            ? $this->generateUniqueSlug($request->input('title'), $blog->id)
+            : $blog->slug;
+            $blog->content           = $request->input('content');
+            $blog->excerpt           = $request->input('excerpt');
+            $blog->short_description = $request->input('short_description');
+            $blog->description       = $request->input('description');
+            $blog->status            = $request->input('status');
 
-        // Handle thumbnail upload
-        if ($request->hasFile('thumbnail')) {
-            // Delete old thumbnail
-            if ($blog->thumbnail) {
-                Storage::disk('public')->delete($blog->thumbnail);
+            // Handle image upload
+            if ($request->hasFile('image')) {
+                // Delete old image if it's not a default image
+                if ($blog->image && ! str_starts_with($blog->image, 'defaults_images/')) {
+                    Storage::disk('public')->delete($blog->image);
+                }
+
+                $imagePath   = $request->file('image')->store('blog/images', 'public');
+                $blog->image = $imagePath;
             }
 
-            $thumbnailPath   = $request->file('thumbnail')->store('blog/thumbnails', 'public');
-            $blog->thumbnail = $thumbnailPath;
+            // Handle thumbnail upload
+            if ($request->hasFile('thumbnail')) {
+                // Delete old thumbnail if it's not a default image
+                if ($blog->thumbnail && ! str_starts_with($blog->thumbnail, 'defaults_images/')) {
+                    Storage::disk('public')->delete($blog->thumbnail);
+                }
+
+                $thumbnailPath   = $request->file('thumbnail')->store('blog/thumbnails', 'public');
+                $blog->thumbnail = $thumbnailPath;
+            }
+
+            $blog->save();
+
+            // Update categories and tags
+            $blog->categories()->sync($request->categories);
+            $blog->tags()->sync($request->filled('tags') ? $request->tags : []);
+
+            return redirect()->route('admin.blogs.index')
+                ->with('success', 'Blog post updated successfully!');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->validator)
+                ->withInput();
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'An error occurred while updating the blog: ' . $e->getMessage())
+                ->withInput();
         }
-
-        $blog->save();
-
-        // Update categories and tags
-        $blog->categories()->sync($request->categories);
-        $blog->tags()->sync($request->filled('tags') ? $request->tags : []);
-
-        return redirect()->route('admin.blogs.index')
-            ->with('success', 'Blog post updated successfully!');
     }
 
     /**

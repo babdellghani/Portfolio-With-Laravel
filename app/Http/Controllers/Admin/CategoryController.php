@@ -93,19 +93,6 @@ class CategoryController extends Controller
     }
 
     /**
-     * Display the specified category
-     */
-    public function show(Category $category)
-    {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can view category details.');
-        }
-
-        $category->load(['user', 'blogs.user']);
-        return view('admin.categories.show', compact('category'));
-    }
-
-    /**
      * Show the form for editing the specified category
      */
     public function edit(Category $category)
@@ -227,19 +214,28 @@ class CategoryController extends Controller
                 break;
 
             case 'delete':
+                // Get the actual category models first
+                $categoriesToDelete = $categories->get();
+
                 // Check if any category has blogs
-                $categoriesWithBlogs = $categories->whereHas('blogs')->count();
-                if ($categoriesWithBlogs > 0) {
+                $categoriesWithBlogs = $categoriesToDelete->filter(function ($category) {
+                    return $category->blogs()->count() > 0;
+                });
+
+                if ($categoriesWithBlogs->count() > 0) {
                     return redirect()->back()
                         ->with('error', 'Cannot delete categories that have associated blog posts.');
                 }
 
-                $categories->each(function ($category) {
+                // Delete images for each category
+                $categoriesToDelete->each(function ($category) {
                     if ($category->image) {
                         Storage::disk('public')->delete($category->image);
                     }
+                    // Delete the category record
+                    $category->delete();
                 });
-                $categories->delete();
+
                 $message = 'Categories deleted successfully!';
                 break;
         }
