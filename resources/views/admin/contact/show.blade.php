@@ -100,8 +100,7 @@
                                 <div class="col-sm-9">
                                     {{-- Legacy single reply --}}
                                     @if ($contact->admin_reply)
-                                        <div
-                                            class="bg-success bg-opacity-10 p-3 rounded border-start border-success border-3 mb-3">
+                                        <div class="bg-success bg-opacity-10 p-3 rounded border-start border-success border-3 mb-3">
                                             <div class="d-flex justify-content-between align-items-start mb-2">
                                                 <strong>Legacy Reply:</strong>
                                                 <small class="text-muted">
@@ -114,8 +113,7 @@
 
                                     {{-- New multiple replies --}}
                                     @foreach ($contact->replies as $reply)
-                                        <div
-                                            class="bg-success bg-opacity-10 p-3 rounded border-start border-success border-3 mb-3">
+                                        <div class="bg-success bg-opacity-10 p-3 rounded border-start border-success border-3 mb-3">
                                             <div class="d-flex justify-content-between align-items-start mb-2">
                                                 <strong>{{ $reply->admin->name }}:</strong>
                                                 <small class="text-muted">
@@ -275,25 +273,27 @@
         </div>
     </div>
 
-    <script>
-        // Mark as read functionality
-        @if (!$contact->is_read)
-            document.getElementById('markReadBtn').addEventListener('click', function() {
-                fetch(`/admin/contacts/{{ $contact->id }}/mark-read`, {
+    @push('scripts')
+        <script>
+            // Mark as read functionality
+            @if (!$contact->is_read)
+                document.getElementById('markReadBtn').addEventListener('click', function () {
+                    fetch(`/admin/contacts/{{ $contact->id }}/mark-read`, {
                         method: 'PATCH',
                         headers: {
                             'X-CSRF-TOKEN': '{{ csrf_token() }}',
                             'Content-Type': 'application/json',
                         }
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            location.reload();
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
-            });
-        @endif
-    </script>
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                location.reload();
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                });
+            @endif
+        </script>
+    @endpush
 @endsection

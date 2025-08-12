@@ -63,7 +63,8 @@
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <label for="site_description" class="form-label">Site Description</label>
-                                    <textarea name="site_description" class="form-control" rows="3" id="site_description">{{ old('site_description', $websiteInfo->site_description) }}</textarea>
+                                    <textarea name="site_description" class="form-control" rows="3"
+                                        id="site_description">{{ old('site_description', $websiteInfo->site_description) }}</textarea>
                                     @error('site_description')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -185,7 +186,8 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="address" class="form-label">Address</label>
-                                    <textarea name="address" class="form-control" rows="3" id="address">{{ old('address', $websiteInfo->address) }}</textarea>
+                                    <textarea name="address" class="form-control" rows="3"
+                                        id="address">{{ old('address', $websiteInfo->address) }}</textarea>
                                     @error('address')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -239,8 +241,7 @@
                                 <div class="col-md-6">
                                     <label for="instagram_url" class="form-label">Instagram URL</label>
                                     <input name="instagram_url" class="form-control" type="url"
-                                        value="{{ old('instagram_url', $websiteInfo->instagram_url) }}"
-                                        id="instagram_url">
+                                        value="{{ old('instagram_url', $websiteInfo->instagram_url) }}" id="instagram_url">
                                     @error('instagram_url')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -275,8 +276,7 @@
                                 <div class="col-md-4">
                                     <label for="pinterest_url" class="form-label">Pinterest URL</label>
                                     <input name="pinterest_url" class="form-control" type="url"
-                                        value="{{ old('pinterest_url', $websiteInfo->pinterest_url) }}"
-                                        id="pinterest_url">
+                                        value="{{ old('pinterest_url', $websiteInfo->pinterest_url) }}" id="pinterest_url">
                                     @error('pinterest_url')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -320,7 +320,8 @@
                             <div class="row mb-3">
                                 <div class="col-md-8">
                                     <label for="footer_text" class="form-label">Footer Text</label>
-                                    <textarea name="footer_text" class="form-control" rows="3" id="footer_text">{{ old('footer_text', $websiteInfo->footer_text) }}</textarea>
+                                    <textarea name="footer_text" class="form-control" rows="3"
+                                        id="footer_text">{{ old('footer_text', $websiteInfo->footer_text) }}</textarea>
                                     @error('footer_text')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -351,31 +352,33 @@
 
     </div>
 
-    <script type="text/javascript">
-        function previewImage(input, previewId) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
+    @push('scripts')
+        <script type="text/javascript">
+            function previewImage(input, previewId) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
 
-                reader.onload = function(e) {
-                    document.getElementById(previewId).style.display = 'block';
-                    document.getElementById(previewId).src = e.target.result;
+                    reader.onload = function (e) {
+                        document.getElementById(previewId).style.display = 'block';
+                        document.getElementById(previewId).src = e.target.result;
+                    }
+
+                    reader.readAsDataURL(input.files[0]);
                 }
-
-                reader.readAsDataURL(input.files[0]);
             }
-        }
 
-        document.getElementById('logo_black').addEventListener('change', function() {
-            previewImage(this, 'blackLogoPreview');
-        });
+            document.getElementById('logo_black').addEventListener('change', function () {
+                previewImage(this, 'blackLogoPreview');
+            });
 
-        document.getElementById('logo_white').addEventListener('change', function() {
-            previewImage(this, 'whiteLogoPreview');
-        });
+            document.getElementById('logo_white').addEventListener('change', function () {
+                previewImage(this, 'whiteLogoPreview');
+            });
 
-        document.getElementById('favicon').addEventListener('change', function() {
-            previewImage(this, 'faviconPreview');
-        });
-    </script>
+            document.getElementById('favicon').addEventListener('change', function () {
+                previewImage(this, 'faviconPreview');
+            });
+        </script>
+    @endpush
 
 @endsection

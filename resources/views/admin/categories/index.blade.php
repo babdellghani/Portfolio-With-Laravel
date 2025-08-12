@@ -221,7 +221,8 @@
                                 <div class="col-lg-12">
                                     <div class="d-flex justify-content-between align-items-center mt-3">
                                         <div class="text-muted">
-                                            Showing {{ $categories->firstItem() }} to {{ $categories->lastItem() }} of {{ $categories->total() }} results
+                                            Showing {{ $categories->firstItem() }} to {{ $categories->lastItem() }} of
+                                            {{ $categories->total() }} results
                                         </div>
                                         <nav aria-label="Page navigation">
                                             {{ $categories->appends(request()->query())->links('pagination::bootstrap-4') }}
@@ -236,39 +237,41 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Check All functionality
-            document.getElementById('checkAll').addEventListener('change', function () {
-                const checkboxes = document.querySelectorAll('input[name="categories[]"]');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = this.checked;
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Check All functionality
+                document.getElementById('checkAll').addEventListener('change', function () {
+                    const checkboxes = document.querySelectorAll('input[name="categories[]"]');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = this.checked;
+                    });
+                });
+
+                // Bulk action form validation
+                document.getElementById('bulk-action-form').addEventListener('submit', function (e) {
+                    const selectedCategories = document.querySelectorAll('input[name="categories[]"]:checked');
+                    const action = document.querySelector('select[name="action"]').value;
+
+                    if (selectedCategories.length === 0) {
+                        e.preventDefault();
+                        alert('Please select at least one category.');
+                        return;
+                    }
+
+                    if (!action) {
+                        e.preventDefault();
+                        alert('Please select an action.');
+                        return;
+                    }
+
+                    if (action === 'delete') {
+                        if (!confirm('Are you sure you want to delete the selected categories? This may affect related blog posts.')) {
+                            e.preventDefault();
+                        }
+                    }
                 });
             });
-
-            // Bulk action form validation
-            document.getElementById('bulk-action-form').addEventListener('submit', function (e) {
-                const selectedCategories = document.querySelectorAll('input[name="categories[]"]:checked');
-                const action = document.querySelector('select[name="action"]').value;
-
-                if (selectedCategories.length === 0) {
-                    e.preventDefault();
-                    alert('Please select at least one category.');
-                    return;
-                }
-
-                if (!action) {
-                    e.preventDefault();
-                    alert('Please select an action.');
-                    return;
-                }
-
-                if (action === 'delete') {
-                    if (!confirm('Are you sure you want to delete the selected categories? This may affect related blog posts.')) {
-                        e.preventDefault();
-                    }
-                }
-            });
-        });
-    </script>
+        </script>
+    @endpush
 @endsection

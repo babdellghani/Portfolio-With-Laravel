@@ -132,32 +132,33 @@
             </div>
         </div>
     </div>
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Image preview functionality
+                document.getElementById('image').addEventListener('change', function (e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const preview = document.getElementById('image-preview');
+                            const img = document.getElementById('preview-image');
+                            img.src = e.target.result;
+                            preview.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        document.getElementById('image-preview').style.display = 'none';
+                    }
+                });
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Image preview functionality
-            document.getElementById('image').addEventListener('change', function (e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const preview = document.getElementById('image-preview');
-                        const img = document.getElementById('preview-image');
-                        img.src = e.target.result;
-                        preview.style.display = 'block';
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    document.getElementById('image-preview').style.display = 'none';
-                }
+                // Auto-generate slug preview (optional)
+                document.getElementById('name').addEventListener('input', function (e) {
+                    const name = e.target.value;
+                    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+                    // You can display the slug preview here if needed
+                });
             });
-
-            // Auto-generate slug preview (optional)
-            document.getElementById('name').addEventListener('input', function (e) {
-                const name = e.target.value;
-                const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-                // You can display the slug preview here if needed
-            });
-        });
-    </script>
+        </script>
+    @endpush
 @endsection

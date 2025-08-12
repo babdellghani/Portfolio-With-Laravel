@@ -195,10 +195,13 @@
                                                         <a href="{{ route('admin.tags.edit', $tag) }}" class="text-success">
                                                             <i class="mdi mdi-pencil font-size-18"></i>
                                                         </a>
-                                                        <button type="submit" form="toggle-status-form-{{ $tag->id }}" class="btn btn-link text-warning p-0">
-                                                            <i class="mdi mdi-{{ $tag->status ? 'eye-off' : 'eye' }} font-size-18"></i>
+                                                        <button type="submit" form="toggle-status-form-{{ $tag->id }}"
+                                                            class="btn btn-link text-warning p-0">
+                                                            <i
+                                                                class="mdi mdi-{{ $tag->status ? 'eye-off' : 'eye' }} font-size-18"></i>
                                                         </button>
-                                                        <button type="submit" form="delete-form-{{ $tag->id }}" class="btn btn-link text-danger p-0"
+                                                        <button type="submit" form="delete-form-{{ $tag->id }}"
+                                                            class="btn btn-link text-danger p-0"
                                                             onclick="return confirm('Are you sure?')">
                                                             <i class="mdi mdi-delete font-size-18"></i>
                                                         </button>
@@ -258,39 +261,41 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Check All functionality
-            document.getElementById('checkAll').addEventListener('change', function () {
-                const checkboxes = document.querySelectorAll('input[name="tags[]"]');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = this.checked;
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Check All functionality
+                document.getElementById('checkAll').addEventListener('change', function () {
+                    const checkboxes = document.querySelectorAll('input[name="tags[]"]');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = this.checked;
+                    });
+                });
+
+                // Bulk action form validation
+                document.getElementById('bulk-action-form').addEventListener('submit', function (e) {
+                    const selectedTags = document.querySelectorAll('input[name="tags[]"]:checked');
+                    const action = document.querySelector('select[name="action"]').value;
+
+                    if (selectedTags.length === 0) {
+                        e.preventDefault();
+                        alert('Please select at least one tag.');
+                        return;
+                    }
+
+                    if (!action) {
+                        e.preventDefault();
+                        alert('Please select an action.');
+                        return;
+                    }
+
+                    if (action === 'delete') {
+                        if (!confirm('Are you sure you want to delete the selected tags? This may affect related blog posts.')) {
+                            e.preventDefault();
+                        }
+                    }
                 });
             });
-
-            // Bulk action form validation
-            document.getElementById('bulk-action-form').addEventListener('submit', function (e) {
-                const selectedTags = document.querySelectorAll('input[name="tags[]"]:checked');
-                const action = document.querySelector('select[name="action"]').value;
-
-                if (selectedTags.length === 0) {
-                    e.preventDefault();
-                    alert('Please select at least one tag.');
-                    return;
-                }
-
-                if (!action) {
-                    e.preventDefault();
-                    alert('Please select an action.');
-                    return;
-                }
-
-                if (action === 'delete') {
-                    if (!confirm('Are you sure you want to delete the selected tags? This may affect related blog posts.')) {
-                        e.preventDefault();
-                    }
-                }
-            });
-        });
-    </script>
+        </script>
+    @endpush
 @endsection

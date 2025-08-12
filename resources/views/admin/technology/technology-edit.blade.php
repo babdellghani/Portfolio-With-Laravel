@@ -47,14 +47,12 @@
                                     <label for="type" class="form-label">Type</label>
                                     <select name="type" class="form-control" id="type">
                                         <option value="">Select Type</option>
-                                        <option value="language"
-                                            {{ old('type', $technology->type) == 'language' ? 'selected' : '' }}>Programming
+                                        <option value="language" {{ old('type', $technology->type) == 'language' ? 'selected' : '' }}>Programming
                                             Language</option>
-                                        <option value="framework"
-                                            {{ old('type', $technology->type) == 'framework' ? 'selected' : '' }}>Framework
+                                        <option value="framework" {{ old('type', $technology->type) == 'framework' ? 'selected' : '' }}>Framework
                                         </option>
-                                        <option value="tool"
-                                            {{ old('type', $technology->type) == 'tool' ? 'selected' : '' }}>Tool</option>
+                                        <option value="tool" {{ old('type', $technology->type) == 'tool' ? 'selected' : '' }}>
+                                            Tool</option>
                                     </select>
                                     @error('type')
                                         <span class="text-danger">{{ $message }}</span>
@@ -155,26 +153,28 @@
 
     </div>
 
-    <script type="text/javascript">
-        function previewImage(input, previewId) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
+    @push('scripts')
+        <script type="text/javascript">
+            function previewImage(input, previewId) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
 
-                reader.onload = function(e) {
-                    document.getElementById(previewId).style.display = 'block';
-                    document.getElementById(previewId).src = e.target.result;
+                    reader.onload = function (e) {
+                        document.getElementById(previewId).style.display = 'block';
+                        document.getElementById(previewId).src = e.target.result;
+                    }
+
+                    reader.readAsDataURL(input.files[0]);
                 }
-
-                reader.readAsDataURL(input.files[0]);
             }
-        }
 
-        document.getElementById('light_icon').addEventListener('change', function() {
-            previewImage(this, 'lightIconPreview');
-        });
+            document.getElementById('light_icon').addEventListener('change', function () {
+                previewImage(this, 'lightIconPreview');
+            });
 
-        document.getElementById('dark_icon').addEventListener('change', function() {
-            previewImage(this, 'darkIconPreview');
-        });
-    </script>
+            document.getElementById('dark_icon').addEventListener('change', function () {
+                previewImage(this, 'darkIconPreview');
+            });
+        </script>
+    @endpush
 @endsection

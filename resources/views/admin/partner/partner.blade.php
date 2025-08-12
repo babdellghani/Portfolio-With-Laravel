@@ -33,8 +33,7 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="name" class="form-label">Partner Name</label>
-                                    <input name="name" class="form-control" type="text" value="{{ old('name') }}"
-                                        id="name">
+                                    <input name="name" class="form-control" type="text" value="{{ old('name') }}" id="name">
                                     @error('name')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -79,8 +78,8 @@
                                     <label for="status" class="form-label">Status</label>
                                     <div class="form-check form-switch">
                                         <div class="square-switch">
-                                            <input type="checkbox" id="square-switch3" value="1" switch="bool"
-                                                name="status" @checked(old('status', true)) />
+                                            <input type="checkbox" id="square-switch3" value="1" switch="bool" name="status"
+                                                @checked(old('status', true)) />
                                             <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
                                         </div>
                                     </div>
@@ -202,26 +201,28 @@
 
     </div>
 
-    <script type="text/javascript">
-        function previewImage(input, previewId) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
+    @push('scripts')
+        <script type="text/javascript">
+            function previewImage(input, previewId) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
 
-                reader.onload = function(e) {
-                    document.getElementById(previewId).style.display = 'block';
-                    document.getElementById(previewId).src = e.target.result;
+                    reader.onload = function (e) {
+                        document.getElementById(previewId).style.display = 'block';
+                        document.getElementById(previewId).src = e.target.result;
+                    }
+
+                    reader.readAsDataURL(input.files[0]);
                 }
-
-                reader.readAsDataURL(input.files[0]);
             }
-        }
 
-        document.getElementById('light_logo').addEventListener('change', function() {
-            previewImage(this, 'lightLogoPreview');
-        });
+            document.getElementById('light_logo').addEventListener('change', function () {
+                previewImage(this, 'lightLogoPreview');
+            });
 
-        document.getElementById('dark_logo').addEventListener('change', function() {
-            previewImage(this, 'darkLogoPreview');
-        });
-    </script>
+            document.getElementById('dark_logo').addEventListener('change', function () {
+                previewImage(this, 'darkLogoPreview');
+            });
+        </script>
+    @endpush
 @endsection

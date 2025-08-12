@@ -33,8 +33,7 @@
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="name" class="form-label">Technology Name</label>
-                                    <input name="name" class="form-control" type="text" value="{{ old('name') }}"
-                                        id="name">
+                                    <input name="name" class="form-control" type="text" value="{{ old('name') }}" id="name">
                                     @error('name')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -168,8 +167,7 @@
                                         </td>
                                         <td>{{ $technology->order }}</td>
                                         <td>
-                                            <form method="POST"
-                                                action="{{ route('technology.status', $technology->id) }}"
+                                            <form method="POST" action="{{ route('technology.status', $technology->id) }}"
                                                 style="display: inline;">
                                                 @csrf
                                                 @method('PATCH')
@@ -181,12 +179,11 @@
                                             </form>
                                         </td>
                                         <td>
-                                            <a href="{{ route('technology.edit', $technology->id) }}"
-                                                class="btn btn-info sm" title="Edit Data">
+                                            <a href="{{ route('technology.edit', $technology->id) }}" class="btn btn-info sm"
+                                                title="Edit Data">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <form method="POST"
-                                                action="{{ route('technology.destroy', $technology->id) }}"
+                                            <form method="POST" action="{{ route('technology.destroy', $technology->id) }}"
                                                 style="display: inline;"
                                                 onsubmit="return confirm('Are you sure you want to delete this technology?');">
                                                 @csrf
@@ -208,26 +205,28 @@
 
     </div>
 
-    <script type="text/javascript">
-        function previewImage(input, previewId) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
+    @push('scripts')
+        <script type="text/javascript">
+            function previewImage(input, previewId) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
 
-                reader.onload = function(e) {
-                    document.getElementById(previewId).style.display = 'block';
-                    document.getElementById(previewId).src = e.target.result;
+                    reader.onload = function (e) {
+                        document.getElementById(previewId).style.display = 'block';
+                        document.getElementById(previewId).src = e.target.result;
+                    }
+
+                    reader.readAsDataURL(input.files[0]);
                 }
-
-                reader.readAsDataURL(input.files[0]);
             }
-        }
 
-        document.getElementById('light_icon').addEventListener('change', function() {
-            previewImage(this, 'lightIconPreview');
-        });
+            document.getElementById('light_icon').addEventListener('change', function () {
+                previewImage(this, 'lightIconPreview');
+            });
 
-        document.getElementById('dark_icon').addEventListener('change', function() {
-            previewImage(this, 'darkIconPreview');
-        });
-    </script>
+            document.getElementById('dark_icon').addEventListener('change', function () {
+                previewImage(this, 'darkIconPreview');
+            });
+        </script>
+    @endpush
 @endsection

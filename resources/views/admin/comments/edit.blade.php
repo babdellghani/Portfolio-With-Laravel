@@ -60,12 +60,12 @@
 
                             <div class="mb-3">
                                 <label for="status" class="form-label">Status</label>
-                                <select name="status" id="status" class="form-select @error('status') is-invalid @enderror">
-                                    <option value="0" {{ old('status', $comment->status) == 0 ? 'selected' : '' }}>Pending
-                                    </option>
-                                    <option value="1" {{ old('status', $comment->status) == 1 ? 'selected' : '' }}>
-                                        Approved</option>
-                                </select>
+                                <div class="square-switch">
+                                    <input type="hidden" name="status" value="0" />
+                                    <input type="checkbox" id="square-switch3" value="1" switch="bool" name="status"
+                                        @checked(old('status') == '1' || $comment->status == '1') />
+                                    <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
+                                </div>
                                 @error('status')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -163,8 +163,7 @@
                             </div>
                         </div>
                         <div class="mt-3">
-                            <a href="{{ route('admin.users.show', $comment->user) }}"
-                                class="btn btn-sm btn-outline-primary">
+                            <a href="{{ route('users.show', $comment->user) }}" class="btn btn-sm btn-outline-primary">
                                 <i class="mdi mdi-account me-1"></i> View Profile
                             </a>
                         </div>
@@ -234,17 +233,19 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Character count
-            const contentTextarea = document.getElementById('content');
-            const charCount = document.getElementById('char-count');
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Character count
+                const contentTextarea = document.getElementById('content');
+                const charCount = document.getElementById('char-count');
 
-            if (contentTextarea && charCount) {
-                contentTextarea.addEventListener('input', function () {
-                    charCount.textContent = this.value.length;
-                });
-            }
-        });
-    </script>
+                if (contentTextarea && charCount) {
+                    contentTextarea.addEventListener('input', function () {
+                        charCount.textContent = this.value.length;
+                    });
+                }
+            });
+        </script>
+    @endpush
 @endsection

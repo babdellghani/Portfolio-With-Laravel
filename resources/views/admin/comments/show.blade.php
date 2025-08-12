@@ -134,7 +134,7 @@
                                 <form action="{{ route('admin.comments.approve', $comment) }}" method="POST">
                                     @csrf
                                     @method('PATCH')
-                                    <button type="submit" class="btn btn-success">
+                                    <button type="submit" class="btn btn-success w-100">
                                         <i class="mdi mdi-check me-1"></i> Approve Comment
                                     </button>
                                 </form>
@@ -142,7 +142,7 @@
                                 <form action="{{ route('admin.comments.reject', $comment) }}" method="POST">
                                     @csrf
                                     @method('PATCH')
-                                    <button type="submit" class="btn btn-warning">
+                                    <button type="submit" class="btn btn-warning w-100">
                                         <i class="mdi mdi-close me-1"></i> Reject Comment
                                     </button>
                                 </form>
@@ -155,7 +155,7 @@
                             <form action="{{ route('admin.comments.destroy', $comment) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger"
+                                <button type="submit" class="btn btn-danger w-100"
                                     onclick="return confirm('Are you sure? This will also delete all replies.')">
                                     <i class="mdi mdi-delete me-1"></i> Delete Comment
                                 </button>
@@ -252,7 +252,7 @@
                             </table>
                         </div>
                         <div class="mt-3">
-                            <a href="{{ route('admin.users.show', $comment->user) }}"
+                            <a href="{{ route('users.show', $comment->user) }}"
                                 class="btn btn-sm btn-outline-primary">
                                 <i class="mdi mdi-account me-1"></i> View User Profile
                             </a>

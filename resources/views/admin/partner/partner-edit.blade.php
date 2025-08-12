@@ -146,26 +146,28 @@
 
     </div>
 
-    <script type="text/javascript">
-        function previewImage(input, previewId) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
+    @push('scripts')
+        <script type="text/javascript">
+            function previewImage(input, previewId) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
 
-                reader.onload = function(e) {
-                    document.getElementById(previewId).style.display = 'block';
-                    document.getElementById(previewId).src = e.target.result;
+                    reader.onload = function (e) {
+                        document.getElementById(previewId).style.display = 'block';
+                        document.getElementById(previewId).src = e.target.result;
+                    }
+
+                    reader.readAsDataURL(input.files[0]);
                 }
-
-                reader.readAsDataURL(input.files[0]);
             }
-        }
 
-        document.getElementById('light_logo').addEventListener('change', function() {
-            previewImage(this, 'lightLogoPreview');
-        });
+            document.getElementById('light_logo').addEventListener('change', function () {
+                previewImage(this, 'lightLogoPreview');
+            });
 
-        document.getElementById('dark_logo').addEventListener('change', function() {
-            previewImage(this, 'darkLogoPreview');
-        });
-    </script>
+            document.getElementById('dark_logo').addEventListener('change', function () {
+                previewImage(this, 'darkLogoPreview');
+            });
+        </script>
+    @endpush
 @endsection

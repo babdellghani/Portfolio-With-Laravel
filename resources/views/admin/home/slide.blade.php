@@ -42,20 +42,22 @@
                                 <div class="mb-3">
                                     <x-input-label for="title" :value="__('Title')" class="form-label" />
                                     <x-text-input id="title" name="title" type="text" class="form-control"
-                                        :value="old('title', $slide->title)" placeholder="Title" required autofocus autocomplete="title" />
+                                        :value="old('title', $slide->title)" placeholder="Title" required autofocus
+                                        autocomplete="title" />
                                     <x-input-error class="text-danger small mt-1" :messages="$errors->get('title')" />
                                 </div>
 
                                 <div class="mb-3">
                                     <x-input-label for="short_title" :value="__('Short Title')" class="form-label" />
                                     <x-text-input id="short_title" name="short_title" type="text" class="form-control"
-                                        :value="old('short_title', $slide->short_title)" placeholder="Short Title" required autofocus
-                                        autocomplete="short_title" />
+                                        :value="old('short_title', $slide->short_title)" placeholder="Short Title" required
+                                        autofocus autocomplete="short_title" />
                                     <x-input-error class="text-danger small mt-1" :messages="$errors->get('short_title')" />
                                 </div>
 
                                 <div class="mb-3">
-                                    <x-input-label for="home_slide" :value="__('Home Slide (636px x 852px)')" class="form-label" />
+                                    <x-input-label for="home_slide" :value="__('Home Slide (636px x 852px)')"
+                                        class="form-label" />
 
                                     <div class="d-flex flex-column align-items-center gap-3">
                                         <div>
@@ -70,7 +72,8 @@
                                             <input type="file" id="image" name="home_slide" class="form-control"
                                                 accept="image/jpeg,image/jpg,image/png" id="customFile">
                                         </div>
-                                        <x-input-error class="text-danger small mt-1" :messages="$errors->get('home_slide')" />
+                                        <x-input-error class="text-danger small mt-1"
+                                            :messages="$errors->get('home_slide')" />
                                         <small class="text-muted">Supported formats: JPG, JPEG, PNG. Max size: 2MB</small>
                                     </div>
                                 </div>
@@ -108,87 +111,88 @@
         </div>
     </div>
 
+    @push('scripts')
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#image').change(function () {
+                    const file = this.files[0];
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#image').change(function() {
-                const file = this.files[0];
-
-                // Validate file type
-                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-                if (file && !allowedTypes.includes(file.type)) {
-                    alert('Please select a valid image file (JPG, JPEG, or PNG)');
-                    this.value = '';
-                    return;
-                }
-
-                // Validate file size (2MB = 2 * 1024 * 1024 bytes)
-                if (file && file.size > 2 * 1024 * 1024) {
-                    alert('File size must be less than 2MB');
-                    this.value = '';
-                    return;
-                }
-
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        $('#showImage').attr('src', e.target.result);
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-        });
-
-        $(document).ready(function() {
-            $('#video_url').on('input', function() {
-                const url = this.value;
-
-                // Basic YouTube URL validation
-                const youtubeRegex =
-                    /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/)|youtu\.be\/)[\w-]+(&[\w=]*)?$/;
-
-                if (url && !youtubeRegex.test(url)) {
-                    $(this).addClass('is-invalid');
-                    $(this).next('.text-danger').remove();
-                    $(this).after(
-                        '<div class="text-danger small mt-1">Please enter a valid YouTube URL</div>');
-                    $('#video-preview').hide();
-                } else {
-                    $(this).removeClass('is-invalid');
-                    $(this).next('.text-danger').remove();
-
-                    if (url && youtubeRegex.test(url)) {
-                        // Extract video ID and show preview
-                        let videoId = '';
-                        const match = url.match(
-                            /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/
-                        );
-                        if (match) {
-                            videoId = match[1];
-                            const embedUrl = `https://www.youtube.com/embed/${videoId}`;
-
-                            if (!$('#video-preview').length) {
-                                $(this).after(`
-                                    <div id="video-preview" class="mt-3">
-                                        <div class="ratio ratio-16x9">
-                                            <iframe src="${embedUrl}" allowfullscreen class="rounded"></iframe>
-                                        </div>
-                                        <small class="text-muted">Live preview</small>
-                                    </div>
-                                `);
-                            } else {
-                                $('#video-preview iframe').attr('src', embedUrl);
-                                $('#video-preview').show();
-                            }
-                        }
-                    } else {
-                        $('#video-preview').hide();
+                    // Validate file type
+                    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+                    if (file && !allowedTypes.includes(file.type)) {
+                        alert('Please select a valid image file (JPG, JPEG, or PNG)');
+                        this.value = '';
+                        return;
                     }
-                }
+
+                    // Validate file size (2MB = 2 * 1024 * 1024 bytes)
+                    if (file && file.size > 2 * 1024 * 1024) {
+                        alert('File size must be less than 2MB');
+                        this.value = '';
+                        return;
+                    }
+
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            $('#showImage').attr('src', e.target.result);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
             });
-        });
-    </script>
+
+            $(document).ready(function () {
+                $('#video_url').on('input', function () {
+                    const url = this.value;
+
+                    // Basic YouTube URL validation
+                    const youtubeRegex =
+                        /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/)|youtu\.be\/)[\w-]+(&[\w=]*)?$/;
+
+                    if (url && !youtubeRegex.test(url)) {
+                        $(this).addClass('is-invalid');
+                        $(this).next('.text-danger').remove();
+                        $(this).after(
+                            '<div class="text-danger small mt-1">Please enter a valid YouTube URL</div>');
+                        $('#video-preview').hide();
+                    } else {
+                        $(this).removeClass('is-invalid');
+                        $(this).next('.text-danger').remove();
+
+                        if (url && youtubeRegex.test(url)) {
+                            // Extract video ID and show preview
+                            let videoId = '';
+                            const match = url.match(
+                                /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/
+                            );
+                            if (match) {
+                                videoId = match[1];
+                                const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+
+                                if (!$('#video-preview').length) {
+                                    $(this).after(`
+                                                                        <div id="video-preview" class="mt-3">
+                                                                            <div class="ratio ratio-16x9">
+                                                                                <iframe src="${embedUrl}" allowfullscreen class="rounded"></iframe>
+                                                                            </div>
+                                                                            <small class="text-muted">Live preview</small>
+                                                                        </div>
+                                                                    `);
+                                } else {
+                                    $('#video-preview iframe').attr('src', embedUrl);
+                                    $('#video-preview').show();
+                                }
+                            }
+                        } else {
+                            $('#video-preview').hide();
+                        }
+                    }
+                });
+            });
+        </script>
+    @endpush
 @endsection

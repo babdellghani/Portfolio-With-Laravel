@@ -219,7 +219,8 @@
                                                     </p>
                                                 </div>
                                                 <div class="flex-shrink-0">
-                                                    <a href="{{ route('admin.blogs.edit', $blog) }}" class="btn btn-sm btn-soft-primary">
+                                                    <a href="{{ route('admin.blogs.edit', $blog) }}"
+                                                        class="btn btn-sm btn-soft-primary">
                                                         <i class="ri-edit-line"></i>
                                                     </a>
                                                 </div>
@@ -250,58 +251,60 @@
         </form>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Form submission handling
-            const form = document.getElementById('tag-edit-form');
-            const updateBtn = document.getElementById('update-tag-btn');
-            const nameInput = document.getElementById('name');
-            const tagPreview = document.getElementById('tag-preview');
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Form submission handling
+                const form = document.getElementById('tag-edit-form');
+                const updateBtn = document.getElementById('update-tag-btn');
+                const nameInput = document.getElementById('name');
+                const tagPreview = document.getElementById('tag-preview');
 
-            if (form && updateBtn) {
-                form.addEventListener('submit', function (e) {
-                    const name = nameInput.value.trim();
+                if (form && updateBtn) {
+                    form.addEventListener('submit', function (e) {
+                        const name = nameInput.value.trim();
 
-                    if (!name) {
-                        alert('Please enter a tag name');
-                        e.preventDefault();
-                        return false;
-                    }
+                        if (!name) {
+                            alert('Please enter a tag name');
+                            e.preventDefault();
+                            return false;
+                        }
 
-                    if (name.length < 2) {
-                        alert('Tag name must be at least 2 characters long');
-                        e.preventDefault();
-                        return false;
-                    }
+                        if (name.length < 2) {
+                            alert('Tag name must be at least 2 characters long');
+                            e.preventDefault();
+                            return false;
+                        }
 
-                    // Show loading state
-                    updateBtn.innerHTML = '<i class="mdi mdi-loading mdi-spin me-1"></i> Updating...';
-                    updateBtn.disabled = true;
-                    return true;
-                });
-            }
+                        // Show loading state
+                        updateBtn.innerHTML = '<i class="mdi mdi-loading mdi-spin me-1"></i> Updating...';
+                        updateBtn.disabled = true;
+                        return true;
+                    });
+                }
 
-            // Real-time tag preview
-            if (nameInput && tagPreview) {
+                // Real-time tag preview
+                if (nameInput && tagPreview) {
+                    nameInput.addEventListener('input', function (e) {
+                        const name = e.target.value.trim();
+                        tagPreview.textContent = name || '{{ $tag->name }}';
+                    });
+                }
+
+                // Auto-generate slug preview
                 nameInput.addEventListener('input', function (e) {
-                    const name = e.target.value.trim();
-                    tagPreview.textContent = name || '{{ $tag->name }}';
+                    const name = e.target.value;
+                    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+                    // You can display the slug preview here if needed
                 });
-            }
-
-            // Auto-generate slug preview
-            nameInput.addEventListener('input', function (e) {
-                const name = e.target.value;
-                const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-                // You can display the slug preview here if needed
             });
-        });
 
-        // Delete tag function
-        function deleteTag() {
-            if (confirm('Are you sure you want to delete this tag? This action cannot be undone.')) {
-                document.getElementById('delete-form').submit();
+            // Delete tag function
+            function deleteTag() {
+                if (confirm('Are you sure you want to delete this tag? This action cannot be undone.')) {
+                    document.getElementById('delete-form').submit();
+                }
             }
-        }
-    </script>
+        </script>
+    @endpush
 @endsection

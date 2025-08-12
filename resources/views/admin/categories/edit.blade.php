@@ -259,59 +259,61 @@
         </form>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Form submission handling
-            const form = document.getElementById('category-edit-form');
-            const updateBtn = document.getElementById('update-category-btn');
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Form submission handling
+                const form = document.getElementById('category-edit-form');
+                const updateBtn = document.getElementById('update-category-btn');
 
-            if (form && updateBtn) {
-                form.addEventListener('submit', function (e) {
-                    const name = document.getElementById('name').value.trim();
+                if (form && updateBtn) {
+                    form.addEventListener('submit', function (e) {
+                        const name = document.getElementById('name').value.trim();
 
-                    if (!name) {
-                        alert('Please enter a category name');
-                        e.preventDefault();
-                        return false;
-                    }
+                        if (!name) {
+                            alert('Please enter a category name');
+                            e.preventDefault();
+                            return false;
+                        }
 
-                    // Show loading state
-                    updateBtn.innerHTML = '<i class="mdi mdi-loading mdi-spin me-1"></i> Updating...';
-                    updateBtn.disabled = true;
-                    return true;
-                });
-            }
-
-            // Image preview functionality
-            document.getElementById('image').addEventListener('change', function (e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const preview = document.getElementById('image-preview');
-                        const img = document.getElementById('preview-image');
-                        img.src = e.target.result;
-                        preview.style.display = 'block';
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    document.getElementById('image-preview').style.display = 'none';
+                        // Show loading state
+                        updateBtn.innerHTML = '<i class="mdi mdi-loading mdi-spin me-1"></i> Updating...';
+                        updateBtn.disabled = true;
+                        return true;
+                    });
                 }
+
+                // Image preview functionality
+                document.getElementById('image').addEventListener('change', function (e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const preview = document.getElementById('image-preview');
+                            const img = document.getElementById('preview-image');
+                            img.src = e.target.result;
+                            preview.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        document.getElementById('image-preview').style.display = 'none';
+                    }
+                });
+
+                // Auto-generate slug preview
+                document.getElementById('name').addEventListener('input', function (e) {
+                    const name = e.target.value;
+                    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+                    // You can display the slug preview here if needed
+                });
             });
 
-            // Auto-generate slug preview
-            document.getElementById('name').addEventListener('input', function (e) {
-                const name = e.target.value;
-                const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-                // You can display the slug preview here if needed
-            });
-        });
-
-        // Delete category function
-        function deleteCategory() {
-            if (confirm('Are you sure you want to delete this category? This action cannot be undone.')) {
-                document.getElementById('delete-form').submit();
+            // Delete category function
+            function deleteCategory() {
+                if (confirm('Are you sure you want to delete this category? This action cannot be undone.')) {
+                    document.getElementById('delete-form').submit();
+                }
             }
-        }
-    </script>
+        </script>
+    @endpush
 @endsection

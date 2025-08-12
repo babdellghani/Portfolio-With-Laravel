@@ -301,48 +301,50 @@
         </div>
     </div>
 
-    <!-- ApexCharts -->
-    <script src="{{ asset('backend/assets/libs/apexcharts/apexcharts.min.js') }}"></script>
+    @push('scripts')
+        <!-- ApexCharts -->
+        <script src="{{ asset('backend/assets/libs/apexcharts/apexcharts.min.js') }}"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Monthly Blog Chart
-            var chartData = @json($chartData);
-            var options = {
-                series: [{
-                    name: 'Blog Posts',
-                    data: chartData
-                }],
-                chart: {
-                    type: 'area',
-                    height: 350,
-                    zoom: {
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Monthly Blog Chart
+                var chartData = @json($chartData);
+                var options = {
+                    series: [{
+                        name: 'Blog Posts',
+                        data: chartData
+                    }],
+                    chart: {
+                        type: 'area',
+                        height: 350,
+                        zoom: {
+                            enabled: false
+                        }
+                    },
+                    dataLabels: {
                         enabled: false
+                    },
+                    stroke: {
+                        curve: 'smooth'
+                    },
+                    xaxis: {
+                        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                    },
+                    colors: ['#556ee6'],
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shadeIntensity: 1,
+                            opacityFrom: 0.7,
+                            opacityTo: 0.9,
+                            stops: [0, 90, 100]
+                        }
                     }
-                },
-                dataLabels: {
-                    enabled: false
-                },
-                stroke: {
-                    curve: 'smooth'
-                },
-                xaxis: {
-                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-                },
-                colors: ['#556ee6'],
-                fill: {
-                    type: 'gradient',
-                    gradient: {
-                        shadeIntensity: 1,
-                        opacityFrom: 0.7,
-                        opacityTo: 0.9,
-                        stops: [0, 90, 100]
-                    }
-                }
-            };
+                };
 
-            var chart = new ApexCharts(document.querySelector("#monthly-blog-chart"), options);
-            chart.render();
-        });
-    </script>
+                var chart = new ApexCharts(document.querySelector("#monthly-blog-chart"), options);
+                chart.render();
+            });
+        </script>
+    @endpush
 @endsection
