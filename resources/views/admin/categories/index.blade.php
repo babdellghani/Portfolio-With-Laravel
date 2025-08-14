@@ -89,7 +89,7 @@
                                     <div class="d-flex align-items-center">
                                         <select name="action" class="form-select me-2" style="width: auto;" required>
                                             <option value="">Bulk Actions</option>
-                                            @can('admin', Category::class)
+                                            @can('admin', App\Models\Category::class)
                                                 <option value="activate">Activate</option>
                                                 <option value="deactivate">Deactivate</option>
                                             @endcan
@@ -174,7 +174,7 @@
                                                             class="text-success">
                                                             <i class="mdi mdi-pencil font-size-18"></i>
                                                         </a>
-                                                        @can('admin', Category::class)
+                                                        @can('admin', App\Models\Category::class)
                                                             <button type="submit"
                                                                 form="toggle-status-form-{{ $category->id }}"
                                                                 class="btn btn-link text-warning p-0">
@@ -209,7 +209,7 @@
                         </form>
 
                         @foreach ($categories as $category)
-                            @can('admin', Category::class)
+                            @can('admin', App\Models\Category::class)
                                 <form action="{{ route('admin.categories.toggle-status', $category) }}" method="POST"
                                     id="toggle-status-form-{{ $category->id }}" style="display: none;">
                                     @csrf

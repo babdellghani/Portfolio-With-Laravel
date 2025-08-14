@@ -14,7 +14,7 @@ class LikeController extends Controller
     public function toggleBlog(Blog $blog)
     {
         if (! Auth::check()) {
-            return response()->json(['error' => 'You must be logged in to like.'], 401);
+            return redirect()->route('login');
         }
 
         $userId = Auth::id();
@@ -35,12 +35,7 @@ class LikeController extends Controller
             $liked = true;
         }
 
-        $likesCount = $blog->likes()->count();
-
-        return response()->json([
-            'liked'       => $liked,
-            'likes_count' => $likesCount,
-        ]);
+        return redirect()->back()->with('success', 'Blog ' . ($liked ? 'liked' : 'unliked') . ' successfully!');
     }
 
     /**
@@ -49,7 +44,7 @@ class LikeController extends Controller
     public function toggleComment(Comment $comment)
     {
         if (! Auth::check()) {
-            return response()->json(['error' => 'You must be logged in to like.'], 401);
+            return redirect()->route('login');
         }
 
         $userId = Auth::id();
@@ -70,11 +65,6 @@ class LikeController extends Controller
             $liked = true;
         }
 
-        $likesCount = $comment->likes()->count();
-
-        return response()->json([
-            'liked'       => $liked,
-            'likes_count' => $likesCount,
-        ]);
+        return redirect()->back()->with('success', 'Comment ' . ($liked ? 'liked' : 'unliked') . ' successfully!');
     }
 }

@@ -123,7 +123,7 @@
                                     <div class="d-flex align-items-center">
                                         <select name="action" class="form-select me-2" style="width: auto;" required>
                                             <option value="">Bulk Actions</option>
-                                            @can('admin', Blog::class)
+                                            @can('admin', App\Models\Blog::class)
                                                 <option value="publish">Publish</option>
                                                 <option value="draft">Move to Draft</option>
                                             @endcan

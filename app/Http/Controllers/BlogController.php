@@ -1,14 +1,16 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use App\Models\Blog;
-use App\Models\Category;
 use App\Models\Tag;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use App\Models\Blog;
+use App\Models\Comment;
+use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class BlogController extends Controller
 {
@@ -18,7 +20,7 @@ class BlogController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Blog::with(['user', 'categories', 'tags'])
+        $query = Blog::with(['user', 'likes', 'bookmarks'])
             ->published()
             ->latest();
 
@@ -46,11 +48,16 @@ class BlogController extends Controller
             });
         }
 
-        $blogs      = $query->paginate(9);
-        $categories = Category::active()->get();
-        $tags       = Tag::active()->get();
+        $blogs       = $query->paginate(19);
+        dd($blogs);
+        $recentBlogs = Blog::latest()->published()->take(5)->get();
+        $categories  = Category::whereHas('blogs')->active()->get();
+        $tags        = Tag::whereHas('blogs', function ($q) {
+            $q->published();
+        })->active()->withCount('blogs')->orderBy('blogs_count', 'desc')->take(10)->get();
+        $comments    = Comment::active()->latest()->take(5)->get();
 
-        return view('frontend.pages.blog', compact('blogs', 'categories', 'tags'));
+        return view('frontend.pages.blog', compact('blogs', 'categories', 'tags', 'comments', 'recentBlogs'));
     }
 
     /**

@@ -67,12 +67,12 @@ class Blog extends Model
     // Scopes
     public function scopePublished(Builder $query)
     {
-        return $query->where('status', true);
+        return $query->where('status', 'published');
     }
 
     public function scopeDraft(Builder $query)
     {
-        return $query->where('status', false);
+        return $query->where('status', 'draft');
     }
 
     // Helper methods

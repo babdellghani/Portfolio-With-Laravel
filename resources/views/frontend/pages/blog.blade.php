@@ -3,33 +3,7 @@
 
 @section('content')
     <!-- breadcrumb-area -->
-    <section class="breadcrumb__wrap">
-        <div class="container custom-container">
-            <div class="row justify-content-center">
-                <div class="col-xl-6 col-lg-8 col-md-10">
-                    <div class="breadcrumb__wrap__content">
-                        <h2 class="title">Recent Article</h2>
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Blog</li>
-                            </ol>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="breadcrumb__wrap__icon">
-            <ul>
-                <li><img src="assets/img/icons/breadcrumb_icon01.png" alt=""></li>
-                <li><img src="assets/img/icons/breadcrumb_icon02.png" alt=""></li>
-                <li><img src="assets/img/icons/breadcrumb_icon03.png" alt=""></li>
-                <li><img src="assets/img/icons/breadcrumb_icon04.png" alt=""></li>
-                <li><img src="assets/img/icons/breadcrumb_icon05.png" alt=""></li>
-                <li><img src="assets/img/icons/breadcrumb_icon06.png" alt=""></li>
-            </ul>
-        </div>
-    </section>
+    <x-pages.breadcrumb title="Recent Article" active="Blogs" />
     <!-- breadcrumb-area-end -->
 
 
@@ -38,94 +12,51 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8">
-                    <div class="standard__blog__post">
-                        <div class="standard__blog__thumb">
-                            <a href="blog-details.html"><img src="assets/img/blog/blog_thumb01.jpg" alt=""></a>
-                            <a href="blog-details.html" class="blog__link"><i class="far fa-long-arrow-right"></i></a>
-                        </div>
-                        <div class="standard__blog__content">
-                            <div class="blog__post__avatar">
-                                <div class="thumb"><img src="assets/img/blog/blog_avatar.png" alt=""></div>
-                                <span class="post__by">By : <a href="#">Halina Spond</a></span>
+                    @forelse ($blogs as $blog)
+                        <div class="standard__blog__post">
+                            <div class="standard__blog__thumb">
+                                <a href="{{ route('blog.show', $blog->slug) }}"><img src="{{ asset($blog->thumbnail) }}"
+                                        alt="{{ $blog->title }}"></a>
+                                <a href="{{ route('blog.show', $blog->slug) }}" class="blog__link"><i
+                                        class="far fa-long-arrow-right"></i></a>
                             </div>
-                            <h2 class="title"><a href="blog-details.html">Best website traffice Booster with great
-                                    tools.</a></h2>
-                            <p>There are many variations of passages of Lorem Ipsum available, but the majority have
-                                suffered alteration in some form, by injected humour, or randomised words which don't look
-                                even slightly believable</p>
-                            <ul class="blog__post__meta">
-                                <li><i class="fal fa-calendar-alt"></i> 25 january 2021</li>
-                                <li><i class="fal fa-comments-alt"></i> <a href="#">Comment (08)</a></li>
-                                <li class="post-share"><a href="#"><i class="fal fa-share-all"></i> (18)</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="standard__blog__post">
-                        <div class="standard__blog__thumb">
-                            <a href="blog-details.html"><img src="assets/img/blog/blog_thumb02.jpg" alt=""></a>
-                            <a href="blog-details.html" class="blog__link"><i class="far fa-long-arrow-right"></i></a>
-                        </div>
-                        <div class="standard__blog__content">
-                            <div class="blog__post__avatar">
-                                <div class="thumb"><img src="assets/img/blog/blog_avatar.png" alt=""></div>
-                                <span class="post__by">By : <a href="#">Rasalina D.</a></span>
+                            <div class="standard__blog__content">
+                                <div class="blog__post__avatar">
+                                    <div class="thumb"><img src="{{ asset($blog->user->avatar) }}"
+                                            alt="{{ $blog->user->name }}"></div>
+                                    <span class="post__by">By : <a href="#">{{ $blog->user->name }}</a></span>
+                                </div>
+                                <h2 class="title"><a href="{{ route('blog.show', $blog->slug) }}">{{ $blog->title }}</a>
+                                </h2>
+                                <p>{{ $blog->excerpt }}</p>
+                                <ul class="blog__post__meta">
+                                    <li><i class="fal fa-calendar-alt"></i> {{ $blog->created_at->format('d F Y') }}</li>
+                                    <li><i class="fal fa-comments-alt"></i> <a
+                                            href="{{ route('blog.show', $blog->slug) }}">{{ $blog->comments_count }}
+                                            Comment</a></li>
+                                    <li class="post-share"><a href="{{ route('blog.like', $blog->id) }}"
+                                            onclick="event.preventDefault(); document.getElementById('like-form-{{ $blog->id }}').submit();">
+                                            <i class="fa{{ $blog->likes->contains('user_id', auth()->id()) ? 's' : 'l' }} fa-heart"></i> ({{ $blog->likes_count }})</a></li>
+                                    <form id="like-form-{{ $blog->id }}" action="{{ route('blog.like', $blog->id) }}"
+                                        method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
+                                    <li class="post-bookmark"><a href="{{ route('blog.bookmark', $blog->slug) }}"
+                                            onclick="event.preventDefault(); document.getElementById('bookmark-form-{{ $blog->id }}').submit();">
+                                            <i class="fa{{ $blog->bookmarks->contains('user_id', auth()->id()) ? 's' : 'l' }} fa-bookmark"></i> Bookmark</a></li>
+                                    <form id="bookmark-form-{{ $blog->id }}"
+                                        action="{{ route('blog.bookmark', $blog->slug) }}" method="POST"
+                                        style="display: none;">
+                                        @csrf
+                                    </form>
+                                </ul>
                             </div>
-                            <h2 class="title"><a href="blog-details.html">How you should start product design</a></h2>
-                            <p>There are many variations of passages of Lorem Ipsum available, but the majority have
-                                suffered alteration in some form, by injected humour, or randomised words which don't look
-                                even slightly believable</p>
-                            <ul class="blog__post__meta">
-                                <li><i class="fal fa-calendar-alt"></i> 28 january 2021</li>
-                                <li><i class="fal fa-comments-alt"></i> <a href="#">Comment (12)</a></li>
-                                <li class="post-share"><a href="#"><i class="fal fa-share-all"></i> (18)</a></li>
-                            </ul>
                         </div>
-                    </div>
-                    <div class="standard__blog__post">
-                        <div class="standard__blog__thumb">
-                            <a href="blog-details.html"><img src="assets/img/blog/blog_thumb03.jpg" alt=""></a>
-                            <a href="blog-details.html" class="blog__link"><i class="far fa-long-arrow-right"></i></a>
-                        </div>
-                        <div class="standard__blog__content">
-                            <div class="blog__post__avatar">
-                                <div class="thumb"><img src="assets/img/blog/blog_avatar.png" alt=""></div>
-                                <span class="post__by">By : <a href="#">Halina Spond</a></span>
-                            </div>
-                            <h2 class="title"><a href="blog-details.html">How to start sketch after build a website</a>
-                            </h2>
-                            <p>There are many variations of passages of Lorem Ipsum available, but the majority have
-                                suffered alteration in some form, by injected humour, or randomised words which don't look
-                                even slightly believable</p>
-                            <ul class="blog__post__meta">
-                                <li><i class="fal fa-calendar-alt"></i> 28 january 2021</li>
-                                <li><i class="fal fa-comments-alt"></i> <a href="#">Comment (12)</a></li>
-                                <li class="post-share"><a href="#"><i class="fal fa-share-all"></i> (18)</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="standard__blog__post">
-                        <div class="standard__blog__thumb">
-                            <a href="blog-details.html"><img src="assets/img/blog/blog_thumb04.jpg" alt=""></a>
-                            <a href="blog-details.html" class="blog__link"><i class="far fa-long-arrow-right"></i></a>
-                        </div>
-                        <div class="standard__blog__content">
-                            <div class="blog__post__avatar">
-                                <div class="thumb"><img src="assets/img/blog/blog_avatar.png" alt=""></div>
-                                <span class="post__by">By : <a href="#">Halina Spond</a></span>
-                            </div>
-                            <h2 class="title"><a href="blog-details.html">Best website traffics Booster with great
-                                    tools.</a></h2>
-                            <p>There are many variations of passages of Lorem Ipsum available, but the majority have
-                                suffered alteration in some form, by injected humour, or randomised words which don't look
-                                even slightly believable</p>
-                            <ul class="blog__post__meta">
-                                <li><i class="fal fa-calendar-alt"></i> 28 january 2021</li>
-                                <li><i class="fal fa-comments-alt"></i> <a href="#">Comment (12)</a></li>
-                                <li class="post-share"><a href="#"><i class="fal fa-share-all"></i> (18)</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="pagination-wrap">
+                    @empty
+                        <p>No blogs found.</p>
+                    @endforelse
+                    
+                    {{-- <div class="pagination-wrap">
                         <nav aria-label="Page navigation example">
                             <ul class="pagination">
                                 <li class="page-item"><a class="page-link" href="#"><i
@@ -138,7 +69,10 @@
                                             class="far fa-long-arrow-right"></i></a></li>
                             </ul>
                         </nav>
-                    </div>
+                    </div> --}}
+                    @if ($blogs->hasPages())
+                        {{ $blogs->links('custom-pagination') }}
+                    @endif
                 </div>
                 <div class="col-lg-4">
                     <aside class="blog__sidebar">
@@ -148,120 +82,69 @@
                                 <button type="submit"><i class="fal fa-search"></i></button>
                             </form>
                         </div>
-                        <div class="widget">
-                            <h4 class="widget-title">Recent Blog</h4>
-                            <ul class="rc__post">
-                                <li class="rc__post__item">
-                                    <div class="rc__post__thumb">
-                                        <a href="blog-details.html"><img src="assets/img/blog/rc_thumb01.jpg"
-                                                alt=""></a>
-                                    </div>
-                                    <div class="rc__post__content">
-                                        <h5 class="title"><a href="blog-details.html">Best website traffick booster with
-                                                great tools.</a></h5>
-                                        <span class="post-date"><i class="fal fa-calendar-alt"></i> 28 january 2021</span>
-                                    </div>
-                                </li>
-                                <li class="rc__post__item">
-                                    <div class="rc__post__thumb">
-                                        <a href="blog-details.html"><img src="assets/img/blog/rc_thumb02.jpg"
-                                                alt=""></a>
-                                    </div>
-                                    <div class="rc__post__content">
-                                        <h5 class="title"><a href="blog-details.html">How to become a best sale marketer
-                                                in a year!</a></h5>
-                                        <span class="post-date"><i class="fal fa-calendar-alt"></i> 28 january 2021</span>
-                                    </div>
-                                </li>
-                                <li class="rc__post__item">
-                                    <div class="rc__post__thumb">
-                                        <a href="blog-details.html"><img src="assets/img/blog/rc_thumb03.jpg"
-                                                alt=""></a>
-                                    </div>
-                                    <div class="rc__post__content">
-                                        <h5 class="title"><a href="blog-details.html">Google take latest step & catch the
-                                                black SEO</a></h5>
-                                        <span class="post-date"><i class="fal fa-calendar-alt"></i> 28 january 2021</span>
-                                    </div>
-                                </li>
-                                <li class="rc__post__item">
-                                    <div class="rc__post__thumb">
-                                        <a href="blog-details.html"><img src="assets/img/blog/rc_thumb04.jpg"
-                                                alt=""></a>
-                                    </div>
-                                    <div class="rc__post__content">
-                                        <h5 class="title"><a href="blog-details.html">Businesses are thriving societies.
-                                                Time for urgent change</a></h5>
-                                        <span class="post-date"><i class="fal fa-calendar-alt"></i> 28 january 2021</span>
-                                    </div>
-                                </li>
-                                <li class="rc__post__item">
-                                    <div class="rc__post__thumb">
-                                        <a href="blog-details.html"><img src="assets/img/blog/rc_thumb05.jpg"
-                                                alt=""></a>
-                                    </div>
-                                    <div class="rc__post__content">
-                                        <h5 class="title"><a href="blog-details.html">TikTok influencer marketing:How to
-                                                work with influencer</a></h5>
-                                        <span class="post-date"><i class="fal fa-calendar-alt"></i> 28 january 2021</span>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="widget">
-                            <h4 class="widget-title">Categories</h4>
-                            <ul class="sidebar__cat">
-                                <li class="sidebar__cat__item"><a href="blog.html">Web Design (6)</a></li>
-                                <li class="sidebar__cat__item"><a href="blog.html">Web Development (4)</a></li>
-                                <li class="sidebar__cat__item"><a href="blog.html">Product Design (9)</a></li>
-                                <li class="sidebar__cat__item"><a href="blog.html">Animation (6)</a></li>
-                                <li class="sidebar__cat__item"><a href="blog.html">Ui/Ux Design (8)</a></li>
-                                <li class="sidebar__cat__item"><a href="blog.html">Branding Design (12)</a></li>
-                                <li class="sidebar__cat__item"><a href="blog.html">Web Design (6)</a></li>
-                                <li class="sidebar__cat__item"><a href="blog.html">Logo Design (6)</a></li>
-                            </ul>
-                        </div>
-                        <div class="widget">
-                            <h4 class="widget-title">Recent Comment</h4>
-                            <ul class="sidebar__comment">
-                                <li class="sidebar__comment__item">
-                                    <a href="blog-details.html">Rasalina Sponde</a>
-                                    <p>There are many variations of passages of lorem ipsum available, but the majority have
-                                    </p>
-                                </li>
-                                <li class="sidebar__comment__item">
-                                    <a href="blog-details.html">Rasalina Sponde</a>
-                                    <p>There are many variations of passages of lorem ipsum available, but the majority have
-                                    </p>
-                                </li>
-                                <li class="sidebar__comment__item">
-                                    <a href="blog-details.html">Rasalina Sponde</a>
-                                    <p>There are many variations of passages of lorem ipsum available, but the majority have
-                                    </p>
-                                </li>
-                                <li class="sidebar__comment__item">
-                                    <a href="blog-details.html">Rasalina Sponde</a>
-                                    <p>There are many variations of passages of lorem ipsum available, but the majority have
-                                    </p>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="widget">
-                            <h4 class="widget-title">Popular Tags</h4>
-                            <ul class="sidebar__tags">
-                                <li><a href="blog.html">Business</a></li>
-                                <li><a href="blog.html">Design</a></li>
-                                <li><a href="blog.html">apps</a></li>
-                                <li><a href="blog.html">landing page</a></li>
-                                <li><a href="blog.html">data</a></li>
-                                <li><a href="blog.html">website</a></li>
-                                <li><a href="blog.html">book</a></li>
-                                <li><a href="blog.html">Design</a></li>
-                                <li><a href="blog.html">product design</a></li>
-                                <li><a href="blog.html">landing page</a></li>
-                                <li><a href="blog.html">data</a></li>
-                            </ul>
-                        </div>
+                        @if ($recentBlogs->isNotEmpty())
+                            <div class="widget">
+                                <h4 class="widget-title">Recent Blog</h4>
+                                <ul class="rc__post">
+                                    @foreach ($recentBlogs as $blog)
+                                        <li class="rc__post__item">
+                                            <div class="rc__post__thumb">
+                                                <a href="{{ route('blog.show', $blog->slug) }}">
+                                                    <img src="{{ asset($blog->thumbnail) }}" alt="{{ $blog->title }}">
+                                                </a>
+                                            </div>
+                                            <div class="rc__post__content">
+                                                <h5 class="title"><a
+                                                        href="{{ route('blog.show', $blog->slug) }}">{{ $blog->title }}</a>
+                                                </h5>
+                                                <span class="post-date"><i class="fal fa-calendar-alt"></i>
+                                                    {{ $blog->created_at->format('d F Y') }}</span>
+                                            </div>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        @if ($comments->isNotEmpty())
+                            <div class="widget">
+                                <h4 class="widget-title">Categories</h4>
+                                <ul class="sidebar__cat">
+                                    @foreach ($categories as $category)
+                                        <li class="sidebar__cat__item">
+                                            <a href="{{ route('blog.index', ['category' => $category->slug]) }}">{{ $category->name }}
+                                                ({{ $category->blogs_count }})
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        @if ($comments->isNotEmpty())
+                            <div class="widget">
+                                <h4 class="widget-title">Recent Comment</h4>
+                                <ul class="sidebar__comment">
+                                    @foreach ($comments as $comment)
+                                        <li class="sidebar__comment__item">
+                                            <a
+                                                href="{{ route('blog.show', $comment->blog->slug) }}">{{ $comment->user->name }}</a>
+                                            <p>{{ $comment->content }}</p>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        @if ($tags->isNotEmpty())
+                            <div class="widget">
+                                <h4 class="widget-title">Popular Tags</h4>
+                                <ul class="sidebar__tags">
+                                    @foreach ($tags as $tag)
+                                        <li><a
+                                                href="{{ route('blog.index', ['tag' => $tag->slug]) }}">{{ $tag->name }}</a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                     </aside>
                 </div>
             </div>
@@ -269,72 +152,4 @@
     </section>
     <!-- blog-area-end -->
 
-
-    <!-- contact-area -->
-    <section class="homeContact homeContact__style__two">
-        <div class="container">
-            <div class="homeContact__wrap">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="section__title">
-                            <span class="sub-title">07 - Say hello</span>
-                            <h2 class="title">Any questions? Feel free <br> to contact</h2>
-                        </div>
-                        <div class="homeContact__content">
-                            <p>There are many variations of passages of Lorem Ipsum available, but the majority have
-                                suffered alteration in some form</p>
-                            <h2 class="mail"><a href="mailto:Info@webmail.com">Info@webmail.com</a></h2>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="homeContact__form">
-                            <form action="{{ route('contact.store') }}" method="POST" id="blogContactForm">
-                                @csrf
-                                <input type="text" name="name" placeholder="Enter name*"
-                                    value="{{ old('name') }}" required>
-                                @error('name')
-                                    <div class="text-danger small">{{ $message }}</div>
-                                @enderror
-
-                                <input type="email" name="email" placeholder="Enter mail*"
-                                    value="{{ old('email') }}" required>
-                                @error('email')
-                                    <div class="text-danger small">{{ $message }}</div>
-                                @enderror
-
-                                <input type="text" name="phone" placeholder="Enter number*"
-                                    value="{{ old('phone') }}">
-                                @error('phone')
-                                    <div class="text-danger small">{{ $message }}</div>
-                                @enderror
-
-                                <textarea name="message" placeholder="Enter Message*" required>{{ old('message') }}</textarea>
-                                @error('message')
-                                    <div class="text-danger small">{{ $message }}</div>
-                                @enderror
-
-                                <button type="submit" id="blogSubmitBtn">
-                                    <span class="btn-text">Send Message</span>
-                                    <span class="btn-loading" style="display: none;">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                            <path
-                                                d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z"
-                                                opacity=".25" />
-                                            <path
-                                                d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z">
-                                                <animateTransform attributeName="transform" dur="0.75s"
-                                                    repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12" />
-                                            </path>
-                                        </svg>
-                                        Sending...
-                                    </span>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- contact-area-end -->
 @endsection

@@ -30,7 +30,7 @@ class BookmarkController extends Controller
     public function toggle(Blog $blog)
     {
         if (! Auth::check()) {
-            return response()->json(['error' => 'You must be logged in to bookmark.'], 401);
+            return redirect()->route('login');
         }
 
         $userId   = Auth::id();
@@ -40,21 +40,16 @@ class BookmarkController extends Controller
 
         if ($bookmark) {
             $bookmark->delete();
-            $bookmarked = false;
             $message    = 'Bookmark removed successfully!';
         } else {
             Bookmark::create([
                 'user_id' => $userId,
                 'blog_id' => $blog->id,
             ]);
-            $bookmarked = true;
             $message    = 'Blog bookmarked successfully!';
         }
 
-        return response()->json([
-            'bookmarked' => $bookmarked,
-            'message'    => $message,
-        ]);
+        return redirect()->back()->with('success', $message);
     }
 
     /**

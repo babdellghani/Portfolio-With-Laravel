@@ -72,7 +72,7 @@
                         </div>
                         <div class="card-body">
                             <!-- Status -->
-                            @can('admin', Category::class)
+                            @can('admin', App\Models\Category::class)
                                 <div class="mb-3">
                                     <label for="status" class="form-label">Status</label>
                                     <div class="square-switch">

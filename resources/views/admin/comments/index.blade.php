@@ -91,7 +91,7 @@
                                     <div class="d-flex align-items-center">
                                         <select name="action" class="form-select me-2" style="width: auto;" required>
                                             <option value="">Bulk Actions</option>
-                                            @can('admin', Comment::class)
+                                            @can('admin', App\Models\Comment::class)
                                                 <option value="approve">Approve</option>
                                                 <option value="reject">Reject</option>
                                             @endcan
@@ -192,7 +192,7 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex gap-2 flex-wrap">
-                                                        @can('admin', Comment::class)
+                                                        @can('admin', App\Models\Comment::class)
                                                             @if (!$comment->status)
                                                                 <button type="submit"
                                                                     form="approve-form-{{ $comment->id }}"

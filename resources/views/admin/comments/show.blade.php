@@ -131,7 +131,7 @@
                     </div>
                     <div class="card-body">
                         <div class="d-grid gap-2">
-                            @can('admin', Comment::class)
+                            @can('admin', App\Models\Comment::class)
                                 @if (!$comment->status)
                                     <form action="{{ route('admin.comments.approve', $comment) }}" method="POST">
                                         @csrf
@@ -254,7 +254,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        @can('admin', Comment::class)
+                        @can('admin', App\Models\Comment::class)
                             <div class="mt-3">
                                 <a href="{{ route('users.show', $comment->user) }}" class="btn btn-sm btn-outline-primary">
                                     <i class="mdi mdi-account me-1"></i> View User Profile

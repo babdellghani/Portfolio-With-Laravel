@@ -57,7 +57,7 @@
                                 </div>
                             </div>
 
-                            @can('admin', Comment::class)
+                            @can('admin', App\Models\Comment::class)
                             <div class="mb-3">
                                 <label for="status" class="form-label">Status</label>
                                 <div class="square-switch">
@@ -149,7 +149,7 @@
                                 <p class="text-muted mb-0">{{ $comment->user->email }}</p>
                             </div>
                         </div>
-                        @can('admin', Comment::class)
+                        @can('admin', App\Models\Comment::class)
                             <div class="mt-3">
                                 <a href="{{ route('users.show', $comment->user) }}" class="btn btn-sm btn-outline-primary">
                                     <i class="mdi mdi-account me-1"></i> View Profile
@@ -189,7 +189,7 @@
                     </div>
                     <div class="card-body">
                         <div class="d-grid gap-2">
-                            @can('admin', Comment::class)
+                            @can('admin', App\Models\Comment::class)
                                 @if (!$comment->status)
                                     <form action="{{ route('admin.comments.approve', $comment) }}" method="POST">
                                         @csrf
