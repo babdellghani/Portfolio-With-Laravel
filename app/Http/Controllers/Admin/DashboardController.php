@@ -19,9 +19,9 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can access the dashboard.');
-        }
+        // if (! Auth::user()->isAdmin()) {
+        //     abort(403, 'Only admins can access the dashboard.');
+        // }
 
         // General statistics
         $stats = [

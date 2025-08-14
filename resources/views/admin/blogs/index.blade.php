@@ -53,7 +53,8 @@
                                     <div class="col-lg-2">
                                         <select name="status" class="form-select">
                                             <option value="">All Status</option>
-                                            <option value="published" {{ request('status') === 'published' ? 'selected' : '' }}>Published</option>
+                                            <option value="published"
+                                                {{ request('status') === 'published' ? 'selected' : '' }}>Published</option>
                                             <option value="draft" {{ request('status') === 'draft' ? 'selected' : '' }}>
                                                 Draft</option>
                                         </select>
@@ -61,8 +62,9 @@
                                     <div class="col-lg-3">
                                         <select name="category_id" class="form-select">
                                             <option value="">All Categories</option>
-                                            @foreach($categories as $category)
-                                                <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                                            @foreach ($categories as $category)
+                                                <option value="{{ $category->id }}"
+                                                    {{ request('category_id') == $category->id ? 'selected' : '' }}>
                                                     {{ $category->name }}
                                                 </option>
                                             @endforeach
@@ -71,23 +73,27 @@
                                     <div class="col-lg-2">
                                         <select name="tag_id" class="form-select">
                                             <option value="">All Tags</option>
-                                            @foreach($tags as $tag)
-                                                <option value="{{ $tag->id }}" {{ request('tag_id') == $tag->id ? 'selected' : '' }}>
+                                            @foreach ($tags as $tag)
+                                                <option value="{{ $tag->id }}"
+                                                    {{ request('tag_id') == $tag->id ? 'selected' : '' }}>
                                                     {{ $tag->name }}
                                                 </option>
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-lg-3">
-                                        <select name="author_id" class="form-select">
-                                            <option value="">All Authors</option>
-                                            @foreach($authors as $author)
-                                                <option value="{{ $author->id }}" {{ request('author_id') == $author->id ? 'selected' : '' }}>
-                                                    {{ $author->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                    @if (Auth::user()->isAdmin())
+                                        <div class="col-lg-3">
+                                            <select name="author_id" class="form-select">
+                                                <option value="">All Authors</option>
+                                                @foreach ($authors as $author)
+                                                    <option value="{{ $author->id }}"
+                                                        {{ request('author_id') == $author->id ? 'selected' : '' }}>
+                                                        {{ $author->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    @endif
                                     <div class="col-lg-2">
                                         <button type="submit" class="btn btn-primary">
                                             <i class="bx bx-filter-alt me-1"></i> Filter
@@ -117,8 +123,10 @@
                                     <div class="d-flex align-items-center">
                                         <select name="action" class="form-select me-2" style="width: auto;" required>
                                             <option value="">Bulk Actions</option>
-                                            <option value="publish">Publish</option>
-                                            <option value="draft">Move to Draft</option>
+                                            @can('admin', Blog::class)
+                                                <option value="publish">Publish</option>
+                                                <option value="draft">Move to Draft</option>
+                                            @endcan
                                             <option value="delete">Delete</option>
                                         </select>
                                         <button type="submit" class="btn btn-secondary btn-sm">Apply</button>
@@ -157,7 +165,7 @@
                                                 <td>
                                                     <div class="d-flex align-items-center">
                                                         <div class="flex-shrink-0 me-3">
-                                                            @if($blog->thumbnail)
+                                                            @if ($blog->thumbnail)
                                                                 <img src="{{ $blog->thumbnail && str_starts_with($blog->thumbnail, 'defaults_images/') ? asset($blog->thumbnail) : asset('storage/' . $blog->thumbnail) }}"
                                                                     alt="" class="avatar-sm rounded">
                                                             @else
@@ -183,11 +191,11 @@
                                                 </td>
                                                 <td>{{ $blog->user->name }}</td>
                                                 <td>
-                                                    @foreach($blog->categories->take(2) as $category)
+                                                    @foreach ($blog->categories->take(2) as $category)
                                                         <span
                                                             class="badge bg-soft-primary text-primary">{{ $category->name }}</span>
                                                     @endforeach
-                                                    @if($blog->categories->count() > 2)
+                                                    @if ($blog->categories->count() > 2)
                                                         <span class="text-muted">+{{ $blog->categories->count() - 2 }}
                                                             more</span>
                                                     @endif
@@ -201,14 +209,16 @@
                                                 <td>
                                                     <div class="text-muted">
                                                         <i class="ri-eye-line me-1"></i>{{ $blog->views }}
-                                                        <i class="ri-chat-3-line me-1 ms-2"></i>{{ $blog->comments_count }}
+                                                        <i
+                                                            class="ri-chat-3-line me-1 ms-2"></i>{{ $blog->comments_count }}
                                                         <i class="ri-heart-line me-1 ms-2"></i>{{ $blog->likes_count }}
                                                     </div>
                                                 </td>
                                                 <td>{{ $blog->created_at->format('M d, Y') }}</td>
                                                 <td>
                                                     <div class="d-flex gap-3">
-                                                        <a href="{{ route('admin.blogs.edit', $blog) }}" class="text-success">
+                                                        <a href="{{ route('admin.blogs.edit', $blog) }}"
+                                                            class="text-success">
                                                             <i class="mdi mdi-pencil font-size-18"></i>
                                                         </a>
                                                         <a href="{{ route('blog.show', $blog->slug) }}" target="_blank"
@@ -246,7 +256,7 @@
                         </form>
 
                         <!-- Individual Action Forms (Outside bulk form) -->
-                        @foreach($blogs as $blog)
+                        @foreach ($blogs as $blog)
                             <form action="{{ route('admin.blogs.duplicate', $blog) }}" method="POST"
                                 id="duplicate-form-{{ $blog->id }}" style="display: none;">
                                 @csrf
@@ -259,12 +269,13 @@
                         @endforeach
 
                         <!-- Pagination -->
-                        @if($blogs->hasPages())
+                        @if ($blogs->hasPages())
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="d-flex justify-content-between align-items-center mt-3">
                                         <div class="text-muted">
-                                            Showing {{ $blogs->firstItem() }} to {{ $blogs->lastItem() }} of {{ $blogs->total() }} results
+                                            Showing {{ $blogs->firstItem() }} to {{ $blogs->lastItem() }} of
+                                            {{ $blogs->total() }} results
                                         </div>
                                         <nav aria-label="Page navigation">
                                             {{ $blogs->appends(request()->query())->links('pagination::bootstrap-4') }}
@@ -284,9 +295,9 @@
 
     @push('scripts')
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 // Check All functionality
-                document.getElementById('checkAll').addEventListener('change', function () {
+                document.getElementById('checkAll').addEventListener('change', function() {
                     const checkboxes = document.querySelectorAll('input[name="blogs[]"]');
                     checkboxes.forEach(checkbox => {
                         checkbox.checked = this.checked;
@@ -294,7 +305,7 @@
                 });
 
                 // Bulk action form validation
-                document.getElementById('bulk-action-form').addEventListener('submit', function (e) {
+                document.getElementById('bulk-action-form').addEventListener('submit', function(e) {
                     const selectedBlogs = document.querySelectorAll('input[name="blogs[]"]:checked');
                     const action = document.querySelector('select[name="action"]').value;
 
@@ -311,7 +322,9 @@
                     }
 
                     if (action === 'delete') {
-                        if (!confirm('Are you sure you want to delete the selected blogs? This action cannot be undone.')) {
+                        if (!confirm(
+                                'Are you sure you want to delete the selected blogs? This action cannot be undone.'
+                            )) {
                             e.preventDefault();
                         }
                     }

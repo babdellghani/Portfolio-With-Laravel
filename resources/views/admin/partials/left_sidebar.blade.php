@@ -94,59 +94,63 @@
                         </a>
                     </li>
 
-                    <li class="menu-title">Blog Management</li>
+                @endif
 
-                    <li>
-                        <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="ri-article-line"></i>
-                            <span>Blog Posts</span>
-                        </a>
-                        <ul class="sub-menu" aria-expanded="false">
-                            <li><a href="{{ route('admin.blogs.index') }}">All Posts</a></li>
-                            <li><a href="{{ route('admin.blogs.create') }}">Add New Post</a></li>
-                        </ul>
-                    </li>
 
-                    <li>
-                        <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="ri-folder-line"></i>
-                            <span>Categories</span>
-                        </a>
-                        <ul class="sub-menu" aria-expanded="false">
-                            <li><a href="{{ route('admin.categories.index') }}">All Categories</a></li>
-                            <li><a href="{{ route('admin.categories.create') }}">Add Category</a></li>
-                        </ul>
-                    </li>
+                <li class="menu-title">Blog Management</li>
 
-                    <li>
-                        <a href="{{ route('admin.tags.index') }}" class="waves-effect">
-                            <i class="ri-price-tag-3-line"></i>
-                            <span>Tags</span>
-                            @php
-                                $totalTags = \App\Models\Tag::count();
-                            @endphp
-                            @if ($totalTags > 0)
-                                <span class="badge rounded-pill bg-secondary float-end">{{ $totalTags }}</span>
-                            @endif
-                        </a>
-                    </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="ri-article-line"></i>
+                        <span>Blog Posts</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="{{ route('admin.blogs.index') }}">All Posts</a></li>
+                        <li><a href="{{ route('admin.blogs.create') }}">Add New Post</a></li>
+                    </ul>
+                </li>
 
-                    <li>
-                        <a href="{{ route('admin.comments.index') }}" class="waves-effect">
-                            <i class="ri-chat-3-line"></i>
-                            <span>Comments</span>
-                            @php
-                                $pendingComments = \App\Models\Comment::where('status', 0)->count();
-                                $totalComments = \App\Models\Comment::count();
-                            @endphp
-                            @if ($pendingComments > 0)
-                                <span class="badge rounded-pill bg-warning float-end">{{ $pendingComments }}</span>
-                            @elseif ($totalComments > 0)
-                                <span class="badge rounded-pill bg-info float-end">{{ $totalComments }}</span>
-                            @endif
-                        </a>
-                    </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="ri-folder-line"></i>
+                        <span>Categories</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="{{ route('admin.categories.index') }}">All Categories</a></li>
+                        <li><a href="{{ route('admin.categories.create') }}">Add Category</a></li>
+                    </ul>
+                </li>
 
+                <li>
+                    <a href="{{ route('admin.tags.index') }}" class="waves-effect">
+                        <i class="ri-price-tag-3-line"></i>
+                        <span>Tags</span>
+                        @php
+                            $totalTags = \App\Models\Tag::count();
+                        @endphp
+                        @if ($totalTags > 0)
+                            <span class="badge rounded-pill bg-secondary float-end">{{ $totalTags }}</span>
+                        @endif
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('admin.comments.index') }}" class="waves-effect">
+                        <i class="ri-chat-3-line"></i>
+                        <span>Comments</span>
+                        @php
+                            $pendingComments = \App\Models\Comment::where('status', 0)->count();
+                            $totalComments = \App\Models\Comment::count();
+                        @endphp
+                        @if ($pendingComments > 0)
+                            <span class="badge rounded-pill bg-warning float-end">{{ $pendingComments }}</span>
+                        @elseif ($totalComments > 0)
+                            <span class="badge rounded-pill bg-info float-end">{{ $totalComments }}</span>
+                        @endif
+                    </a>
+                </li>
+
+                @if (auth()->user()->isAdmin())
                     <li class="menu-title">System Management</li>
 
                     <li>

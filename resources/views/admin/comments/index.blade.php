@@ -36,18 +36,6 @@
                                     </form>
                                 </div>
                             </div>
-                            <div class="col-sm-8">
-                                <div class="text-sm-end">
-                                    <a href="{{ route('admin.comments.stats') }}"
-                                        class="btn btn-info btn-rounded waves-effect waves-light mb-2 me-2">
-                                        <i class="mdi mdi-chart-line me-1"></i> Statistics
-                                    </a>
-                                    <a href="{{ route('admin.comments.export') }}"
-                                        class="btn btn-success btn-rounded waves-effect waves-light mb-2">
-                                        <i class="mdi mdi-download me-1"></i> Export CSV
-                                    </a>
-                                </div>
-                            </div>
                         </div>
 
                         <!-- Filters -->

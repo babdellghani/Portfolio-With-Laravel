@@ -193,6 +193,11 @@ Route::prefix('/admin')->group(function () {
         // user management
         Route::resource('users', UserController::class);
         Route::patch('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
+    
+    }); // End admin middleware group
+
+
+    Route::middleware(['auth', 'user.status', 'verified'])->group(function () {
 
         // blog management
         Route::get('/blogs', [AdminBlogController::class, 'index'])->name('admin.blogs.index');
@@ -240,9 +245,7 @@ Route::prefix('/admin')->group(function () {
         Route::patch('/comments/{comment}/approve', [AdminCommentController::class, 'approve'])->name('admin.comments.approve');
         Route::patch('/comments/{comment}/reject', [AdminCommentController::class, 'reject'])->name('admin.comments.reject');
         Route::post('/comments/bulk-action', [AdminCommentController::class, 'bulkAction'])->name('admin.comments.bulk-action');
-        Route::get('/comments-stats', [AdminCommentController::class, 'stats'])->name('admin.comments.stats');
-        Route::get('/comments/export', [AdminCommentController::class, 'export'])->name('admin.comments.export');
-    }); // End admin middleware group
+    });
 }); // End admin prefix group
 
 require __DIR__ . '/auth.php';

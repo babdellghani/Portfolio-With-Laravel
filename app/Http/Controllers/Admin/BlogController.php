@@ -21,13 +21,22 @@ class BlogController extends Controller
      */
     public function index(Request $request)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can manage blogs.');
-        }
+        $this->authorize('viewAny', Blog::class);
 
-        $query = Blog::with(['user', 'categories', 'tags'])
-            ->withCount(['comments', 'likes', 'bookmarks'])
-            ->latest();
+        if (! Auth::user()->isAdmin()) {
+            $query = Blog::where('user_id', Auth::id())->with(['user', 'categories', 'tags'])
+                ->withCount(['comments', 'likes', 'bookmarks'])
+                ->latest();
+        } else {
+            $query = Blog::with(relations: ['user', 'categories', 'tags'])
+                ->withCount(['comments', 'likes', 'bookmarks'])
+                ->latest();
+
+            // Filter by author
+            if ($request->filled('author_id')) {
+                $query->where('user_id', $request->author_id);
+            }
+        }
 
         // Filter by status
         if ($request->filled('status')) {
@@ -39,11 +48,6 @@ class BlogController extends Controller
             $query->whereHas('categories', function ($q) use ($request) {
                 $q->where('categories.id', $request->category_id);
             });
-        }
-
-        // Filter by author
-        if ($request->filled('author_id')) {
-            $query->where('user_id', $request->author_id);
         }
 
         // Filter by tag
@@ -63,12 +67,22 @@ class BlogController extends Controller
             });
         }
 
-        $blogs      = $query->paginate(15);
-        $categories = Category::whereHas('blogs')->get();
-        $tags       = Tag::whereHas('blogs')->get();
-        $authors    = User::whereHas('blogs')->get();
+        $blogs = $query->paginate(15);
+        if (! Auth::user()->isAdmin()) {
+            $categories = Category::where('user_id', Auth::id())->
+                whereHas('blogs')->get();
+            $tags = Tag::where('user_id', Auth::id())->
+                whereHas('blogs')->get();
 
-        return view('admin.blogs.index', compact('blogs', 'categories', 'tags', 'authors'));
+            return view('admin.blogs.index', compact('blogs', 'categories', 'tags'));
+        } else {
+            $categories = Category::whereHas('blogs')->get();
+            $tags       = Tag::whereHas('blogs')->get();
+            $authors    = User::whereHas('blogs')->get();
+
+            return view('admin.blogs.index', compact('blogs', 'categories', 'tags', 'authors'));
+
+        }
     }
 
     /**
@@ -76,10 +90,7 @@ class BlogController extends Controller
      */
     public function create()
     {
-        if (! Auth::user()->canCreateBlog()) {
-            abort(403, 'You do not have permission to create blog posts.');
-        }
-
+        $this->authorize('create', Blog::class);
         $categories = Category::active()->get();
         $tags       = Tag::active()->get();
 
@@ -91,9 +102,7 @@ class BlogController extends Controller
      */
     public function store(Request $request)
     {
-        if (! Auth::user()->canCreateBlog()) {
-            abort(403, 'You do not have permission to create blog posts.');
-        }
+        $this->authorize('create', Blog::class);
 
         $request->validate([
             'title'             => 'required|string|max:255',
@@ -119,6 +128,10 @@ class BlogController extends Controller
         $blog->description       = $request->input('description');
         $blog->status            = $request->input('status');
         $blog->user_id           = Auth::id();
+
+        if (! Auth::user()->isAdmin()) {
+            $blog->status = 'draft'; // Non-admin users can only create drafts
+        }
 
         // Handle image upload
         if ($request->hasFile('image')) {
@@ -149,9 +162,7 @@ class BlogController extends Controller
      */
     public function edit(Blog $blog)
     {
-        if (! Auth::user()->isAdmin() && $blog->user_id !== Auth::id()) {
-            abort(403, 'You can only edit your own blog posts.');
-        }
+        $this->authorize('view', $blog);
 
         $categories = Category::active()->get();
         $tags       = Tag::active()->get();
@@ -164,9 +175,7 @@ class BlogController extends Controller
      */
     public function update(Request $request, Blog $blog)
     {
-        if (! Auth::user()->isAdmin() && $blog->user_id !== Auth::id()) {
-            abort(403, 'You can only edit your own blog posts.');
-        }
+        $this->authorize('update', $blog);
 
         try {
             $request->validate([
@@ -193,6 +202,10 @@ class BlogController extends Controller
             $blog->short_description = $request->input('short_description');
             $blog->description       = $request->input('description');
             $blog->status            = $request->input('status');
+
+            if (! Auth::user()->isAdmin()) {
+                $blog->status = 'draft'; // Non-admin users can only create drafts
+            }
 
             // Handle image upload
             if ($request->hasFile('image')) {
@@ -241,9 +254,7 @@ class BlogController extends Controller
      */
     public function destroy(Blog $blog)
     {
-        if (! Auth::user()->isAdmin() && $blog->user_id !== Auth::id()) {
-            abort(403, 'You can only delete your own blog posts.');
-        }
+        $this->authorize('delete', $blog);
 
         // Delete thumbnail
         if ($blog->thumbnail) {
@@ -261,9 +272,7 @@ class BlogController extends Controller
      */
     public function toggleStatus(Blog $blog)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can toggle blog status.');
-        }
+        $this->authorize('admin', Blog::class);
 
         $newStatus = $blog->status === 'published' ? 'draft' : 'published';
         $blog->update(['status' => $newStatus]);
@@ -276,10 +285,6 @@ class BlogController extends Controller
      */
     public function bulkAction(Request $request)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can perform bulk actions.');
-        }
-
         $request->validate([
             'action'  => 'required|in:publish,draft,delete',
             'blogs'   => 'required|array|min:1',
@@ -290,17 +295,23 @@ class BlogController extends Controller
 
         switch ($request->action) {
             case 'publish':
+                $this->authorize('admin', Blog::class);
+
                 $blogs->update(['status' => 'published']);
                 $message = 'Blog posts published successfully!';
                 break;
 
             case 'draft':
+                $this->authorize('admin', Blog::class);
+
                 $blogs->update(['status' => 'draft']);
                 $message = 'Blog posts moved to draft successfully!';
                 break;
 
             case 'delete':
+
                 $blogs->each(function ($blog) {
+                $this->authorize('delete', $blog);
                     if ($blog->thumbnail) {
                         Storage::disk('public')->delete($blog->thumbnail);
                     }
@@ -318,9 +329,7 @@ class BlogController extends Controller
      */
     public function stats()
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can view blog statistics.');
-        }
+        $this->authorize('admin', Blog::class);
 
         $stats = [
             'total'           => Blog::count(),
@@ -386,9 +395,7 @@ class BlogController extends Controller
      */
     public function duplicate(Blog $blog)
     {
-        if (! Auth::user()->canCreateBlog()) {
-            abort(403, 'You do not have permission to create blog posts.');
-        }
+        $this->authorize('duplicate', $blog);
 
         $newBlog          = $blog->replicate();
         $newBlog->title   = $blog->title . ' (Copy)';

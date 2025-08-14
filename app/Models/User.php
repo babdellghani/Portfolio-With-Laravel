@@ -65,6 +65,14 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Check if user is verified
+     */
+    public function isVerified(): bool
+    {
+        return $this->email_verified_at !== null;
+    }
+
+    /**
      * Get status badge class for display
      */
     public function getStatusBadgeClass(): string
