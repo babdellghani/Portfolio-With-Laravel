@@ -32,7 +32,7 @@
                             @csrf
                             @method('PUT')
 
-                            @if($comment->parent_id)
+                            @if ($comment->parent_id)
                                 <div class="alert alert-info d-flex align-items-start mb-4">
                                     <i class="ri-corner-down-right-line me-2 mt-1"></i>
                                     <div>
@@ -45,8 +45,7 @@
                             <div class="mb-3">
                                 <label for="content" class="form-label">Comment Content <span
                                         class="text-danger">*</span></label>
-                                <textarea name="content" id="content"
-                                    class="form-control @error('content') is-invalid @enderror" rows="6"
+                                <textarea name="content" id="content" class="form-control @error('content') is-invalid @enderror" rows="6"
                                     required>{{ old('content', $comment->content) }}</textarea>
                                 @error('content')
                                     <span class="invalid-feedback" role="alert">
@@ -58,6 +57,7 @@
                                 </div>
                             </div>
 
+                            @can('admin', Comment::class)
                             <div class="mb-3">
                                 <label for="status" class="form-label">Status</label>
                                 <div class="square-switch">
@@ -72,20 +72,7 @@
                                     </span>
                                 @enderror
                             </div>
-
-                            <div class="mb-3">
-                                <label for="admin_note" class="form-label">Admin Note (Internal)</label>
-                                <textarea name="admin_note" id="admin_note"
-                                    class="form-control @error('admin_note') is-invalid @enderror" rows="3"
-                                    placeholder="Internal note for admins (not visible to users)">{{ old('admin_note', $comment->admin_note ?? '') }}</textarea>
-                                @error('admin_note')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                                <div class="form-text">This note is only visible to administrators and won't be shown to
-                                    users.</div>
-                            </div>
+                            @endcan
 
                             <div class="d-flex justify-content-between">
                                 <a href="{{ route('admin.comments.show', $comment) }}" class="btn btn-secondary">
@@ -131,7 +118,7 @@
                                         <th class="ps-0" scope="row">Type:</th>
                                         <td class="text-muted">{{ $comment->parent_id ? 'Reply' : 'Comment' }}</td>
                                     </tr>
-                                    @if($comment->replies->count() > 0)
+                                    @if ($comment->replies->count() > 0)
                                         <tr>
                                             <th class="ps-0" scope="row">Replies:</th>
                                             <td class="text-muted">{{ $comment->replies->count() }}</td>
@@ -162,11 +149,13 @@
                                 <p class="text-muted mb-0">{{ $comment->user->email }}</p>
                             </div>
                         </div>
-                        <div class="mt-3">
-                            <a href="{{ route('users.show', $comment->user) }}" class="btn btn-sm btn-outline-primary">
-                                <i class="mdi mdi-account me-1"></i> View Profile
-                            </a>
-                        </div>
+                        @can('admin', Comment::class)
+                            <div class="mt-3">
+                                <a href="{{ route('users.show', $comment->user) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="mdi mdi-account me-1"></i> View Profile
+                                </a>
+                            </div>
+                        @endcan
                     </div>
                 </div>
 
@@ -176,10 +165,10 @@
                         <h4 class="card-title mb-0">Blog Post</h4>
                     </div>
                     <div class="card-body">
-                        @if($comment->blog->image)
+                        @if ($comment->blog->image)
                             <div class="mb-3">
-                                <img src="{{ asset('storage/' . $comment->blog->image) }}" alt="{{ $comment->blog->title }}"
-                                    class="img-fluid rounded">
+                                <img src="{{ asset('storage/' . $comment->blog->image) }}"
+                                    alt="{{ $comment->blog->title }}" class="img-fluid rounded">
                             </div>
                         @endif
                         <h6 class="mb-2">{{ $comment->blog->title }}</h6>
@@ -200,23 +189,25 @@
                     </div>
                     <div class="card-body">
                         <div class="d-grid gap-2">
-                            @if(!$comment->status)
-                                <form action="{{ route('admin.comments.approve', $comment) }}" method="POST">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button type="submit" class="btn btn-success btn-sm">
-                                        <i class="mdi mdi-check me-1"></i> Quick Approve
-                                    </button>
-                                </form>
-                            @else
-                                <form action="{{ route('admin.comments.reject', $comment) }}" method="POST">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button type="submit" class="btn btn-warning btn-sm">
-                                        <i class="mdi mdi-close me-1"></i> Quick Reject
-                                    </button>
-                                </form>
-                            @endif
+                            @can('admin', Comment::class)
+                                @if (!$comment->status)
+                                    <form action="{{ route('admin.comments.approve', $comment) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-success btn-sm">
+                                            <i class="mdi mdi-check me-1"></i> Quick Approve
+                                        </button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('admin.comments.reject', $comment) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-warning btn-sm">
+                                            <i class="mdi mdi-close me-1"></i> Quick Reject
+                                        </button>
+                                    </form>
+                                @endif
+                            @endcan
 
                             <form action="{{ route('admin.comments.destroy', $comment) }}" method="POST">
                                 @csrf
@@ -235,13 +226,13 @@
 
     @push('scripts')
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 // Character count
                 const contentTextarea = document.getElementById('content');
                 const charCount = document.getElementById('char-count');
 
                 if (contentTextarea && charCount) {
-                    contentTextarea.addEventListener('input', function () {
+                    contentTextarea.addEventListener('input', function() {
                         charCount.textContent = this.value.length;
                     });
                 }

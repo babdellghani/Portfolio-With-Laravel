@@ -13,7 +13,7 @@ class CommentPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class CommentPolicy
      */
     public function view(User $user, Comment $comment): bool
     {
-        return false;
+        return $user->isAdmin() || $comment->user_id === $user->id;
     }
 
     /**
@@ -29,7 +29,7 @@ class CommentPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->isAdmin() || ($user->isActive() && $user->isVerified());
     }
 
     /**
@@ -37,7 +37,7 @@ class CommentPolicy
      */
     public function update(User $user, Comment $comment): bool
     {
-        return false;
+        return $user->isAdmin() || $comment->user_id === $user->id;
     }
 
     /**
@@ -45,22 +45,14 @@ class CommentPolicy
      */
     public function delete(User $user, Comment $comment): bool
     {
-        return false;
+        return $user->isAdmin() || $comment->user_id === $user->id;
     }
 
     /**
-     * Determine whether the user can restore the model.
+     * Determine whether the user can admin the model.
      */
-    public function restore(User $user, Comment $comment): bool
+    public function admin(User $user): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Comment $comment): bool
-    {
-        return false;
+        return $user->isAdmin();
     }
 }

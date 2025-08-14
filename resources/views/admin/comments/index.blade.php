@@ -91,8 +91,10 @@
                                     <div class="d-flex align-items-center">
                                         <select name="action" class="form-select me-2" style="width: auto;" required>
                                             <option value="">Bulk Actions</option>
-                                            <option value="approve">Approve</option>
-                                            <option value="reject">Reject</option>
+                                            @can('admin', Comment::class)
+                                                <option value="approve">Approve</option>
+                                                <option value="reject">Reject</option>
+                                            @endcan
                                             <option value="delete">Delete</option>
                                         </select>
                                         <button type="submit" class="btn btn-secondary btn-sm">Apply</button>
@@ -190,18 +192,20 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex gap-2 flex-wrap">
-                                                        @if (!$comment->status)
-                                                            <button type="submit"
-                                                                form="approve-form-{{ $comment->id }}"
-                                                                class="btn btn-sm btn-success" title="Approve">
-                                                                <i class="mdi mdi-check"></i>
-                                                            </button>
-                                                        @else
-                                                            <button type="submit" form="reject-form-{{ $comment->id }}"
-                                                                class="btn btn-sm btn-warning" title="Reject">
-                                                                <i class="mdi mdi-close"></i>
-                                                            </button>
-                                                        @endif
+                                                        @can('admin', Comment::class)
+                                                            @if (!$comment->status)
+                                                                <button type="submit"
+                                                                    form="approve-form-{{ $comment->id }}"
+                                                                    class="btn btn-sm btn-success" title="Approve">
+                                                                    <i class="mdi mdi-check"></i>
+                                                                </button>
+                                                            @else
+                                                                <button type="submit" form="reject-form-{{ $comment->id }}"
+                                                                    class="btn btn-sm btn-warning" title="Reject">
+                                                                    <i class="mdi mdi-close"></i>
+                                                                </button>
+                                                            @endif
+                                                        @endcan
 
                                                         <a href="{{ route('admin.comments.show', $comment) }}"
                                                             class="btn btn-sm btn-info" title="View">

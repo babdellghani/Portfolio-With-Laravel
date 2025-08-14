@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -17,12 +18,16 @@ class CommentController extends Controller
      */
     public function index(Request $request)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can manage comments.');
-        }
+        $this->authorize('viewAny', Comment::class);
 
-        $query = Comment::with(['user', 'blog', 'parent'])
-            ->latest();
+        if (Auth::user()->isAdmin()) {
+            $query = Comment::with(['user', 'blog', 'parent'])
+                ->latest();
+        } else {
+            $query = Comment::where('user_id', Auth::id())
+                ->with(['user', 'blog', 'parent'])
+                ->latest();
+        }
 
         // Filter by status
         if ($request->filled('status')) {
@@ -63,9 +68,7 @@ class CommentController extends Controller
      */
     public function show(Comment $comment)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can view comment details.');
-        }
+        $this->authorize('view', $comment);
 
         $comment->load(['user', 'blog', 'parent', 'replies.user', 'likes.user']);
         return view('admin.comments.show', compact('comment'));
@@ -76,21 +79,40 @@ class CommentController extends Controller
      */
     public function edit(Comment $comment)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can edit comments.');
-        }
+        $this->authorize('view', $comment);
 
         return view('admin.comments.edit', compact('comment'));
     }
+    /**
+     * Store a newly created comment in storage
+     */
+    public function store(Request $request)
+    {
+        $this->authorize('create', Comment::class);
 
+        $request->validate([
+            'content' => 'required|string|max:1000',
+            'blog_id' => 'required|exists:blogs,id',
+            'parent_id' => 'nullable|exists:comments,id',
+        ]);
+
+        $comment = Comment::create([
+            'content' => $request->input('content'),
+            'blog_id' => $request->input('blog_id'),
+            'parent_id' => $request->input('parent_id'),
+            'user_id' => Auth::id(),
+            'status' => Auth::user()->isAdmin() ? true : false,
+        ]);
+
+        return redirect()->back()
+            ->with('success', 'Comment created successfully!');
+    }
     /**
      * Update the specified comment
      */
     public function update(Request $request, Comment $comment)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can update comments.');
-        }
+        $this->authorize('update', $comment);
 
         $request->validate([
             'content' => 'required|string|max:1000',
@@ -99,7 +121,7 @@ class CommentController extends Controller
 
         $comment->update([
             'content' => $request->input('content'),
-            'status'  => $request->boolean('status', false),
+            'status'  => Auth::user()->isAdmin() ? $request->boolean('status', false) : false,
         ]);
 
         return redirect()->route('admin.comments.index')
@@ -111,9 +133,7 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can delete comments.');
-        }
+        $this->authorize('delete', $comment);
 
         // Delete all replies first
         $comment->replies()->delete();
@@ -130,9 +150,7 @@ class CommentController extends Controller
      */
     public function toggleStatus(Comment $comment)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can toggle comment status.');
-        }
+        $this->authorize('admin', Blog::class);
 
         $comment->update([
             'status' => ! $comment->status,
@@ -147,9 +165,7 @@ class CommentController extends Controller
      */
     public function approve(Comment $comment)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can approve comments.');
-        }
+        $this->authorize('admin', Blog::class);
 
         $comment->update(['status' => true]);
 
@@ -161,9 +177,7 @@ class CommentController extends Controller
      */
     public function reject(Comment $comment)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can reject comments.');
-        }
+        $this->authorize('admin', Blog::class);
 
         $comment->update(['status' => false]);
 
@@ -175,10 +189,6 @@ class CommentController extends Controller
      */
     public function bulkAction(Request $request)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can perform bulk actions.');
-        }
-
         $request->validate([
             'action'     => 'required|in:approve,reject,delete',
             'comments'   => 'required|array|min:1',
@@ -189,18 +199,28 @@ class CommentController extends Controller
 
         switch ($request->action) {
             case 'approve':
+                $this->authorize('admin', Blog::class);
+                
                 $comments->update(['status' => true]);
                 $message = 'Comments approved successfully!';
                 break;
 
             case 'reject':
+                $this->authorize('admin', Blog::class);
+                
                 $comments->update(['status' => false]);
                 $message = 'Comments rejected successfully!';
                 break;
 
             case 'delete':
                 // Get all comment IDs including replies
-                $commentIds    = $comments->pluck('id')->toArray();
+                $commentIds = $comments->pluck('id')->toArray();
+                
+                // Authorize delete permission for each comment
+                foreach ($comments->get() as $comment) {
+                    $this->authorize('delete', $comment);
+                }
+                
                 $allCommentIds = Comment::whereIn('parent_id', $commentIds)
                     ->pluck('id')
                     ->merge($commentIds)
@@ -214,6 +234,4 @@ class CommentController extends Controller
 
         return redirect()->back()->with('success', $message);
     }
-
-    
 }

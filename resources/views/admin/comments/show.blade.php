@@ -36,7 +36,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        @if($comment->parent_id)
+                        @if ($comment->parent_id)
                             <div class="alert alert-info d-flex align-items-start">
                                 <i class="ri-corner-down-right-line me-2 mt-1"></i>
                                 <div>
@@ -53,11 +53,11 @@
                             </div>
                         </div>
 
-                        @if($comment->replies->count() > 0)
+                        @if ($comment->replies->count() > 0)
                             <div class="mt-4">
                                 <h6 class="text-muted mb-3">Replies ({{ $comment->replies->count() }}):</h6>
                                 <div class="replies-list">
-                                    @foreach($comment->replies as $reply)
+                                    @foreach ($comment->replies as $reply)
                                         <div class="d-flex mb-3 p-3 bg-light rounded">
                                             <div class="flex-shrink-0 me-3">
                                                 <div class="avatar-sm">
@@ -74,14 +74,15 @@
                                                             class="badge badge-pill badge-soft-{{ $reply->status ? 'success' : 'warning' }} font-size-11 me-2">
                                                             {{ $reply->status ? 'Approved' : 'Pending' }}
                                                         </span>
-                                                        <small class="text-muted">{{ $reply->created_at->diffForHumans() }}</small>
+                                                        <small
+                                                            class="text-muted">{{ $reply->created_at->diffForHumans() }}</small>
                                                     </div>
                                                 </div>
                                                 <p class="text-muted mb-2">{{ $reply->content }}</p>
                                                 <div class="d-flex gap-2">
-                                                    @if(!$reply->status)
-                                                        <form action="{{ route('admin.comments.approve', $reply) }}" method="POST"
-                                                            class="d-inline">
+                                                    @if (!$reply->status)
+                                                        <form action="{{ route('admin.comments.approve', $reply) }}"
+                                                            method="POST" class="d-inline">
                                                             @csrf
                                                             @method('PATCH')
                                                             <button type="submit" class="btn btn-sm btn-success">
@@ -89,8 +90,8 @@
                                                             </button>
                                                         </form>
                                                     @else
-                                                        <form action="{{ route('admin.comments.reject', $reply) }}" method="POST"
-                                                            class="d-inline">
+                                                        <form action="{{ route('admin.comments.reject', $reply) }}"
+                                                            method="POST" class="d-inline">
                                                             @csrf
                                                             @method('PATCH')
                                                             <button type="submit" class="btn btn-sm btn-warning">
@@ -102,8 +103,8 @@
                                                         class="btn btn-sm btn-primary">
                                                         <i class="mdi mdi-pencil me-1"></i> Edit
                                                     </a>
-                                                    <form action="{{ route('admin.comments.destroy', $reply) }}" method="POST"
-                                                        class="d-inline">
+                                                    <form action="{{ route('admin.comments.destroy', $reply) }}"
+                                                        method="POST" class="d-inline">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-sm btn-danger"
@@ -130,23 +131,25 @@
                     </div>
                     <div class="card-body">
                         <div class="d-grid gap-2">
-                            @if(!$comment->status)
-                                <form action="{{ route('admin.comments.approve', $comment) }}" method="POST">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button type="submit" class="btn btn-success w-100">
-                                        <i class="mdi mdi-check me-1"></i> Approve Comment
-                                    </button>
-                                </form>
-                            @else
-                                <form action="{{ route('admin.comments.reject', $comment) }}" method="POST">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button type="submit" class="btn btn-warning w-100">
-                                        <i class="mdi mdi-close me-1"></i> Reject Comment
-                                    </button>
-                                </form>
-                            @endif
+                            @can('admin', Comment::class)
+                                @if (!$comment->status)
+                                    <form action="{{ route('admin.comments.approve', $comment) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-success w-100">
+                                            <i class="mdi mdi-check me-1"></i> Approve Comment
+                                        </button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('admin.comments.reject', $comment) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-warning w-100">
+                                            <i class="mdi mdi-close me-1"></i> Reject Comment
+                                        </button>
+                                    </form>
+                                @endif
+                            @endcan
 
                             <a href="{{ route('admin.comments.edit', $comment) }}" class="btn btn-primary">
                                 <i class="mdi mdi-pencil me-1"></i> Edit Comment
@@ -202,7 +205,7 @@
                                         <th class="ps-0" scope="row">Type:</th>
                                         <td class="text-muted">{{ $comment->parent_id ? 'Reply' : 'Comment' }}</td>
                                     </tr>
-                                    @if($comment->replies->count() > 0)
+                                    @if ($comment->replies->count() > 0)
                                         <tr>
                                             <th class="ps-0" scope="row">Replies:</th>
                                             <td class="text-muted">{{ $comment->replies->count() }}</td>
@@ -251,12 +254,13 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="mt-3">
-                            <a href="{{ route('users.show', $comment->user) }}"
-                                class="btn btn-sm btn-outline-primary">
-                                <i class="mdi mdi-account me-1"></i> View User Profile
-                            </a>
-                        </div>
+                        @can('admin', Comment::class)
+                            <div class="mt-3">
+                                <a href="{{ route('users.show', $comment->user) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="mdi mdi-account me-1"></i> View User Profile
+                                </a>
+                            </div>
+                        @endcan
                     </div>
                 </div>
 
@@ -266,10 +270,10 @@
                         <h4 class="card-title mb-0">Blog Post</h4>
                     </div>
                     <div class="card-body">
-                        @if($comment->blog->image)
+                        @if ($comment->blog->image)
                             <div class="mb-3">
-                                <img src="{{ asset('storage/' . $comment->blog->image) }}" alt="{{ $comment->blog->title }}"
-                                    class="img-fluid rounded">
+                                <img src="{{ asset('storage/' . $comment->blog->image) }}"
+                                    alt="{{ $comment->blog->title }}" class="img-fluid rounded">
                             </div>
                         @endif
                         <h6 class="mb-2">{{ $comment->blog->title }}</h6>
@@ -279,10 +283,12 @@
                                 class="btn btn-sm btn-outline-primary">
                                 <i class="mdi mdi-open-in-new me-1"></i> View Post
                             </a>
-                            <a href="{{ route('admin.blogs.edit', $comment->blog) }}"
-                                class="btn btn-sm btn-outline-secondary">
-                                <i class="mdi mdi-pencil me-1"></i> Edit Post
-                            </a>
+                            @can('view', $comment->blog)
+                                <a href="{{ route('admin.blogs.edit', $comment->blog) }}"
+                                    class="btn btn-sm btn-outline-secondary">
+                                    <i class="mdi mdi-pencil me-1"></i> Edit Post
+                                </a>
+                            @endcan
                         </div>
                     </div>
                 </div>

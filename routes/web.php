@@ -237,6 +237,7 @@ Route::prefix('/admin')->group(function () {
         // comment management
         Route::get('/comments', [AdminCommentController::class, 'index'])->name('admin.comments.index');
         Route::get('/comments/{comment}', [AdminCommentController::class, 'show'])->name('admin.comments.show');
+        Route::post('/comments', [AdminCommentController::class, 'store'])->name('admin.comments.store');
         Route::get('/comments/{comment}/edit', [AdminCommentController::class, 'edit'])->name('admin.comments.edit');
         Route::put('/comments/{comment}', [AdminCommentController::class, 'update'])->name('admin.comments.update');
         Route::delete('/comments/{comment}', [AdminCommentController::class, 'destroy'])->name('admin.comments.destroy');
