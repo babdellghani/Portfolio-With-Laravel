@@ -233,7 +233,6 @@ Route::prefix('/admin')->group(function () {
         Route::delete('/tags/{tag}', [AdminTagController::class, 'destroy'])->name('admin.tags.destroy');
         Route::patch('/tags/{tag}/toggle-status', [AdminTagController::class, 'toggleStatus'])->name('admin.tags.toggle-status');
         Route::post('/tags/bulk-action', [AdminTagController::class, 'bulkAction'])->name('admin.tags.bulk-action');
-        Route::get('/tags/search', [AdminTagController::class, 'search'])->name('admin.tags.search');
 
         // comment management
         Route::get('/comments', [AdminCommentController::class, 'index'])->name('admin.comments.index');

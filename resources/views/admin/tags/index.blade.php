@@ -30,18 +30,20 @@
                         <form action="{{ route('admin.tags.store') }}" method="POST" class="row g-3">
                             @csrf
                             <div class="col-md-4">
-                                <input type="text" class="form-control @error('name') is-invalid @enderror" name="name"
-                                    placeholder="Tag name..." value="{{ old('name') }}" required>
+                                <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                    name="name" placeholder="Tag name..." value="{{ old('name') }}" required>
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-3">
-                                <select name="status" class="form-select">
-                                    <option value="1">Active</option>
-                                    <option value="0">Inactive</option>
-                                </select>
-                            </div>
+                            @can('admin', App\Models\Tag::class)
+                                <div class="col-md-3">
+                                    <select name="status" class="form-select">
+                                        <option value="1">Active</option>
+                                        <option value="0">Inactive</option>
+                                    </select>
+                                </div>
+                            @endcan
                             <div class="col-md-2">
                                 <button type="submit" class="btn btn-success">
                                     <i class="mdi mdi-plus me-1"></i> Add Tag
@@ -81,7 +83,8 @@
                                             <option value="">All Status</option>
                                             <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>
                                                 Active</option>
-                                            <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>
+                                            <option value="inactive"
+                                                {{ request('status') === 'inactive' ? 'selected' : '' }}>
                                                 Inactive</option>
                                         </select>
                                     </div>
@@ -114,8 +117,10 @@
                                     <div class="d-flex align-items-center">
                                         <select name="action" class="form-select me-2" style="width: auto;" required>
                                             <option value="">Bulk Actions</option>
-                                            <option value="activate">Activate</option>
-                                            <option value="deactivate">Deactivate</option>
+                                            @can('admin', App\Models\Tag::class)
+                                                <option value="activate">Activate</option>
+                                                <option value="deactivate">Deactivate</option>
+                                            @endcan
                                             <option value="delete">Delete</option>
                                         </select>
                                         <button type="submit" class="btn btn-secondary btn-sm">Apply</button>
@@ -189,17 +194,18 @@
                                                 <td>{{ $tag->created_at->format('M d, Y') }}</td>
                                                 <td>
                                                     <div class="d-flex gap-3">
-                                                        <a href="{{ route('admin.tags.show', $tag) }}" class="text-success">
-                                                            <i class="mdi mdi-eye font-size-18"></i>
-                                                        </a>
-                                                        <a href="{{ route('admin.tags.edit', $tag) }}" class="text-success">
+                                                        <a href="{{ route('admin.tags.edit', $tag) }}"
+                                                            class="text-success">
                                                             <i class="mdi mdi-pencil font-size-18"></i>
                                                         </a>
-                                                        <button type="submit" form="toggle-status-form-{{ $tag->id }}"
-                                                            class="btn btn-link text-warning p-0">
-                                                            <i
-                                                                class="mdi mdi-{{ $tag->status ? 'eye-off' : 'eye' }} font-size-18"></i>
-                                                        </button>
+                                                        @can('admin', App\Models\Tag::class)
+                                                            <button type="submit"
+                                                                form="toggle-status-form-{{ $tag->id }}"
+                                                                class="btn btn-link text-warning p-0">
+                                                                <i
+                                                                    class="mdi mdi-{{ $tag->status ? 'eye-off' : 'eye' }} font-size-18"></i>
+                                                            </button>
+                                                        @endcan
                                                         <button type="submit" form="delete-form-{{ $tag->id }}"
                                                             class="btn btn-link text-danger p-0"
                                                             onclick="return confirm('Are you sure?')">
@@ -226,26 +232,29 @@
                             </div>
                         </form>
 
-                        @foreach($tags as $tag)
-                            <form action="{{ route('admin.tags.toggle-status', $tag) }}" method="POST"
-                                id="toggle-status-form-{{ $tag->id }}" style="display: none;">
-                                @csrf
-                                @method('PATCH')
-                            </form>
-                            <form action="{{ route('admin.tags.destroy', $tag) }}" method="POST" id="delete-form-{{ $tag->id }}"
-                                style="display: none;">
+                        @foreach ($tags as $tag)
+                            @can('admin', App\Models\Tag::class)
+                                <form action="{{ route('admin.tags.toggle-status', $tag) }}" method="POST"
+                                    id="toggle-status-form-{{ $tag->id }}" style="display: none;">
+                                    @csrf
+                                    @method('PATCH')
+                                </form>
+                            @endcan
+                            <form action="{{ route('admin.tags.destroy', $tag) }}" method="POST"
+                                id="delete-form-{{ $tag->id }}" style="display: none;">
                                 @csrf
                                 @method('DELETE')
                             </form>
                         @endforeach
 
                         <!-- Pagination -->
-                        @if($tags->hasPages())
+                        @if ($tags->hasPages())
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="d-flex justify-content-between align-items-center mt-3">
                                         <div class="text-muted">
-                                            Showing {{ $tags->firstItem() }} to {{ $tags->lastItem() }} of {{ $tags->total() }}
+                                            Showing {{ $tags->firstItem() }} to {{ $tags->lastItem() }} of
+                                            {{ $tags->total() }}
                                             results
                                         </div>
                                         <nav aria-label="Page navigation">
@@ -263,9 +272,9 @@
 
     @push('scripts')
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 // Check All functionality
-                document.getElementById('checkAll').addEventListener('change', function () {
+                document.getElementById('checkAll').addEventListener('change', function() {
                     const checkboxes = document.querySelectorAll('input[name="tags[]"]');
                     checkboxes.forEach(checkbox => {
                         checkbox.checked = this.checked;
@@ -273,7 +282,7 @@
                 });
 
                 // Bulk action form validation
-                document.getElementById('bulk-action-form').addEventListener('submit', function (e) {
+                document.getElementById('bulk-action-form').addEventListener('submit', function(e) {
                     const selectedTags = document.querySelectorAll('input[name="tags[]"]:checked');
                     const action = document.querySelector('select[name="action"]').value;
 
@@ -290,7 +299,9 @@
                     }
 
                     if (action === 'delete') {
-                        if (!confirm('Are you sure you want to delete the selected tags? This may affect related blog posts.')) {
+                        if (!confirm(
+                                'Are you sure you want to delete the selected tags? This may affect related blog posts.'
+                            )) {
                             e.preventDefault();
                         }
                     }

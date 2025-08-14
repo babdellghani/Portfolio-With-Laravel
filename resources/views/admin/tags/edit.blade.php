@@ -34,8 +34,8 @@
                             <!-- Tag Name -->
                             <div class="mb-3">
                                 <label for="name" class="form-label">Tag Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
-                                    name="name" value="{{ old('name', $tag->name) }}" required>
+                                <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                    id="name" name="name" value="{{ old('name', $tag->name) }}" required>
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -101,21 +101,23 @@
                         </div>
                         <div class="card-body">
                             <!-- Status -->
-                            <div class="mb-3">
-                                <label for="status" class="form-label">Status</label>
-                                <div class="square-switch">
-                                    <input type="hidden" name="status" value="0" />
-                                    <input type="checkbox" id="square-switch3" value="1" switch="bool" name="status"
-                                        @checked(old('status', $tag->status)) />
-                                    <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
+                            @can('admin', App\Models\Tag::class)
+                                <div class="mb-3">
+                                    <label for="status" class="form-label">Status</label>
+                                    <div class="square-switch">
+                                        <input type="hidden" name="status" value="0" />
+                                        <input type="checkbox" id="square-switch3" value="1" switch="bool" name="status"
+                                            @checked(old('status', $tag->status)) />
+                                        <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
+                                    </div>
+                                    @error('status')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <div class="form-text">
+                                        {{ $tag->status ? 'Active - Tag is visible and usable' : 'Inactive - Tag is hidden from public view' }}
+                                    </div>
                                 </div>
-                                @error('status')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                                <div class="form-text">
-                                    {{ $tag->status ? 'Active - Tag is visible and usable' : 'Inactive - Tag is hidden from public view' }}
-                                </div>
-                            </div>
+                            @endcan
 
                             <!-- Tag Statistics -->
                             <div class="mb-3">
@@ -164,7 +166,7 @@
                                 <a href="{{ route('admin.tags.index') }}" class="btn btn-secondary">
                                     <i class="mdi mdi-arrow-left me-1"></i> Back to Tags
                                 </a>
-                                @if($tag->blogs()->count() === 0)
+                                @if ($tag->blogs()->count() === 0)
                                     <button type="button" class="btn btn-danger" onclick="deleteTag()">
                                         <i class="mdi mdi-delete me-1"></i> Delete Tag
                                     </button>
@@ -179,56 +181,60 @@
                     </div>
 
                     <!-- Related Blogs -->
-                    @if($tag->blogs()->count() > 0)
+                    @if ($tag->blogs()->count() > 0)
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title mb-0">Related Blog Posts</h4>
                             </div>
                             <div class="card-body">
                                 <div class="list-group list-group-flush">
-                                    @foreach($tag->blogs()->latest()->take(5)->get() as $blog)
-                                        <div class="list-group-item px-0 py-2">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-shrink-0 me-2">
-                                                    @if($blog->thumbnail)
-                                                        <img src="{{ $blog->thumbnail && str_starts_with($blog->thumbnail, 'defaults_images/') ? asset($blog->thumbnail) : asset('storage/' . $blog->thumbnail) }}"
-                                                            alt="Blog thumbnail" class="avatar-sm rounded">
-                                                    @else
-                                                        <div class="avatar-sm">
-                                                            <span class="avatar-title rounded bg-soft-primary text-primary">
-                                                                <i class="ri-file-text-line"></i>
-                                                            </span>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <h6 class="mb-1 font-size-14">
-                                                        <a href="{{ route('admin.blogs.edit', $blog) }}" class="text-dark">
-                                                            {{ Str::limit($blog->title, 35) }}
-                                                        </a>
-                                                    </h6>
-                                                    <p class="text-muted mb-0 font-size-12">
-                                                        <span
-                                                            class="badge badge-soft-{{ $blog->status === 'published' ? 'success' : 'warning' }} font-size-11 me-1">
-                                                            {{ ucfirst($blog->status) }}
-                                                        </span>
-                                                        {{ $blog->created_at->format('M d, Y') }}
-                                                        @if($blog->views > 0)
-                                                            • {{ $blog->views }} views
+                                    @foreach ($tag->blogs()->latest()->take(5)->get() as $blog)
+                                        @can('view', $blog)
+                                            <div class="list-group-item px-0 py-2">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="flex-shrink-0 me-2">
+                                                        @if ($blog->thumbnail)
+                                                            <img src="{{ $blog->thumbnail && str_starts_with($blog->thumbnail, 'defaults_images/') ? asset($blog->thumbnail) : asset('storage/' . $blog->thumbnail) }}"
+                                                                alt="Blog thumbnail" class="avatar-sm rounded">
+                                                        @else
+                                                            <div class="avatar-sm">
+                                                                <span
+                                                                    class="avatar-title rounded bg-soft-primary text-primary">
+                                                                    <i class="ri-file-text-line"></i>
+                                                                </span>
+                                                            </div>
                                                         @endif
-                                                    </p>
-                                                </div>
-                                                <div class="flex-shrink-0">
-                                                    <a href="{{ route('admin.blogs.edit', $blog) }}"
-                                                        class="btn btn-sm btn-soft-primary">
-                                                        <i class="ri-edit-line"></i>
-                                                    </a>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-1 font-size-14">
+                                                            <a href="{{ route('admin.blogs.edit', $blog) }}"
+                                                                class="text-dark">
+                                                                {{ Str::limit($blog->title, 35) }}
+                                                            </a>
+                                                        </h6>
+                                                        <p class="text-muted mb-0 font-size-12">
+                                                            <span
+                                                                class="badge badge-soft-{{ $blog->status === 'published' ? 'success' : 'warning' }} font-size-11 me-1">
+                                                                {{ ucfirst($blog->status) }}
+                                                            </span>
+                                                            {{ $blog->created_at->format('M d, Y') }}
+                                                            @if ($blog->views > 0)
+                                                                • {{ $blog->views }} views
+                                                            @endif
+                                                        </p>
+                                                    </div>
+                                                    <div class="flex-shrink-0">
+                                                        <a href="{{ route('admin.blogs.edit', $blog) }}"
+                                                            class="btn btn-sm btn-soft-primary">
+                                                            <i class="ri-edit-line"></i>
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        @endcan
                                     @endforeach
                                 </div>
-                                @if($tag->blogs()->count() > 5)
+                                @if ($tag->blogs()->count() > 5)
                                     <div class="text-center mt-3">
                                         <a href="{{ route('admin.blogs.index', ['tag_id' => $tag->id]) }}"
                                             class="btn btn-soft-primary btn-sm">
@@ -253,7 +259,7 @@
 
     @push('scripts')
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 // Form submission handling
                 const form = document.getElementById('tag-edit-form');
                 const updateBtn = document.getElementById('update-tag-btn');
@@ -261,7 +267,7 @@
                 const tagPreview = document.getElementById('tag-preview');
 
                 if (form && updateBtn) {
-                    form.addEventListener('submit', function (e) {
+                    form.addEventListener('submit', function(e) {
                         const name = nameInput.value.trim();
 
                         if (!name) {
@@ -285,14 +291,14 @@
 
                 // Real-time tag preview
                 if (nameInput && tagPreview) {
-                    nameInput.addEventListener('input', function (e) {
+                    nameInput.addEventListener('input', function(e) {
                         const name = e.target.value.trim();
                         tagPreview.textContent = name || '{{ $tag->name }}';
                     });
                 }
 
                 // Auto-generate slug preview
-                nameInput.addEventListener('input', function (e) {
+                nameInput.addEventListener('input', function(e) {
                     const name = e.target.value;
                     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
                     // You can display the slug preview here if needed

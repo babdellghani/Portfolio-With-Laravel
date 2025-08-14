@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -17,13 +18,18 @@ class TagController extends Controller
      */
     public function index(Request $request)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can manage tags.');
-        }
+        $this->authorize('viewAny', Tag::class);
 
-        $query = Tag::with(['user'])
-            ->withBlogCount()
-            ->latest();
+        if (Auth::user()->isAdmin()) {
+            $query = Tag::with(['user'])
+                ->withBlogCount()
+                ->latest();
+        } else {
+            $query = Tag::with(['user'])
+                ->withBlogCount()
+                ->where('user_id', Auth::id())
+                ->latest();
+        }
 
         // Search functionality
         if ($request->filled('search')) {
@@ -46,9 +52,7 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can create tags.');
-        }
+        $this->authorize('create', Tag::class);
 
         $request->validate([
             'name'   => 'required|string|max:255|unique:tags,name',
@@ -58,7 +62,7 @@ class TagController extends Controller
         Tag::create([
             'name'    => $request->input('name'),
             'slug'    => Str::slug($request->input('name')),
-            'status'  => $request->boolean('status', true),
+            'status'  => Auth::user()->isAdmin() ? $request->boolean('status', true) : false,
             'user_id' => Auth::id(),
         ]);
 
@@ -71,9 +75,7 @@ class TagController extends Controller
      */
     public function edit(Tag $tag)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can edit tags.');
-        }
+        $this->authorize('view', $tag);
 
         return view('admin.tags.edit', compact('tag'));
     }
@@ -83,9 +85,7 @@ class TagController extends Controller
      */
     public function update(Request $request, Tag $tag)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can update tags.');
-        }
+        $this->authorize('update', $tag);
 
         $request->validate([
             'name'   => 'required|string|max:255|unique:tags,name,' . $tag->id,
@@ -95,7 +95,7 @@ class TagController extends Controller
         $tag->update([
             'name'   => $request->input('name'),
             'slug'   => Str::slug($request->input('name')),
-            'status' => $request->boolean('status', true),
+            'status' => Auth::user()->isAdmin() ? $request->boolean('status', true) : false,
         ]);
 
         return redirect()->route('admin.tags.index')
@@ -107,9 +107,7 @@ class TagController extends Controller
      */
     public function destroy(Tag $tag)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can delete tags.');
-        }
+        $this->authorize('delete', $tag);
 
         // Check if tag has blogs
         if ($tag->blogs()->count() > 0) {
@@ -128,9 +126,7 @@ class TagController extends Controller
      */
     public function toggleStatus(Tag $tag)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can toggle tag status.');
-        }
+        $this->authorize('admin', Tag::class);
 
         $tag->update([
             'status' => ! $tag->status,
@@ -145,10 +141,6 @@ class TagController extends Controller
      */
     public function bulkAction(Request $request)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can perform bulk actions.');
-        }
-
         $request->validate([
             'action' => 'required|in:activate,deactivate,delete',
             'tags'   => 'required|array|min:1',
@@ -159,11 +151,15 @@ class TagController extends Controller
 
         switch ($request->action) {
             case 'activate':
+                $this->authorize('admin', Tag::class);
+                
                 $tags->update(['status' => true]);
                 $message = 'Tags activated successfully!';
                 break;
 
             case 'deactivate':
+                $this->authorize('admin', Tag::class);
+                
                 $tags->update(['status' => false]);
                 $message = 'Tags deactivated successfully!';
                 break;
@@ -182,6 +178,8 @@ class TagController extends Controller
                 }
 
                 $tagsToDelete->each(function ($tag) {
+                    $this->authorize('delete', $tag);
+                    // Delete the tag
                     $tag->delete();
                 });
 
@@ -190,22 +188,5 @@ class TagController extends Controller
         }
 
         return redirect()->back()->with('success', $message);
-    }
-
-    /**
-     * Get tags for AJAX requests
-     */
-    public function search(Request $request)
-    {
-        if (! Auth::user()->isAdmin()) {
-            abort(403);
-        }
-
-        $tags = Tag::active()
-            ->where('name', 'like', '%' . $request->q . '%')
-            ->limit(20)
-            ->get(['id', 'name']);
-
-        return response()->json($tags);
     }
 }
