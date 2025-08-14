@@ -1,9 +1,10 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\Technology;
-use Database\Seeders\TechnologySeeder;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Database\Seeders\TechnologySeeder;
 use Illuminate\Support\Facades\Storage;
 
 class TechnologyController extends Controller

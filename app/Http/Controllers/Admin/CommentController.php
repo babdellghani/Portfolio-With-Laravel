@@ -83,30 +83,7 @@ class CommentController extends Controller
 
         return view('admin.comments.edit', compact('comment'));
     }
-    /**
-     * Store a newly created comment in storage
-     */
-    public function store(Request $request)
-    {
-        $this->authorize('create', Comment::class);
-
-        $request->validate([
-            'content' => 'required|string|max:1000',
-            'blog_id' => 'required|exists:blogs,id',
-            'parent_id' => 'nullable|exists:comments,id',
-        ]);
-
-        $comment = Comment::create([
-            'content' => $request->input('content'),
-            'blog_id' => $request->input('blog_id'),
-            'parent_id' => $request->input('parent_id'),
-            'user_id' => Auth::id(),
-            'status' => Auth::user()->isAdmin() ? true : false,
-        ]);
-
-        return redirect()->back()
-            ->with('success', 'Comment created successfully!');
-    }
+    
     /**
      * Update the specified comment
      */

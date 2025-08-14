@@ -1,9 +1,10 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\WebsiteInfo;
-use Database\Seeders\WebsiteInfoSeeder;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Database\Seeders\WebsiteInfoSeeder;
 use Illuminate\Support\Facades\Storage;
 
 class WebsiteInfoController extends Controller
@@ -14,7 +15,6 @@ class WebsiteInfoController extends Controller
     public function index()
     {
         $this->requireAdmin();
-
         $websiteInfo = WebsiteInfo::first();
 
         if (! $websiteInfo) {

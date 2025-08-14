@@ -1,31 +1,31 @@
 <?php
 
-use App\Http\Controllers\About\AboutController;
-use App\Http\Controllers\About\AwardController;
-use App\Http\Controllers\About\EducationController;
-use App\Http\Controllers\About\SkillController;
-use App\Http\Controllers\Admin\BlogController as AdminBlogController;
-use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
-use App\Http\Controllers\Admin\CommentController as AdminCommentController;
-use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
-use App\Http\Controllers\Admin\TagController as AdminTagController;
-use App\Http\Controllers\BlogController;
-use App\Http\Controllers\BookmarkController;
-use App\Http\Controllers\CommentController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\Home\HomeController;
-use App\Http\Controllers\Home\HomeSlideController;
-use App\Http\Controllers\LikeController;
-use App\Http\Controllers\PartnerController;
-use App\Http\Controllers\PortfolioController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ServiceController;
-use App\Http\Controllers\TechnologyController;
-use App\Http\Controllers\TestimonialController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\WebsiteInfoController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\BookmarkController;
+use App\Http\Controllers\Home\HomeController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\About\AboutController;
+use App\Http\Controllers\About\AwardController;
+use App\Http\Controllers\About\SkillController;
+use App\Http\Controllers\Admin\PartnerController;
+use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Home\HomeSlideController;
+use App\Http\Controllers\About\EducationController;
+use App\Http\Controllers\Admin\PortfolioController;
+use App\Http\Controllers\Admin\TechnologyController;
+use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\WebsiteInfoController;
+use App\Http\Controllers\Admin\TagController as AdminTagController;
+use App\Http\Controllers\Admin\BlogController as AdminBlogController;
+use App\Http\Controllers\Admin\CommentController as AdminCommentController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 
 // -------------- Frontend --------------- //
 Route::get('/', [HomeController::class, 'index'])->name('home');

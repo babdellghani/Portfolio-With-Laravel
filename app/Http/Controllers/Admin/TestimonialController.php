@@ -1,9 +1,10 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\Testimonial;
-use Database\Seeders\TestimonialSeeder;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Database\Seeders\TestimonialSeeder;
 use Illuminate\Support\Facades\Storage;
 
 class TestimonialController extends Controller

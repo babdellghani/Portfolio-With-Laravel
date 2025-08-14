@@ -1,9 +1,10 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\Partner;
-use Database\Seeders\PartnerSeeder;
 use Illuminate\Http\Request;
+use Database\Seeders\PartnerSeeder;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 
 class PartnerController extends Controller
