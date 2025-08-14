@@ -36,8 +36,8 @@
                             <div class="mb-3">
                                 <label for="name" class="form-label">Category Name <span
                                         class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
-                                    name="name" value="{{ old('name', $category->name) }}" required>
+                                <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                    id="name" name="name" value="{{ old('name', $category->name) }}" required>
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -53,9 +53,8 @@
                             <!-- Description -->
                             <div class="mb-3">
                                 <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control @error('description') is-invalid @enderror" id="description"
-                                    name="description" rows="4"
-                                    placeholder="Brief description of the category...">{{ old('description', $category->description) }}</textarea>
+                                <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
+                                    rows="4" placeholder="Brief description of the category...">{{ old('description', $category->description) }}</textarea>
                                 @error('description')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -73,18 +72,20 @@
                         </div>
                         <div class="card-body">
                             <!-- Status -->
-                            <div class="mb-3">
-                                <label for="status" class="form-label">Status</label>
-                                <div class="square-switch">
-                                    <input type="hidden" name="status" value="0" />
-                                    <input type="checkbox" id="square-switch3" value="1" switch="bool" name="status"
-                                        @checked(old('status', $category->status)) />
-                                    <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
+                            @can('admin', Category::class)
+                                <div class="mb-3">
+                                    <label for="status" class="form-label">Status</label>
+                                    <div class="square-switch">
+                                        <input type="hidden" name="status" value="0" />
+                                        <input type="checkbox" id="square-switch3" value="1" switch="bool" name="status"
+                                            @checked(old('status', $category->status)) />
+                                        <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
+                                    </div>
+                                    @error('status')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                @error('status')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                            @endcan
 
                             <!-- Category Stats -->
                             <div class="mb-3">
@@ -106,7 +107,7 @@
                                 <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">
                                     <i class="mdi mdi-arrow-left me-1"></i> Back to Categories
                                 </a>
-                                @if($category->blogs()->count() === 0)
+                                @if ($category->blogs()->count() === 0)
                                     <button type="button" class="btn btn-danger" onclick="deleteCategory()">
                                         <i class="mdi mdi-delete me-1"></i> Delete Category
                                     </button>
@@ -127,7 +128,7 @@
                         </div>
                         <div class="card-body">
                             <!-- Current Image -->
-                            @if($category->image)
+                            @if ($category->image)
                                 <div class="mb-3">
                                     <label class="form-label">Current Image</label>
                                     <div class="current-image">
@@ -140,8 +141,8 @@
                             <div class="mb-3">
                                 <label for="image"
                                     class="form-label">{{ $category->image ? 'Replace Image' : 'Upload Image' }}</label>
-                                <input type="file" class="form-control @error('image') is-invalid @enderror" id="image"
-                                    name="image" accept="image/*">
+                                <input type="file" class="form-control @error('image') is-invalid @enderror"
+                                    id="image" name="image" accept="image/*">
                                 @error('image')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -157,56 +158,60 @@
                     </div>
 
                     <!-- Related Blogs -->
-                    @if($category->blogs()->count() > 0)
+                    @if ($category->blogs()->count() > 0)
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title mb-0">Related Blog Posts</h4>
                             </div>
                             <div class="card-body">
                                 <div class="list-group list-group-flush">
-                                    @foreach($category->blogs()->latest()->take(5)->get() as $blog)
-                                        <div class="list-group-item px-0 py-2">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-shrink-0 me-2">
-                                                    @if($blog->thumbnail)
-                                                        <img src="{{ $blog->thumbnail && str_starts_with($blog->thumbnail, 'defaults_images/') ? asset($blog->thumbnail) : asset('storage/' . $blog->thumbnail) }}"
-                                                            alt="Blog thumbnail" class="avatar-sm rounded">
-                                                    @else
-                                                        <div class="avatar-sm">
-                                                            <span class="avatar-title rounded bg-soft-primary text-primary">
-                                                                <i class="ri-file-text-line"></i>
-                                                            </span>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <h6 class="mb-1 font-size-14">
-                                                        <a href="{{ route('admin.blogs.edit', $blog) }}" class="text-dark">
-                                                            {{ Str::limit($blog->title, 35) }}
-                                                        </a>
-                                                    </h6>
-                                                    <p class="text-muted mb-0 font-size-12">
-                                                        <span
-                                                            class="badge badge-soft-{{ $blog->status === 'published' ? 'success' : 'warning' }} font-size-11 me-1">
-                                                            {{ ucfirst($blog->status) }}
-                                                        </span>
-                                                        {{ $blog->created_at->format('M d, Y') }}
-                                                        @if($blog->views > 0)
-                                                            • {{ $blog->views }} views
+                                    @foreach ($category->blogs()->latest()->take(5)->get() as $blog)
+                                        @can('view', $blog)
+                                            <div class="list-group-item px-0 py-2">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="flex-shrink-0 me-2">
+                                                        @if ($blog->thumbnail)
+                                                            <img src="{{ $blog->thumbnail && str_starts_with($blog->thumbnail, 'defaults_images/') ? asset($blog->thumbnail) : asset('storage/' . $blog->thumbnail) }}"
+                                                                alt="Blog thumbnail" class="avatar-sm rounded">
+                                                        @else
+                                                            <div class="avatar-sm">
+                                                                <span
+                                                                    class="avatar-title rounded bg-soft-primary text-primary">
+                                                                    <i class="ri-file-text-line"></i>
+                                                                </span>
+                                                            </div>
                                                         @endif
-                                                    </p>
-                                                </div>
-                                                <div class="flex-shrink-0">
-                                                    <a href="{{ route('admin.blogs.edit', $blog) }}"
-                                                        class="btn btn-sm btn-soft-primary">
-                                                        <i class="ri-edit-line"></i>
-                                                    </a>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-1 font-size-14">
+                                                            <a href="{{ route('admin.blogs.edit', $blog) }}"
+                                                                class="text-dark">
+                                                                {{ Str::limit($blog->title, 35) }}
+                                                            </a>
+                                                        </h6>
+                                                        <p class="text-muted mb-0 font-size-12">
+                                                            <span
+                                                                class="badge badge-soft-{{ $blog->status === 'published' ? 'success' : 'warning' }} font-size-11 me-1">
+                                                                {{ ucfirst($blog->status) }}
+                                                            </span>
+                                                            {{ $blog->created_at->format('M d, Y') }}
+                                                            @if ($blog->views > 0)
+                                                                • {{ $blog->views }} views
+                                                            @endif
+                                                        </p>
+                                                    </div>
+                                                    <div class="flex-shrink-0">
+                                                        <a href="{{ route('admin.blogs.edit', $blog) }}"
+                                                            class="btn btn-sm btn-soft-primary">
+                                                            <i class="ri-edit-line"></i>
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        @endcan
                                     @endforeach
                                 </div>
-                                @if($category->blogs()->count() > 5)
+                                @if ($category->blogs()->count() > 5)
                                     <div class="text-center mt-3">
                                         <a href="{{ route('admin.blogs.index', ['category_id' => $category->id]) }}"
                                             class="btn btn-soft-primary btn-sm">
@@ -261,13 +266,13 @@
 
     @push('scripts')
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 // Form submission handling
                 const form = document.getElementById('category-edit-form');
                 const updateBtn = document.getElementById('update-category-btn');
 
                 if (form && updateBtn) {
-                    form.addEventListener('submit', function (e) {
+                    form.addEventListener('submit', function(e) {
                         const name = document.getElementById('name').value.trim();
 
                         if (!name) {
@@ -284,11 +289,11 @@
                 }
 
                 // Image preview functionality
-                document.getElementById('image').addEventListener('change', function (e) {
+                document.getElementById('image').addEventListener('change', function(e) {
                     const file = e.target.files[0];
                     if (file) {
                         const reader = new FileReader();
-                        reader.onload = function (e) {
+                        reader.onload = function(e) {
                             const preview = document.getElementById('image-preview');
                             const img = document.getElementById('preview-image');
                             img.src = e.target.result;
@@ -301,7 +306,7 @@
                 });
 
                 // Auto-generate slug preview
-                document.getElementById('name').addEventListener('input', function (e) {
+                document.getElementById('name').addEventListener('input', function(e) {
                     const name = e.target.value;
                     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
                     // You can display the slug preview here if needed

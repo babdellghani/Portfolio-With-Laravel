@@ -93,18 +93,20 @@
                         </div>
                         <div class="card-body">
                             <!-- Status -->
-                            <div class="mb-3">
-                                <label for="status" class="form-label">Status</label>
-                                <div class="square-switch">
-                                    <input type="hidden" name="status" value="draft" />
-                                    <input type="checkbox" id="square-switch3" value="published" switch="bool"
-                                        name="status" @checked(old('status') === 'published' || $blog->status === 'published') />
-                                    <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
+                            @can('admin', Blog::class)
+                                <div class="mb-3">
+                                    <label for="status" class="form-label">Status</label>
+                                    <div class="square-switch">
+                                        <input type="hidden" name="status" value="draft" />
+                                        <input type="checkbox" id="square-switch3" value="published" switch="bool"
+                                            name="status" @checked(old('status') === 'published' || $blog->status === 'published') />
+                                        <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
+                                    </div>
+                                    @error('status')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                @error('status')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                            @endcan
 
                             <!-- Blog Stats -->
                             <div class="mb-3">

@@ -35,8 +35,8 @@
                             <div class="mb-3">
                                 <label for="name" class="form-label">Category Name <span
                                         class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
-                                    name="name" value="{{ old('name') }}" required>
+                                <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                    id="name" name="name" value="{{ old('name') }}" required>
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -45,9 +45,8 @@
                             <!-- Description -->
                             <div class="mb-3">
                                 <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control @error('description') is-invalid @enderror" id="description"
-                                    name="description" rows="4"
-                                    placeholder="Brief description of the category...">{{ old('description') }}</textarea>
+                                <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
+                                    rows="4" placeholder="Brief description of the category...">{{ old('description') }}</textarea>
                                 @error('description')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -56,8 +55,8 @@
                             <!-- Category Image -->
                             <div class="mb-3">
                                 <label for="image" class="form-label">Category Image</label>
-                                <input type="file" class="form-control @error('image') is-invalid @enderror" id="image"
-                                    name="image" accept="image/*">
+                                <input type="file" class="form-control @error('image') is-invalid @enderror"
+                                    id="image" name="image" accept="image/*">
                                 @error('image')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -74,18 +73,20 @@
                             </div>
 
                             <!-- Status -->
-                            <div class="mb-3">
-                                <label for="status" class="form-label">Status</label>
-                                <div class="square-switch">
-                                    <input type="hidden" name="status" value="0" />
-                                    <input type="checkbox" id="square-switch3" value="1" switch="bool" name="status"
-                                        @checked(old('status') === 'published') />
-                                    <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
+                            @can('admin', Category::class)
+                                <div class="mb-3">
+                                    <label for="status" class="form-label">Status</label>
+                                    <div class="square-switch">
+                                        <input type="hidden" name="status" value="0" />
+                                        <input type="checkbox" id="square-switch3" value="1" switch="bool" name="status"
+                                            @checked(old('status') === 'published') />
+                                        <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
+                                    </div>
+                                    @error('status')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                @error('status')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                            @endcan
 
                             <!-- Action Buttons -->
                             <div class="d-flex gap-2">
@@ -134,13 +135,13 @@
     </div>
     @push('scripts')
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 // Image preview functionality
-                document.getElementById('image').addEventListener('change', function (e) {
+                document.getElementById('image').addEventListener('change', function(e) {
                     const file = e.target.files[0];
                     if (file) {
                         const reader = new FileReader();
-                        reader.onload = function (e) {
+                        reader.onload = function(e) {
                             const preview = document.getElementById('image-preview');
                             const img = document.getElementById('preview-image');
                             img.src = e.target.result;
@@ -153,7 +154,7 @@
                 });
 
                 // Auto-generate slug preview (optional)
-                document.getElementById('name').addEventListener('input', function (e) {
+                document.getElementById('name').addEventListener('input', function(e) {
                     const name = e.target.value;
                     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
                     // You can display the slug preview here if needed

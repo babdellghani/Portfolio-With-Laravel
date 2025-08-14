@@ -18,13 +18,18 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can manage categories.');
-        }
+        $this->authorize('viewAny', Category::class);
 
-        $query = Category::with(['user'])
-            ->withBlogCount()
-            ->latest();
+        if (Auth::user()->isAdmin()) {
+            $query = Category::with(['user'])
+                ->withBlogCount()
+                ->latest();
+        } else {
+            $query = Category::with(['user'])
+                ->withBlogCount()
+                ->where('user_id', Auth::id())
+                ->latest();
+        }
 
         // Search functionality
         if ($request->filled('search')) {
@@ -50,9 +55,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can create categories.');
-        }
+        $this->authorize('create', Category::class);
 
         return view('admin.categories.create');
     }
@@ -62,9 +65,7 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can create categories.');
-        }
+        $this->authorize('create', Category::class);
 
         $request->validate([
             'name'        => 'required|string|max:255|unique:categories,name',
@@ -79,6 +80,10 @@ class CategoryController extends Controller
         $category->description = $request->input('description');
         $category->status      = $request->boolean('status', true);
         $category->user_id     = Auth::id();
+
+        if (! Auth::user()->isAdmin()) {
+            $category->status = false;
+        }
 
         // Handle image upload
         if ($request->hasFile('image')) {
@@ -97,9 +102,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can edit categories.');
-        }
+        $this->authorize('update', $category);
 
         return view('admin.categories.edit', compact('category'));
     }
@@ -109,9 +112,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can update categories.');
-        }
+        $this->authorize('update', $category);
 
         $request->validate([
             'name'        => 'required|string|max:255|unique:categories,name,' . $category->id,
@@ -124,6 +125,10 @@ class CategoryController extends Controller
         $category->slug        = Str::slug($request->input('name'));
         $category->description = $request->input('description');
         $category->status      = $request->boolean('status', true);
+
+        if (! Auth::user()->isAdmin()) {
+            $category->status = false;
+        }
 
         // Handle image upload
         if ($request->hasFile('image')) {
@@ -147,9 +152,7 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can delete categories.');
-        }
+        $this->authorize('delete', $category);
 
         // Check if category has blogs
         if ($category->blogs()->count() > 0) {
@@ -173,9 +176,7 @@ class CategoryController extends Controller
      */
     public function toggleStatus(Category $category)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can toggle category status.');
-        }
+        $this->authorize('admin', Category::class);
 
         $category->update([
             'status' => ! $category->status,
@@ -190,10 +191,6 @@ class CategoryController extends Controller
      */
     public function bulkAction(Request $request)
     {
-        if (! Auth::user()->isAdmin()) {
-            abort(403, 'Only admins can perform bulk actions.');
-        }
-
         $request->validate([
             'action'       => 'required|in:activate,deactivate,delete',
             'categories'   => 'required|array|min:1',
@@ -204,11 +201,15 @@ class CategoryController extends Controller
 
         switch ($request->action) {
             case 'activate':
+                $this->authorize('admin', Category::class);
+
                 $categories->update(['status' => true]);
                 $message = 'Categories activated successfully!';
                 break;
 
             case 'deactivate':
+                $this->authorize('admin', Category::class);
+
                 $categories->update(['status' => false]);
                 $message = 'Categories deactivated successfully!';
                 break;
@@ -216,26 +217,28 @@ class CategoryController extends Controller
             case 'delete':
                 // Get the actual category models first
                 $categoriesToDelete = $categories->get();
-                
+
                 // Check if any category has blogs
                 $categoriesWithBlogs = $categoriesToDelete->filter(function ($category) {
                     return $category->blogs()->count() > 0;
                 });
-                
+
                 if ($categoriesWithBlogs->count() > 0) {
                     return redirect()->back()
                         ->with('error', 'Cannot delete categories that have associated blog posts.');
                 }
-                
+
                 // Delete images for each category
                 $categoriesToDelete->each(function ($category) {
+                    $this->authorize('delete', $category);
+
                     if ($category->image) {
                         Storage::disk('public')->delete($category->image);
                     }
                     // Delete the category record
                     $category->delete();
                 });
-                
+
                 $message = 'Categories deleted successfully!';
                 break;
         }

@@ -55,7 +55,8 @@
                                             <option value="">All Status</option>
                                             <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>
                                                 Active</option>
-                                            <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>
+                                            <option value="inactive"
+                                                {{ request('status') === 'inactive' ? 'selected' : '' }}>
                                                 Inactive</option>
                                         </select>
                                     </div>
@@ -88,8 +89,10 @@
                                     <div class="d-flex align-items-center">
                                         <select name="action" class="form-select me-2" style="width: auto;" required>
                                             <option value="">Bulk Actions</option>
-                                            <option value="activate">Activate</option>
-                                            <option value="deactivate">Deactivate</option>
+                                            @can('admin', Category::class)
+                                                <option value="activate">Activate</option>
+                                                <option value="deactivate">Deactivate</option>
+                                            @endcan
                                             <option value="delete">Delete</option>
                                         </select>
                                         <button type="submit" class="btn btn-secondary btn-sm">Apply</button>
@@ -128,9 +131,9 @@
                                                 <td>
                                                     <div class="d-flex align-items-center">
                                                         <div class="flex-shrink-0 me-3">
-                                                            @if($category->image)
-                                                                <img src="{{ asset('storage/' . $category->image) }}" alt=""
-                                                                    class="avatar-sm rounded">
+                                                            @if ($category->image)
+                                                                <img src="{{ asset('storage/' . $category->image) }}"
+                                                                    alt="" class="avatar-sm rounded">
                                                             @else
                                                                 <div class="avatar-sm">
                                                                     <span class="avatar-title rounded bg-primary">
@@ -171,11 +174,14 @@
                                                             class="text-success">
                                                             <i class="mdi mdi-pencil font-size-18"></i>
                                                         </a>
-                                                        <button type="submit" form="toggle-status-form-{{ $category->id }}"
-                                                            class="btn btn-link text-warning p-0">
-                                                            <i
-                                                                class="mdi mdi-{{ $category->status ? 'eye-off' : 'eye' }} font-size-18"></i>
-                                                        </button>
+                                                        @can('admin', Category::class)
+                                                            <button type="submit"
+                                                                form="toggle-status-form-{{ $category->id }}"
+                                                                class="btn btn-link text-warning p-0">
+                                                                <i
+                                                                    class="mdi mdi-{{ $category->status ? 'eye-off' : 'eye' }} font-size-18"></i>
+                                                            </button>
+                                                        @endcan
                                                         <button type="submit" form="delete-form-{{ $category->id }}"
                                                             class="btn btn-link text-danger p-0"
                                                             onclick="return confirm('Are you sure?')">
@@ -202,12 +208,14 @@
                             </div>
                         </form>
 
-                        @foreach($categories as $category)
-                            <form action="{{ route('admin.categories.toggle-status', $category) }}" method="POST"
-                                id="toggle-status-form-{{ $category->id }}" style="display: none;">
-                                @csrf
-                                @method('PATCH')
-                            </form>
+                        @foreach ($categories as $category)
+                            @can('admin', Category::class)
+                                <form action="{{ route('admin.categories.toggle-status', $category) }}" method="POST"
+                                    id="toggle-status-form-{{ $category->id }}" style="display: none;">
+                                    @csrf
+                                    @method('PATCH')
+                                </form>
+                            @endcan
                             <form action="{{ route('admin.categories.destroy', $category) }}" method="POST"
                                 id="delete-form-{{ $category->id }}" style="display: none;">
                                 @csrf
@@ -216,7 +224,7 @@
                         @endforeach
 
                         <!-- Pagination -->
-                        @if($categories->hasPages())
+                        @if ($categories->hasPages())
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="d-flex justify-content-between align-items-center mt-3">
@@ -239,9 +247,9 @@
 
     @push('scripts')
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 // Check All functionality
-                document.getElementById('checkAll').addEventListener('change', function () {
+                document.getElementById('checkAll').addEventListener('change', function() {
                     const checkboxes = document.querySelectorAll('input[name="categories[]"]');
                     checkboxes.forEach(checkbox => {
                         checkbox.checked = this.checked;
@@ -249,7 +257,7 @@
                 });
 
                 // Bulk action form validation
-                document.getElementById('bulk-action-form').addEventListener('submit', function (e) {
+                document.getElementById('bulk-action-form').addEventListener('submit', function(e) {
                     const selectedCategories = document.querySelectorAll('input[name="categories[]"]:checked');
                     const action = document.querySelector('select[name="action"]').value;
 
@@ -266,7 +274,9 @@
                     }
 
                     if (action === 'delete') {
-                        if (!confirm('Are you sure you want to delete the selected categories? This may affect related blog posts.')) {
+                        if (!confirm(
+                                'Are you sure you want to delete the selected categories? This may affect related blog posts.'
+                            )) {
                             e.preventDefault();
                         }
                     }
