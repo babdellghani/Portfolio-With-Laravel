@@ -21,6 +21,8 @@
     <link rel="stylesheet" href="{{ asset('frontend/assets/css/default.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/assets/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/assets/css/responsive.css') }}">
+
+    @stack('style')
 </head>
 
 <body>
@@ -113,7 +115,7 @@
     @include('frontend.partials.footer')
     <!-- Footer-area-end -->
 
-
+    @stack('scripts')
 
 
     <!-- JS here -->

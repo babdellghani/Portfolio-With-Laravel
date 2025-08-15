@@ -76,22 +76,23 @@ class Blog extends Model
     }
 
     // Helper methods
-    public function isLikedBy($user)
+    public function isLikedByUser($user)
     {
         if (! $user) {
             return false;
         }
 
-        return $this->likes()->where('user_id', $user->id)->exists();
+        $userId = is_object($user) ? $user->id : $user;
+        return $this->likes()->where('user_id', $userId)->exists();
     }
-
-    public function isBookmarkedBy($user)
+    public function isBookmarkedByUser($user)
     {
         if (! $user) {
             return false;
         }
 
-        return $this->bookmarks()->where('user_id', $user->id)->exists();
+        $userId = is_object($user) ? $user->id : $user;
+        return $this->bookmarks()->where('user_id', $userId)->exists();
     }
 
     public function getLikesCountAttribute()

@@ -28,7 +28,11 @@ class BlogFactory extends Factory
             'slug'              => $slug,
             'short_description' => $this->faker->text(200),
             'description'       => $this->faker->paragraphs(5, true),
+            'content'           => $this->faker->paragraphs(8, true),
+            'excerpt'           => $this->faker->text(150),
             'image'             => 'defaults_images/blog/blog_' . $this->faker->numberBetween(1, 10) . '.jpg',
+            'thumbnail'         => 'defaults_images/blog/thumb_' . $this->faker->numberBetween(1, 10) . '.jpg',
+            'views'             => $this->faker->numberBetween(0, 1000),
             'status'            => $this->faker->boolean(80), // 80% chance of being published
             'user_id'           => User::where('email_verified_at', '!=', null)->where('status', 'active')->inRandomOrder()->first()?->id ?? User::factory(),
         ];

@@ -3,33 +3,7 @@
 
 @section('content')
     <!-- breadcrumb-area -->
-    <section class="breadcrumb__wrap">
-        <div class="container custom-container">
-            <div class="row justify-content-center">
-                <div class="col-xl-6 col-lg-8 col-md-10">
-                    <div class="breadcrumb__wrap__content">
-                        <h2 class="title">Single Article</h2>
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Blog Details</li>
-                            </ol>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="breadcrumb__wrap__icon">
-            <ul>
-                <li><img src="assets/img/icons/breadcrumb_icon01.png" alt=""></li>
-                <li><img src="assets/img/icons/breadcrumb_icon02.png" alt=""></li>
-                <li><img src="assets/img/icons/breadcrumb_icon03.png" alt=""></li>
-                <li><img src="assets/img/icons/breadcrumb_icon04.png" alt=""></li>
-                <li><img src="assets/img/icons/breadcrumb_icon05.png" alt=""></li>
-                <li><img src="assets/img/icons/breadcrumb_icon06.png" alt=""></li>
-            </ul>
-        </div>
-    </section>
+    <x-pages.breadcrumb title="{{ $blog->title }}" active="Blogs Details" />
     <!-- breadcrumb-area-end -->
 
 
@@ -44,112 +18,134 @@
                         </div>
                         <div class="blog__details__content services__details__content">
                             <ul class="blog__post__meta">
-                                <li><i class="fal fa-calendar-alt"></i> 25 january 2021</li>
-                                <li><i class="fal fa-comments-alt"></i> <a href="#">Comment (08)</a></li>
-                                <li class="post-share"><a href="#"><i class="fal fa-share-all"></i> (18)</a></li>
+                                <li><i class="fal fa-calendar-alt"></i>{{ $blog->created_at->format('d F Y') }}</li>
+                                <li><i class="fal fa-comments-alt"></i> <a href="#comments">Comment
+                                        ({{ $blog->comments_count }})</a></li>
+                                <li class="post-share"><a href="{{ route('blog.like', $blog->id) }}"
+                                        onclick="event.preventDefault(); document.getElementById('like-form-{{ $blog->id }}').submit();">
+                                        <i class="fa{{ $userHasLiked ? 's' : 'l' }} fa-heart"></i>
+                                        ({{ $blog->likes_count }})
+                                    </a></li>
+                                <form id="like-form-{{ $blog->id }}" action="{{ route('blog.like', $blog->slug) }}"
+                                    method="POST" style="display: none;">
+                                    @csrf
+                                </form>
+                                <li class="post-bookmark"><a href="{{ route('blog.bookmark', $blog->slug) }}"
+                                        onclick="event.preventDefault(); document.getElementById('bookmark-form-{{ $blog->id }}').submit();">
+                                        <i class="fa{{ $userHasBookmarked ? 's' : 'l' }} fa-bookmark"></i>
+                                        Bookmark</a></li>
+                                <form id="bookmark-form-{{ $blog->id }}"
+                                    action="{{ route('blog.bookmark', $blog->slug) }}" method="POST"
+                                    style="display: none;">
+                                    @csrf
+                                </form>
+                                <li class="post-share"><a href="#" onclick="event.preventDefault(); sharePost()"><i
+                                            class="fal fa-share-all"></i></a></li>
                             </ul>
-                            <h2 class="title">Best website traffics Booster with great tools.</h2>
-                            <p>There are many variations of passages of Lorem Ipsum available, but the majority have
-                                suffered alteration in some form, by injected humour, or randomised words which don't look
-                                even slightly believable</p>
-                            <p>Definition Business strategy can be understood as the course of action or set of decisions
-                                which assist the
-                                entrepreneurs in achieving specific business objectives.</p>
-                            <p>It is nothing but a master plan that the management of a company implements to secure a
-                                competitive position in the market, carry on its operations, please customers and achieve
-                                the desired ends of the business.</p>
-                            <p>In business, it is the long-range sketch of the desired image, direction and destination of
-                                the organization. It is a scheme of corporate intent and action, which is carefully planned
-                                and flexibly designed with the purpose of</p>
-                            <ul class="services__details__list">
-                                <li>Achieving effectiveness,</li>
-                                <li>Perceiving and utilizing opportunities,</li>
-                                <li>Mobilising resources,</li>
-                                <li>Securing an advantageous position,</li>
-                                <li>Meeting challenges and threats,</li>
-                                <li>Directing efforts and behaviour and</li>
-                                <li>Gaining command over the situation.</li>
-                            </ul>
-                            <p>A business strategy is a set of competitive moves and actions that a business uses to attract
-                                customers, compete successfully, strengthening performance, and achieve organizational
-                                goals. It outlines how business should be carried out to reach the desired ends</p>
-                            <div class="services__details__img">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <img src="assets/img/blog/blog_details_img01.jpg" alt="">
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <img src="assets/img/blog/blog_details_img02.jpg" alt="">
-                                    </div>
+                            <h2 class="title">{{ $blog->title }}</h2>
+                            @if($blog->thumbnail)
+                                <div class="blog__details__featured-image mb-4">
+                                    <img src="{{ asset($blog->thumbnail) }}" alt="{{ $blog->title }}" class="img-fluid">
                                 </div>
-                            </div>
-                            <h2 class="small-title">Nature of Business Strategy</h2>
-                            <p>A business strategy is a combination of proactive actions on the part of management, for the
-                                purpose of enhancing the company’s market position and overall performance and reactions to
-                                unexpected developments and new market.</p>
-                            <p>The maximum part of the company’s present strategy is a result of formerly initiated actions
-                                and business approaches, but when market conditions take an unanticipated turn, the company
-                                requires a strategic reaction to cope with contingencies. Hence, for unforeseen development,
-                                a part of the business strategy is formulated as a reasoned response nature of business
-                                strategy.</p>
+                            @endif
+                            @if($blog->short_description)
+                                <p class="lead">{{ $blog->short_description }}</p>
+                            @endif
+                            @if($blog->image)
+                                <div class="blog__details__featured-image mb-4">
+                                    <img src="{{ asset($blog->image) }}" alt="{{ $blog->title }}" class="img-fluid">
+                                </div>
+                            @endif
+                            @if($blog->excerpt)
+                                <div class="blog__excerpt">
+                                    <p><em>{{ $blog->excerpt }}</em></p>
+                                </div>
+                            @endif
+                            @if($blog->description)
+                                <div class="blog__description">
+                                    {!! $blog->description !!}
+                                </div>
+                            @endif
+                            @if($blog->content)
+                                <div class="blog__content">
+                                    {!! $blog->content !!}
+                                </div>
+                            @endif
                         </div>
                         <div class="blog__details__bottom">
-                            <ul class="blog__details__tag">
-                                <li class="title">Tag:</li>
-                                <li class="tags-list">
-                                    <a href="#">Business</a>
-                                    <a href="#">Design</a>
-                                    <a href="#">apps</a>
-                                    <a href="#">data</a>
-                                </li>
-                            </ul>
+                            <div class="d-flex flex-column align-items-start w-100">
+                                @if ($blog->tags->isNotEmpty())
+                                    <ul class="blog__details__tag w-100">
+                                        <li class="title">Tag:</li>
+                                        <li class="tags-list">
+                                            @foreach ($blog->tags as $tag)
+                                                <a
+                                                    href="{{ route('blog.index', ['tag' => $tag->slug]) }}">{{ $tag->name }}</a>
+                                            @endforeach
+                                        </li>
+                                    </ul>
+                                @endif
+                                @if ($blog->categories->isNotEmpty())
+                                    <ul class="blog__details__tag w-100">
+                                        <li class="title">Category:</li>
+                                        <li class="tags-list">
+                                            @foreach ($blog->categories as $category)
+                                                <a
+                                                    href="{{ route('blog.index', ['category' => $category->slug]) }}">{{ $category->name }}</a>
+                                            @endforeach
+                                        </li>
+                                    </ul>
+                                @endif
+                            </div>
                             <ul class="blog__details__social">
                                 <li class="title">Share :</li>
                                 <li class="social-icons">
-                                    <a href="#"><i class="fab fa-facebook"></i></a>
-                                    <a href="#"><i class="fab fa-twitter-square"></i></a>
-                                    <a href="#"><i class="fab fa-linkedin"></i></a>
-                                    <a href="#"><i class="fab fa-pinterest"></i></a>
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(request()->fullUrl()) }}"
+                                        target="_blank"><i class="fab fa-facebook"></i></a>
+                                    <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->fullUrl()) }}&text={{ urlencode($blog->title) }}"
+                                        target="_blank"><i class="fab fa-twitter-square"></i></a>
+                                    <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(request()->fullUrl()) }}"
+                                        target="_blank"><i class="fab fa-linkedin"></i></a>
+                                    <a href="https://pinterest.com/pin/create/button/?url={{ urlencode(request()->fullUrl()) }}&description={{ urlencode($blog->title) }}"
+                                        target="_blank"><i class="fab fa-pinterest"></i></a>
                                 </li>
                             </ul>
                         </div>
                         <div class="blog__next__prev">
                             <div class="row justify-content-between">
                                 <div class="col-xl-5 col-md-6">
-                                    <div class="blog__next__prev__item">
-                                        <h4 class="title">Previous Post</h4>
+                                    <a href="{{ route('blog.show', $previousPost->slug) }}" class="blog__next__prev__item">
+                                        <h4 class="title" style="transition: color 0.3s ease;" onmouseover="this.style.color='#007bff'" onmouseout="this.style.color=''">Previous Post</h4>
                                         <div class="blog__next__prev__post">
                                             <div class="blog__next__prev__thumb">
-                                                <a href="blog-details.html"><img src="assets/img/blog/blog_prev.jpg"
-                                                        alt=""></a>
+                                                <a href="{{ route('blog.show', $previousPost->slug) }}"><img src="{{ asset($previousPost->image) }}"
+                                                        alt="{{ $previousPost->title }}"></a>
                                             </div>
                                             <div class="blog__next__prev__content">
-                                                <h5 class="title"><a href="blog-details.html">Digital Marketing Agency
-                                                        Pricing Guide.</a></h5>
+                                                <h5 class="title"><a href="{{ route('blog.show', $previousPost->slug) }}">{{ $previousPost->title }}</a></h5>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
                                 <div class="col-xl-5 col-md-6">
-                                    <div class="blog__next__prev__item next_post text-end">
-                                        <h4 class="title">Next Post</h4>
+                                    <a href="{{ route('blog.show', $nextPost->slug) }}" class="blog__next__prev__item next_post text-end">
+                                        <h4 class="title" style="transition: color 0.3s ease;" onmouseover="this.style.color='#007bff'" onmouseout="this.style.color=''">Next Post</h4>
                                         <div class="blog__next__prev__post">
                                             <div class="blog__next__prev__thumb">
-                                                <a href="blog-details.html"><img src="assets/img/blog/blog_next.jpg"
-                                                        alt=""></a>
+                                                <a href="{{ route('blog.show', $nextPost->slug) }}"><img src="{{ asset($nextPost->image) }}"
+                                                        alt="{{ $nextPost->title }}"></a>
                                             </div>
                                             <div class="blog__next__prev__content">
-                                                <h5 class="title"><a href="blog-details.html">App Prototyping
-                                                        Types, Example & Usages.</a></h5>
+                                                <h5 class="title"><a href="{{ route('blog.show', $nextPost->slug) }}">{{ $nextPost->title }}</a></h5>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
                             </div>
                         </div>
-                        <div class="comment comment__wrap">
+                        <div class="comment comment__wrap" id="comments">
                             <div class="comment__title">
-                                <h4 class="title">(04) Comment</h4>
+                                <h4 class="title">Comment ({{ $blog->comments_count }})</h4>
                             </div>
                             <ul class="comment__list">
                                 <li class="comment__item">
@@ -253,125 +249,76 @@
                 <div class="col-lg-4">
                     <aside class="blog__sidebar">
                         <div class="widget">
-                            <form action="#" class="search-form">
-                                <input type="text" placeholder="Search">
+                            <form action="{{ route('blog.index') }}" method="GET" class="search-form">
+                                <input type="text" name="search" placeholder="Search"
+                                    value="{{ request('search') }}">
                                 <button type="submit"><i class="fal fa-search"></i></button>
                             </form>
                         </div>
-                        <div class="widget">
-                            <h4 class="widget-title">Recent Blog</h4>
-                            <ul class="rc__post">
-                                <li class="rc__post__item">
-                                    <div class="rc__post__thumb">
-                                        <a href="blog-details.html"><img src="assets/img/blog/rc_thumb01.jpg"
-                                                alt=""></a>
-                                    </div>
-                                    <div class="rc__post__content">
-                                        <h5 class="title"><a href="blog-details.html">Best website traffick booster with
-                                                great tools.</a></h5>
-                                        <span class="post-date"><i class="fal fa-calendar-alt"></i> 28 january 2021</span>
-                                    </div>
-                                </li>
-                                <li class="rc__post__item">
-                                    <div class="rc__post__thumb">
-                                        <a href="blog-details.html"><img src="assets/img/blog/rc_thumb02.jpg"
-                                                alt=""></a>
-                                    </div>
-                                    <div class="rc__post__content">
-                                        <h5 class="title"><a href="blog-details.html">How to become a best sale marketer
-                                                in a year!</a></h5>
-                                        <span class="post-date"><i class="fal fa-calendar-alt"></i> 28 january 2021</span>
-                                    </div>
-                                </li>
-                                <li class="rc__post__item">
-                                    <div class="rc__post__thumb">
-                                        <a href="blog-details.html"><img src="assets/img/blog/rc_thumb03.jpg"
-                                                alt=""></a>
-                                    </div>
-                                    <div class="rc__post__content">
-                                        <h5 class="title"><a href="blog-details.html">Google take latest step & catch the
-                                                black SEO</a></h5>
-                                        <span class="post-date"><i class="fal fa-calendar-alt"></i> 28 january 2021</span>
-                                    </div>
-                                </li>
-                                <li class="rc__post__item">
-                                    <div class="rc__post__thumb">
-                                        <a href="blog-details.html"><img src="assets/img/blog/rc_thumb04.jpg"
-                                                alt=""></a>
-                                    </div>
-                                    <div class="rc__post__content">
-                                        <h5 class="title"><a href="blog-details.html">Businesses are thriving societies.
-                                                Time for urgent change</a></h5>
-                                        <span class="post-date"><i class="fal fa-calendar-alt"></i> 28 january 2021</span>
-                                    </div>
-                                </li>
-                                <li class="rc__post__item">
-                                    <div class="rc__post__thumb">
-                                        <a href="blog-details.html"><img src="assets/img/blog/rc_thumb05.jpg"
-                                                alt=""></a>
-                                    </div>
-                                    <div class="rc__post__content">
-                                        <h5 class="title"><a href="blog-details.html">TikTok influencer marketing:How to
-                                                work with influencer</a></h5>
-                                        <span class="post-date"><i class="fal fa-calendar-alt"></i> 28 january 2021</span>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="widget">
-                            <h4 class="widget-title">Categories</h4>
-                            <ul class="sidebar__cat">
-                                <li class="sidebar__cat__item"><a href="blog.html">Web Design (6)</a></li>
-                                <li class="sidebar__cat__item"><a href="blog.html">Web Development (4)</a></li>
-                                <li class="sidebar__cat__item"><a href="blog.html">Product Design (9)</a></li>
-                                <li class="sidebar__cat__item"><a href="blog.html">Animation (6)</a></li>
-                                <li class="sidebar__cat__item"><a href="blog.html">Ui/Ux Design (8)</a></li>
-                                <li class="sidebar__cat__item"><a href="blog.html">Branding Design (12)</a></li>
-                                <li class="sidebar__cat__item"><a href="blog.html">Web Design (6)</a></li>
-                                <li class="sidebar__cat__item"><a href="blog.html">Logo Design (6)</a></li>
-                            </ul>
-                        </div>
-                        <div class="widget">
-                            <h4 class="widget-title">Recent Comment</h4>
-                            <ul class="sidebar__comment">
-                                <li class="sidebar__comment__item">
-                                    <a href="blog-details.html">Rasalina Sponde</a>
-                                    <p>There are many variations of passages of lorem ipsum available, but the majority have
-                                    </p>
-                                </li>
-                                <li class="sidebar__comment__item">
-                                    <a href="blog-details.html">Rasalina Sponde</a>
-                                    <p>There are many variations of passages of lorem ipsum available, but the majority have
-                                    </p>
-                                </li>
-                                <li class="sidebar__comment__item">
-                                    <a href="blog-details.html">Rasalina Sponde</a>
-                                    <p>There are many variations of passages of lorem ipsum available, but the majority have
-                                    </p>
-                                </li>
-                                <li class="sidebar__comment__item">
-                                    <a href="blog-details.html">Rasalina Sponde</a>
-                                    <p>There are many variations of passages of lorem ipsum available, but the majority have
-                                    </p>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="widget">
-                            <h4 class="widget-title">Popular Tags</h4>
-                            <ul class="sidebar__tags">
-                                <li><a href="blog.html">Business</a></li>
-                                <li><a href="blog.html">Design</a></li>
-                                <li><a href="blog.html">apps</a></li>
-                                <li><a href="blog.html">landing page</a></li>
-                                <li><a href="blog.html">data</a></li>
-                                <li><a href="blog.html">website</a></li>
-                                <li><a href="blog.html">book</a></li>
-                                <li><a href="blog.html">Design</a></li>
-                                <li><a href="blog.html">product design</a></li>
-                                <li><a href="blog.html">landing page</a></li>
-                                <li><a href="blog.html">data</a></li>
-                            </ul>
-                        </div>
+                        @if ($relatedPosts->isNotEmpty())
+                            <div class="widget">
+                                <h4 class="widget-title">Related Blogs</h4>
+                                <ul class="rc__post">
+                                    @foreach ($relatedPosts as $blog)
+                                        <li class="rc__post__item">
+                                            <div class="rc__post__thumb">
+                                                <a href="{{ route('blog.show', $blog->slug) }}">
+                                                    <img src="{{ asset($blog->thumbnail) }}" alt="{{ $blog->title }}">
+                                                </a>
+                                            </div>
+                                            <div class="rc__post__content">
+                                                <h5 class="title"><a
+                                                        href="{{ route('blog.show', $blog->slug) }}">{{ $blog->title }}</a>
+                                                </h5>
+                                                <span class="post-date"><i class="fal fa-calendar-alt"></i>
+                                                    {{ $blog->created_at->format('d F Y') }}</span>
+                                            </div>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        @if ($categories->isNotEmpty())
+                            <div class="widget">
+                                <h4 class="widget-title">Categories</h4>
+                                <ul class="sidebar__cat">
+                                    @foreach ($categories as $category)
+                                        <li class="sidebar__cat__item">
+                                            <a href="{{ route('blog.index', ['category' => $category->slug]) }}"
+                                                class="{{ request('category') == $category->slug ? 'active' : '' }}">
+                                                {{ $category->name }} ({{ $category->blogs_count }})
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        @if ($comments->isNotEmpty())
+                            <div class="widget">
+                                <h4 class="widget-title">Recent Comment</h4>
+                                <ul class="sidebar__comment">
+                                    @foreach ($comments as $comment)
+                                        <li class="sidebar__comment__item">
+                                            <a
+                                                href="{{ route('blog.show', $comment->blog->slug) }}">{{ $comment->user->name }}</a>
+                                            <p>{{ $comment->content }}</p>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        @if ($tags->isNotEmpty())
+                            <div class="widget">
+                                <h4 class="widget-title">Popular Tags</h4>
+                                <ul class="sidebar__tags">
+                                    @foreach ($tags as $tag)
+                                        <li><a href="{{ route('blog.index', ['tag' => $tag->slug]) }}"
+                                                class="{{ request('tag') == $tag->slug ? 'active' : '' }}">{{ $tag->name }}</a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                     </aside>
                 </div>
             </div>
@@ -379,72 +326,22 @@
     </section>
     <!-- blog-details-area-end -->
 
-
-    <!-- contact-area -->
-    <section class="homeContact homeContact__style__two">
-        <div class="container">
-            <div class="homeContact__wrap">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="section__title">
-                            <span class="sub-title">07 - Say hello</span>
-                            <h2 class="title">Any questions? Feel free <br> to contact</h2>
-                        </div>
-                        <div class="homeContact__content">
-                            <p>There are many variations of passages of Lorem Ipsum available, but the majority have
-                                suffered alteration in some form</p>
-                            <h2 class="mail"><a href="mailto:Info@webmail.com">Info@webmail.com</a></h2>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="homeContact__form">
-                            <form action="{{ route('contact.store') }}" method="POST" id="blogDetailsContactForm">
-                                @csrf
-                                <input type="text" name="name" placeholder="Enter name*"
-                                    value="{{ old('name') }}" required>
-                                @error('name')
-                                    <div class="text-danger small">{{ $message }}</div>
-                                @enderror
-
-                                <input type="email" name="email" placeholder="Enter mail*"
-                                    value="{{ old('email') }}" required>
-                                @error('email')
-                                    <div class="text-danger small">{{ $message }}</div>
-                                @enderror
-
-                                <input type="text" name="phone" placeholder="Enter number*"
-                                    value="{{ old('phone') }}">
-                                @error('phone')
-                                    <div class="text-danger small">{{ $message }}</div>
-                                @enderror
-
-                                <textarea name="message" placeholder="Enter Message*" required>{{ old('message') }}</textarea>
-                                @error('message')
-                                    <div class="text-danger small">{{ $message }}</div>
-                                @enderror
-
-                                <button type="submit" id="blogDetailsSubmitBtn">
-                                    <span class="btn-text">Send Message</span>
-                                    <span class="btn-loading" style="display: none;">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                            <path
-                                                d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z"
-                                                opacity=".25" />
-                                            <path
-                                                d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z">
-                                                <animateTransform attributeName="transform" dur="0.75s"
-                                                    repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12" />
-                                            </path>
-                                        </svg>
-                                        Sending...
-                                    </span>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- contact-area-end -->
+    @push('scripts')
+        <script>
+            function sharePost() {
+                if (navigator.share) {
+                    navigator.share({
+                        title: '{{ $blog->title }}',
+                        text: '{{ Str::limit(strip_tags($blog->content), 100) }}',
+                        url: window.location.href
+                    });
+                } else {
+                    // Fallback for browsers that don't support Web Share API
+                    navigator.clipboard.writeText(window.location.href).then(() => {
+                        alert('Link copied to clipboard!');
+                    });
+                }
+            }
+        </script>
+    @endpush
 @endsection

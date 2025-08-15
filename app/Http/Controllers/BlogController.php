@@ -48,8 +48,7 @@ class BlogController extends Controller
             });
         }
 
-        $blogs       = $query->paginate(19);
-        dd($blogs);
+        $blogs       = $query->paginate(5);
         $recentBlogs = Blog::latest()->published()->take(5)->get();
         $categories  = Category::whereHas('blogs')->active()->get();
         $tags        = Tag::whereHas('blogs', function ($q) {
@@ -73,9 +72,19 @@ class BlogController extends Controller
         // Increment view count
         $blog->increment('views');
 
+        // Get previous and next posts
+        $previousPost = Blog::where('id', '<', $blog->id)
+            ->published()
+            ->orderBy('id', 'desc')
+            ->first();
+
+        $nextPost = Blog::where('id', '>', $blog->id)
+            ->published()
+            ->orderBy('id', 'asc')
+            ->first();
+
         // Get related posts
-        $relatedPosts = Blog::with(['user', 'categories'])
-            ->whereHas('categories', function ($query) use ($blog) {
+        $relatedPosts = Blog::whereHas('categories', function ($query) use ($blog) {
                 $query->whereIn('categories.id', $blog->categories->pluck('id'));
             })
             ->where('id', '!=', $blog->id)
@@ -93,6 +102,12 @@ class BlogController extends Controller
             $userHasBookmarked = $blog->isBookmarkedByUser(Auth::id());
         }
 
-        return view('frontend.pages.blog_details', compact('blog', 'relatedPosts', 'userHasLiked', 'userHasBookmarked'));
+        $categories  = Category::whereHas('blogs')->active()->get();
+        $tags        = Tag::whereHas('blogs', function ($q) {
+            $q->published();
+        })->active()->withCount('blogs')->orderBy('blogs_count', 'desc')->take(10)->get();
+        $comments    = Comment::active()->latest()->take(5)->get();
+
+        return view('frontend.pages.blog_details', compact('blog', 'relatedPosts', 'userHasLiked', 'userHasBookmarked', 'categories', 'tags', 'comments', 'previousPost', 'nextPost'));
     }
 }

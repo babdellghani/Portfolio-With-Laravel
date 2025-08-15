@@ -34,7 +34,7 @@ class BlogSeeder extends Seeder
         }
 
         // Create 20 blog posts
-        Blog::factory(20)->create([
+        Blog::factory(50)->create([
             'user_id' => $adminUser->id,
             'status'  => 'published',
         ])->each(function ($blog) use ($categories, $tags, $activeUsers) {
