@@ -34,7 +34,7 @@ class CommentController extends Controller
             'blog_id'   => $blog->id,
             'user_id'   => Auth::id(),
             'parent_id' => $request->input('parent_id'),
-            'status'    => true,
+            'status'    => Auth::user()->isAdmin() ? 1 : 0, // Admins can post directly, others are pending
         ]);
 
         return redirect()->back()->with('success', 'Comment added successfully!');
@@ -53,6 +53,7 @@ class CommentController extends Controller
 
         $comment->update([
             'content' => $request->input('content'),
+            'status'  => Auth::user()->isAdmin() ? 1 : 0, // Ensure status is set correctly
         ]);
 
         return redirect()->back()->with('success', 'Comment updated successfully!');

@@ -78,15 +78,29 @@ class BlogController extends Controller
             ->orderBy('id', 'desc')
             ->first();
 
+        if (!$previousPost) {
+            $previousPost = Blog::where('id', '>', $blog->id)
+                ->published()
+                ->orderBy('id', 'desc')
+                ->first();
+        }
+
         $nextPost = Blog::where('id', '>', $blog->id)
             ->published()
             ->orderBy('id', 'asc')
             ->first();
 
+        if (!$nextPost) {
+            $nextPost = Blog::where('id', '<', $blog->id)
+                ->published()
+                ->orderBy('id', 'asc')
+                ->first();
+        }
+
         // Get related posts
         $relatedPosts = Blog::whereHas('categories', function ($query) use ($blog) {
-                $query->whereIn('categories.id', $blog->categories->pluck('id'));
-            })
+            $query->whereIn('categories.id', $blog->categories->pluck('id'));
+        })
             ->where('id', '!=', $blog->id)
             ->published()
             ->latest()

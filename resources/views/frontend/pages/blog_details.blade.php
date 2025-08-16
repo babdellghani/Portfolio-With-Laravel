@@ -43,30 +43,30 @@
                                             class="fal fa-share-all"></i></a></li>
                             </ul>
                             <h2 class="title">{{ $blog->title }}</h2>
-                            @if($blog->thumbnail)
+                            @if ($blog->thumbnail)
                                 <div class="blog__details__featured-image mb-4">
                                     <img src="{{ asset($blog->thumbnail) }}" alt="{{ $blog->title }}" class="img-fluid">
                                 </div>
                             @endif
-                            @if($blog->short_description)
+                            @if ($blog->short_description)
                                 <p class="lead">{{ $blog->short_description }}</p>
                             @endif
-                            @if($blog->image)
+                            @if ($blog->image)
                                 <div class="blog__details__featured-image mb-4">
                                     <img src="{{ asset($blog->image) }}" alt="{{ $blog->title }}" class="img-fluid">
                                 </div>
                             @endif
-                            @if($blog->excerpt)
+                            @if ($blog->excerpt)
                                 <div class="blog__excerpt">
                                     <p><em>{{ $blog->excerpt }}</em></p>
                                 </div>
                             @endif
-                            @if($blog->description)
+                            @if ($blog->description)
                                 <div class="blog__description">
                                     {!! $blog->description !!}
                                 </div>
                             @endif
-                            @if($blog->content)
+                            @if ($blog->content)
                                 <div class="blog__content">
                                     {!! $blog->content !!}
                                 </div>
@@ -113,34 +113,50 @@
                         </div>
                         <div class="blog__next__prev">
                             <div class="row justify-content-between">
-                                <div class="col-xl-5 col-md-6">
-                                    <a href="{{ route('blog.show', $previousPost->slug) }}" class="blog__next__prev__item">
-                                        <h4 class="title" style="transition: color 0.3s ease;" onmouseover="this.style.color='#007bff'" onmouseout="this.style.color=''">Previous Post</h4>
-                                        <div class="blog__next__prev__post">
-                                            <div class="blog__next__prev__thumb">
-                                                <a href="{{ route('blog.show', $previousPost->slug) }}"><img src="{{ asset($previousPost->image) }}"
-                                                        alt="{{ $previousPost->title }}"></a>
+                                @if ($previousPost)
+                                    <div class="col-xl-5 col-md-6">
+                                        <a href="{{ route('blog.show', $previousPost->slug) }}"
+                                            class="blog__next__prev__item">
+                                            <h4 class="title" style="transition: color 0.3s ease;"
+                                                onmouseover="this.style.color='#007bff'" onmouseout="this.style.color=''">
+                                                Previous Post</h4>
+                                            <div class="blog__next__prev__post">
+                                                <div class="blog__next__prev__thumb">
+                                                    <a href="{{ route('blog.show', $previousPost->slug) }}"><img
+                                                            src="{{ asset($previousPost->image) }}"
+                                                            alt="{{ $previousPost->title }}"></a>
+                                                </div>
+                                                <div class="blog__next__prev__content">
+                                                    <h5 class="title"><a
+                                                            href="{{ route('blog.show', $previousPost->slug) }}">{{ $previousPost->title }}</a>
+                                                    </h5>
+                                                </div>
                                             </div>
-                                            <div class="blog__next__prev__content">
-                                                <h5 class="title"><a href="{{ route('blog.show', $previousPost->slug) }}">{{ $previousPost->title }}</a></h5>
+                                        </a>
+                                    </div>
+                                @endif
+                                @if ($nextPost)
+                                    <div class="col-xl-5 col-md-6">
+                                        <a href="{{ route('blog.show', $nextPost->slug) }}"
+                                            class="blog__next__prev__item next_post text-end">
+                                            <h4 class="title" style="transition: color 0.3s ease;"
+                                                onmouseover="this.style.color='#007bff'" onmouseout="this.style.color=''">
+                                                Next Post</h4>
+                                            <div class="blog__next__prev__post">
+                                                <div class="blog__next__prev__thumb">
+                                                    <a href="{{ route('blog.show', $nextPost->slug) }}"><img
+                                                            src="{{ asset($nextPost->image) }}"
+                                                            alt="{{ $nextPost->title }}"></a>
+                                                </div>
+                                                <div class="blog__next__prev__content">
+                                                    <h5 class="title"><a
+                                                            href="{{ route('blog.show', $nextPost->slug) }}">{{ $nextPost->title }}</a>
+                                                    </h5>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-xl-5 col-md-6">
-                                    <a href="{{ route('blog.show', $nextPost->slug) }}" class="blog__next__prev__item next_post text-end">
-                                        <h4 class="title" style="transition: color 0.3s ease;" onmouseover="this.style.color='#007bff'" onmouseout="this.style.color=''">Next Post</h4>
-                                        <div class="blog__next__prev__post">
-                                            <div class="blog__next__prev__thumb">
-                                                <a href="{{ route('blog.show', $nextPost->slug) }}"><img src="{{ asset($nextPost->image) }}"
-                                                        alt="{{ $nextPost->title }}"></a>
-                                            </div>
-                                            <div class="blog__next__prev__content">
-                                                <h5 class="title"><a href="{{ route('blog.show', $nextPost->slug) }}">{{ $nextPost->title }}</a></h5>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
+                                        </a>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                         <div class="comment comment__wrap" id="comments">
@@ -148,101 +164,32 @@
                                 <h4 class="title">Comment ({{ $blog->comments_count }})</h4>
                             </div>
                             <ul class="comment__list">
-                                <li class="comment__item">
-                                    <div class="comment__thumb">
-                                        <img src="assets/img/blog/comment_thumb01.png" alt="">
-                                    </div>
-                                    <div class="comment__content">
-                                        <div class="comment__avatar__info">
-                                            <div class="info">
-                                                <h4 class="title">Rohan De Spond</h4>
-                                                <span class="date">25 january 2021</span>
-                                            </div>
-                                            <a href="#" class="reply"><i class="far fa-reply-all"></i></a>
-                                        </div>
-                                        <p>There are many variations of passages of Lorem Ipsum available, but the majority
-                                            have. There are many variations of passages of Lorem Ipsum available, but the
-                                            majority have</p>
-                                    </div>
-                                </li>
-                                <li class="comment__item children">
-                                    <div class="comment__thumb">
-                                        <img src="assets/img/blog/comment_thumb02.png" alt="">
-                                    </div>
-                                    <div class="comment__content">
-                                        <div class="comment__avatar__info">
-                                            <div class="info">
-                                                <h4 class="title">Johan Ritaxon</h4>
-                                                <span class="date">25 january 2021</span>
-                                            </div>
-                                            <a href="#" class="reply"><i class="far fa-reply-all"></i></a>
-                                        </div>
-                                        <p>There are many variations of passages of Lorem Ipsum available, but the majority
-                                            have. There are many variations of passages</p>
-                                    </div>
-                                </li>
-                                <li class="comment__item">
-                                    <div class="comment__thumb">
-                                        <img src="assets/img/blog/comment_thumb03.png" alt="">
-                                    </div>
-                                    <div class="comment__content">
-                                        <div class="comment__avatar__info">
-                                            <div class="info">
-                                                <h4 class="title">Alexardy Ditartina</h4>
-                                                <span class="date">25 january 2021</span>
-                                            </div>
-                                            <a href="#" class="reply"><i class="far fa-reply-all"></i></a>
-                                        </div>
-                                        <p>There are many variations of passages of Lorem Ipsum available, but the majority
-                                            have. There are many variations of passages of Lorem Ipsum available, but the
-                                            majority have</p>
-                                    </div>
-                                </li>
-                                <li class="comment__item children">
-                                    <div class="comment__thumb">
-                                        <img src="assets/img/blog/comment_thumb04.png" alt="">
-                                    </div>
-                                    <div class="comment__content">
-                                        <div class="comment__avatar__info">
-                                            <div class="info">
-                                                <h4 class="title">Rashedul islam Kabir</h4>
-                                                <span class="date">25 january 2021</span>
-                                            </div>
-                                            <a href="#" class="reply"><i class="far fa-reply-all"></i></a>
-                                        </div>
-                                        <p>There are many variations of passages of Lorem Ipsum available, but the majority
-                                            have. There are many variations of passages</p>
-                                    </div>
-                                </li>
+                                @foreach ($blog->comments->where('parent_id', null) as $comment)
+                                    <x-nested-comment :comment="$comment" :blog="$blog" />
+                                @endforeach
                             </ul>
                         </div>
                         <div class="comment__form">
                             <div class="comment__title">
                                 <h4 class="title">Write your comment</h4>
                             </div>
-                            <form action="#">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <input type="text" placeholder="Enter your name*">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input type="email" placeholder="Enter your mail*">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input type="text" placeholder="Enter your number*">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input type="text" placeholder="Website*">
+                            @auth
+                                <form action="{{ route('comments.store', $blog->slug) }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="parent_id" value="">
+                                    <textarea name="content" id="message" placeholder="Enter your Comment*"></textarea>
+                                    <button type="submit" class="btn">post a comment</button>
+                                </form>
+                            @endauth
+                            @guest
+                                <div class="text-center">
+                                    <p>You must be logged in to post a comment.</p>
+                                    <div class="mt-3">
+                                        <a href="{{ route('login') }}" class="btn btn-primary me-2">Login</a>
+                                        <a href="{{ route('register') }}" class="btn btn-outline-primary">Register</a>
                                     </div>
                                 </div>
-                                <textarea name="message" id="message" placeholder="Enter your Massage*"></textarea>
-                                <div class="form-grp checkbox-grp">
-                                    <input type="checkbox" id="checkbox">
-                                    <label for="checkbox">Save my name, email, and website in this browser for the next
-                                        time I comment.</label>
-                                </div>
-                                <button type="submit" class="btn">post a comment</button>
-                            </form>
+                            @endguest
                         </div>
                     </div>
                 </div>
@@ -328,6 +275,40 @@
 
     @push('scripts')
         <script>
+            // Handle reply button clicks
+            document.addEventListener('DOMContentLoaded', function() {
+                const replyButtons = document.querySelectorAll('a.reply[href^="#comment-form"]');
+
+                replyButtons.forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+
+                        // Get the target form ID from the href
+                        const targetId = this.getAttribute('href').substring(1);
+                        const targetForm = document.getElementById(targetId);
+
+                        if (targetForm) {
+                            // Hide all other comment forms first
+                            const allForms = document.querySelectorAll(
+                                '.comment__form[id^="comment-form"]');
+                            allForms.forEach(form => {
+                                if (form.id !== targetId) {
+                                    form.style.display = 'none';
+                                }
+                            });
+
+                            // Toggle the target form
+                            if (targetForm.style.display === 'none' || targetForm.style.display ===
+                                '') {
+                                targetForm.style.display = 'block';
+                            } else {
+                                targetForm.style.display = 'none';
+                            }
+                        }
+                    });
+                });
+            });
+
             function sharePost() {
                 if (navigator.share) {
                     navigator.share({
