@@ -165,8 +165,8 @@
                                     </div>
                                     <div class="form-group">
                                         <select name="sort_order" class="form-control form-control-sm">
-                                            <option value="desc"
-                                                {{ request('sort_order') == 'desc' ? 'selected' : '' }}>Descending</option>
+                                            <option value="desc" {{ request('sort_order') == 'desc' ? 'selected' : '' }}>
+                                                Descending</option>
                                             <option value="asc" {{ request('sort_order') == 'asc' ? 'selected' : '' }}>
                                                 Ascending</option>
                                         </select>
@@ -239,7 +239,15 @@
                                                                 <p class="mb-1 font-size-14">
                                                                     {{ Str::limit($like->likeable->content, 50) }}</p>
                                                                 <p class="mb-0 text-muted font-size-12">Comment on:
-                                                                    {{ $like->likeable->blog->title ?? 'Unknown' }}</p>
+                                                                    @if ($like->likeable->blog)
+                                                                        <a href="{{ route('blog.show', $like->likeable->blog->slug) }}"
+                                                                            target="_blank" class="text-primary">
+                                                                            {{ $like->likeable->blog->title }}
+                                                                        </a>
+                                                                    @else
+                                                                        Unknown
+                                                                    @endif
+                                                                </p>
                                                             </div>
                                                         @else
                                                             <span class="text-muted font-size-12">Content not
@@ -261,17 +269,12 @@
                                                                     <i class="bx bx-show"></i>
                                                                 </a>
                                                             @endif
-                                                            <form method="POST"
-                                                                action="{{ route('admin.likes.destroy', $like->id) }}"
-                                                                style="display: inline;"
-                                                                onsubmit="return confirm('Are you sure you want to remove this like?')">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                                    title="Remove Like">
-                                                                    <i class="bx bx-trash"></i>
-                                                                </button>
-                                                            </form>
+                                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                                form="delete-form-{{ $like->id }}"
+                                                                title="Remove Like"
+                                                                onclick="return confirm('Are you sure?')">
+                                                                <i class="bx bx-trash"></i>
+                                                            </button>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -280,6 +283,14 @@
                                     </table>
                                 </div>
                             </form>
+
+                            @foreach ($likes as $like)
+                                <form method="POST" action="{{ route('admin.likes.destroy', $like->id) }}"
+                                    style="display: none;" id="delete-form-{{ $like->id }}">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
+                            @endforeach
 
                             <!-- Pagination -->
                             @if ($likes->hasPages())
@@ -311,7 +322,7 @@
     </div>
 @endsection
 
-@section('script')
+@push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const selectAllCheckbox = document.getElementById('selectAll');
@@ -355,4 +366,4 @@
             });
         });
     </script>
-@endsection
+@endpush

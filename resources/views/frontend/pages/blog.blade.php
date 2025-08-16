@@ -7,6 +7,7 @@
             color: #007bff;
             font-weight: bold;
         }
+
         .sidebar__tags li a.active {
             color: #007bff;
             font-weight: bold;
@@ -47,21 +48,23 @@
                                     <li><i class="fal fa-comments-alt"></i> <a
                                             href="{{ route('blog.show', $blog->slug) }}">{{ $blog->comments_count }}
                                             Comment</a></li>
+                                    <li><i class="fal fa-eye"></i>{{ $blog->views }}</li>
                                     <li class="post-share"><a href="{{ route('blog.like', $blog->id) }}"
                                             onclick="event.preventDefault(); document.getElementById('like-form-{{ $blog->id }}').submit();">
                                             <i
                                                 class="fa{{ $blog->likes->contains('user_id', auth()->id()) ? 's' : 'l' }} fa-heart"></i>
-                                            ({{ $blog->likes_count }})
+                                            {{ $blog->likes_count }}
                                         </a></li>
-                                    <form id="like-form-{{ $blog->id }}" action="{{ route('blog.like', $blog->slug) }}"
-                                        method="POST" style="display: none;">
+                                    <form id="like-form-{{ $blog->id }}"
+                                        action="{{ route('blog.like', $blog->slug) }}" method="POST"
+                                        style="display: none;">
                                         @csrf
                                     </form>
                                     <li class="post-bookmark"><a href="{{ route('blog.bookmark', $blog->slug) }}"
                                             onclick="event.preventDefault(); document.getElementById('bookmark-form-{{ $blog->id }}').submit();">
                                             <i
                                                 class="fa{{ $blog->bookmarks->contains('user_id', auth()->id()) ? 's' : 'l' }} fa-bookmark"></i>
-                                            Bookmark</a></li>
+                                        </a></li>
                                     <form id="bookmark-form-{{ $blog->id }}"
                                         action="{{ route('blog.bookmark', $blog->slug) }}" method="POST"
                                         style="display: none;">

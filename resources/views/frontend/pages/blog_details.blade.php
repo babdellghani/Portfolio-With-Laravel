@@ -19,12 +19,13 @@
                         <div class="blog__details__content services__details__content">
                             <ul class="blog__post__meta">
                                 <li><i class="fal fa-calendar-alt"></i>{{ $blog->created_at->format('d F Y') }}</li>
-                                <li><i class="fal fa-comments-alt"></i> <a href="#comments">Comment
-                                        ({{ $blog->comments_count }})</a></li>
+                                <li><a href="#comments"><i class="fal fa-comments-alt"></i>{{ $blog->comments_count }}</a>
+                                </li>
+                                <li><i class="fal fa-eye"></i>{{ $blog->views }}</li>
                                 <li class="post-share"><a href="{{ route('blog.like', $blog->id) }}"
                                         onclick="event.preventDefault(); document.getElementById('like-form-{{ $blog->id }}').submit();">
                                         <i class="fa{{ $userHasLiked ? 's' : 'l' }} fa-heart"></i>
-                                        ({{ $blog->likes_count }})
+                                        {{ $blog->likes_count }}
                                     </a></li>
                                 <form id="like-form-{{ $blog->id }}" action="{{ route('blog.like', $blog->slug) }}"
                                     method="POST" style="display: none;">

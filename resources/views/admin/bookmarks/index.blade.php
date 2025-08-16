@@ -107,18 +107,18 @@
                                             <option value="created_at"
                                                 {{ request('sort_by') == 'created_at' ? 'selected' : '' }}>Sort by Date
                                             </option>
-                                            <option value="user_id"
-                                                {{ request('sort_by') == 'user_id' ? 'selected' : '' }}>Sort by User
+                                            <option value="user_id" {{ request('sort_by') == 'user_id' ? 'selected' : '' }}>
+                                                Sort by User
                                             </option>
-                                            <option value="blog_id"
-                                                {{ request('sort_by') == 'blog_id' ? 'selected' : '' }}>Sort by Blog
+                                            <option value="blog_id" {{ request('sort_by') == 'blog_id' ? 'selected' : '' }}>
+                                                Sort by Blog
                                             </option>
                                         </select>
                                     </div>
                                     <div class="form-group">
                                         <select name="sort_order" class="form-control form-control-sm">
-                                            <option value="desc"
-                                                {{ request('sort_order') == 'desc' ? 'selected' : '' }}>Descending</option>
+                                            <option value="desc" {{ request('sort_order') == 'desc' ? 'selected' : '' }}>
+                                                Descending</option>
                                             <option value="asc" {{ request('sort_order') == 'asc' ? 'selected' : '' }}>
                                                 Ascending</option>
                                         </select>
@@ -135,8 +135,7 @@
 
                         @if ($bookmarks->count() > 0)
                             <!-- Bulk Actions Form -->
-                            <form id="bulkActionForm" method="POST"
-                                action="{{ route('admin.bookmarks.bulk-action') }}">
+                            <form id="bulkActionForm" method="POST" action="{{ route('admin.bookmarks.bulk-action') }}">
                                 @csrf
                                 <input type="hidden" name="action" id="bulkAction" value="">
 
@@ -190,17 +189,12 @@
                                                                 title="View Blog">
                                                                 <i class="bx bx-show"></i>
                                                             </a>
-                                                            <form method="POST"
-                                                                action="{{ route('admin.bookmarks.destroy', $bookmark) }}"
-                                                                style="display: inline;"
-                                                                onsubmit="return confirm('Are you sure you want to remove this bookmark?')">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                                    title="Remove Bookmark">
-                                                                    <i class="bx bx-trash"></i>
-                                                                </button>
-                                                            </form>
+                                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                                title="Remove Bookmark"
+                                                                form="delete-form-{{ $bookmark->id }}"
+                                                                onclick="return confirm('Are you sure you want to remove this bookmark?');">
+                                                                <i class="bx bx-trash"></i>
+                                                            </button>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -209,6 +203,14 @@
                                     </table>
                                 </div>
                             </form>
+
+                            @foreach ($bookmarks as $bookmark)
+                                <form method="POST" action="{{ route('admin.bookmarks.destroy', $bookmark) }}"
+                                    style="display: none;" id="delete-form-{{ $bookmark->id }}">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
+                            @endforeach
 
                             <!-- Pagination -->
                             @if ($bookmarks->hasPages())
@@ -240,7 +242,7 @@
     </div>
 @endsection
 
-@section('script')
+@push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const selectAllCheckbox = document.getElementById('selectAll');
@@ -285,4 +287,4 @@
             });
         });
     </script>
-@endsection
+@endpush

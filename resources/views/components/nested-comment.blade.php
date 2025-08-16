@@ -29,17 +29,33 @@
                         </span>
                     @endif
                 </div>
+
                 <a href="#comment-form{{ $comment->id }}" class="reply">
                     <i class="far fa-reply-all"></i>
                 </a>
+
             </div>
             <p>{{ $comment->content }}</p>
         </div>
+        <div>
+            <div class="post-share">
+                <a href="{{ route('comment.like', $comment->id) }}"
+                    onclick="event.preventDefault(); document.getElementById('like-form-{{ $comment->id }}').submit();"
+                    style="align-items: center; display: flex; flex-direction: column; color: black;"
+                    onmouseover="this.style.color='#0054FF';" onmouseout="this.style.color='black';">
+                    <i class="fa{{ $comment->isLikedBy(Auth::user()) ? 's' : 'l' }} fa-heart"></i>
+                    {{ $comment->likes_count }}
+                </a>
+            </div>
+            <form id="like-form-{{ $comment->id }}" action="{{ route('comment.like', $comment->id) }}" method="POST"
+                style="display: none;">
+                @csrf
+            </form>
+        </div>
     </li>
-
     <!-- Reply Form -->
     <div class="comment__form" id="comment-form{{ $comment->id }}"
-        style="display: none; width: -webkit-fill-available; padding-top: 20px !important; margin-top: 0px !important; {{ $level > 0 ? 'margin-left: 110px !important;' : ''}}">
+        style="display: none; width: -webkit-fill-available; padding-top: 20px !important; margin-top: 0px !important; {{ $level > 0 ? 'margin-left: 110px !important;' : '' }}">
         <div class="comment__title">
             <h4 class="title">Write your reply to {{ $comment->user->name }}</h4>
         </div>
