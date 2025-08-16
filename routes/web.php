@@ -66,13 +66,12 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 
 // -------------- Admin --------------- //
 Route::prefix('/admin')->group(function () {
-    // dashboard
-    Route::middleware(['auth', 'user.status'])->group(function () {
-        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-    });
 
-    // profile - accessible to both admin and users (but must be active)
     Route::middleware(['auth', 'user.status'])->group(function () {
+        // dashboard
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+        // profile - accessible to both admin and users (but must be active)
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -97,6 +96,18 @@ Route::prefix('/admin')->group(function () {
 
             return response()->json(['status' => 'success', 'message' => 'All notifications marked as read']);
         })->name('notifications.mark-all-read');
+
+        // like management
+        Route::get('/likes', [LikeController::class, 'index'])->name('admin.likes.index');
+        Route::delete('/likes/{like}', [LikeController::class, 'destroy'])->name('admin.likes.destroy');
+        Route::post('/likes/bulk-action', [LikeController::class, 'bulkAction'])->name('admin.likes.bulk-action');
+        Route::get('/likes/stats', [LikeController::class, 'stats'])->name('admin.likes.stats');
+
+        // bookmark management
+        Route::get('/bookmarks', [BookmarkController::class, 'index'])->name('admin.bookmarks.index');
+        Route::delete('/bookmarks/{bookmark}', [BookmarkController::class, 'destroy'])->name('admin.bookmarks.destroy');
+        Route::post('/bookmarks/bulk-action', [BookmarkController::class, 'bulkAction'])->name('admin.bookmarks.bulk-action');
+        Route::get('/bookmarks/stats', [BookmarkController::class, 'stats'])->name('admin.bookmarks.stats');
     });
 
     // Admin-only routes
@@ -242,18 +253,6 @@ Route::prefix('/admin')->group(function () {
         Route::patch('/comments/{comment}/approve', [AdminCommentController::class, 'approve'])->name('admin.comments.approve');
         Route::patch('/comments/{comment}/reject', [AdminCommentController::class, 'reject'])->name('admin.comments.reject');
         Route::post('/comments/bulk-action', [AdminCommentController::class, 'bulkAction'])->name('admin.comments.bulk-action');
-
-        // like management
-        Route::get('/likes', [LikeController::class, 'index'])->name('admin.likes.index');
-        Route::delete('/likes/{like}', [LikeController::class, 'destroy'])->name('admin.likes.destroy');
-        Route::post('/likes/bulk-action', [LikeController::class, 'bulkAction'])->name('admin.likes.bulk-action');
-        Route::get('/likes/stats', [LikeController::class, 'stats'])->name('admin.likes.stats');
-
-        // bookmark management
-        Route::get('/bookmarks', [BookmarkController::class, 'index'])->name('admin.bookmarks.index');
-        Route::delete('/bookmarks/{bookmark}', [BookmarkController::class, 'destroy'])->name('admin.bookmarks.destroy');
-        Route::post('/bookmarks/bulk-action', [BookmarkController::class, 'bulkAction'])->name('admin.bookmarks.bulk-action');
-        Route::get('/bookmarks/stats', [BookmarkController::class, 'stats'])->name('admin.bookmarks.stats');
     });
 }); // End admin prefix group
 

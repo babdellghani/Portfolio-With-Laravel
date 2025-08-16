@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -6,6 +7,8 @@ use App\Models\Blog;
 use App\Models\Category;
 use App\Models\Tag;
 use App\Models\User;
+use App\Notifications\NewBlogCreated;
+use App\Notifications\BlogUpdated;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +25,9 @@ class BlogController extends Controller
     public function index(Request $request)
     {
         $this->authorize('viewAny', Blog::class);
+
+        // Mark blog-related notifications as read when visiting this page
+        $this->markBlogNotificationsAsRead();
 
         if (! Auth::user()->isAdmin()) {
             $query = Blog::where('user_id', Auth::id())->with(['user', 'categories', 'tags'])
@@ -69,10 +75,8 @@ class BlogController extends Controller
 
         $blogs = $query->paginate(15);
         if (! Auth::user()->isAdmin()) {
-            $categories = Category::where('user_id', Auth::id())->
-                whereHas('blogs')->get();
-            $tags = Tag::where('user_id', Auth::id())->
-                whereHas('blogs')->get();
+            $categories = Category::where('user_id', Auth::id())->whereHas('blogs')->get();
+            $tags = Tag::where('user_id', Auth::id())->whereHas('blogs')->get();
 
             return view('admin.blogs.index', compact('blogs', 'categories', 'tags'));
         } else {
@@ -81,7 +85,6 @@ class BlogController extends Controller
             $authors    = User::whereHas('blogs')->get();
 
             return view('admin.blogs.index', compact('blogs', 'categories', 'tags', 'authors'));
-
         }
     }
 
@@ -153,6 +156,14 @@ class BlogController extends Controller
             $blog->tags()->attach($request->tags);
         }
 
+        // Notify admin users about new blog (only if not created by admin)
+        if (!Auth::user()->isAdmin()) {
+            $adminUsers = User::where('role', 'admin')->get();
+            foreach ($adminUsers as $admin) {
+                $admin->notify(new NewBlogCreated($blog, Auth::user()));
+            }
+        }
+
         return redirect()->route('admin.blogs.index')
             ->with('success', 'Blog post created successfully!');
     }
@@ -195,8 +206,8 @@ class BlogController extends Controller
 
             $blog->title = $request->input('title');
             $blog->slug  = $blog->title !== $request->input('title')
-            ? $this->generateUniqueSlug($request->input('title'), $blog->id)
-            : $blog->slug;
+                ? $this->generateUniqueSlug($request->input('title'), $blog->id)
+                : $blog->slug;
             $blog->content           = $request->input('content');
             $blog->excerpt           = $request->input('excerpt');
             $blog->short_description = $request->input('short_description');
@@ -235,9 +246,16 @@ class BlogController extends Controller
             $blog->categories()->sync($request->categories);
             $blog->tags()->sync($request->filled('tags') ? $request->tags : []);
 
+            // Notify admin users about blog update (only if not updated by admin)
+            if (!Auth::user()->isAdmin()) {
+                $adminUsers = User::where('role', 'admin')->get();
+                foreach ($adminUsers as $admin) {
+                    $admin->notify(new BlogUpdated($blog, Auth::user()));
+                }
+            }
+
             return redirect()->route('admin.blogs.index')
                 ->with('success', 'Blog post updated successfully!');
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()
                 ->withErrors($e->validator)
@@ -311,7 +329,7 @@ class BlogController extends Controller
             case 'delete':
 
                 $blogs->each(function ($blog) {
-                $this->authorize('delete', $blog);
+                    $this->authorize('delete', $blog);
                     if ($blog->thumbnail) {
                         Storage::disk('public')->delete($blog->thumbnail);
                     }
@@ -411,5 +429,19 @@ class BlogController extends Controller
 
         return redirect()->route('admin.blogs.edit', $newBlog)
             ->with('success', 'Blog post duplicated successfully!');
+    }
+
+    /**
+     * Mark blog-related notifications as read
+     */
+    private function markBlogNotificationsAsRead()
+    {
+        // Mark blog-related notifications as read for the current user
+        Auth::user()->unreadNotifications()
+            ->whereIn('type', [
+                'App\Notifications\NewBlogCreated',
+                'App\Notifications\BlogUpdated'
+            ])
+            ->update(['read_at' => now()]);
     }
 }

@@ -96,7 +96,8 @@
                                         <h6 class="m-0">Notifications ({{ $totalUnread }})</h6>
                                     </div>
                                     <div class="col-auto">
-                                        <button onclick="markAllNotificationsAsRead()" class="btn btn-sm btn-outline-primary">
+                                        <button onclick="markAllNotificationsAsRead()"
+                                            class="btn btn-sm btn-outline-primary">
                                             <i class="ri-check-double-line me-1"></i>Mark All Read
                                         </button>
                                     </div>
@@ -104,33 +105,250 @@
                             </div>
                             <div data-simplebar style="max-height: 300px;" id="notificationsList">
                                 <div data-simplebar style="max-height: 300px;" id="notificationsList">
-                                    {{-- User Registration Notifications --}}
+                                    {{-- All Notifications --}}
                                     @php
-                                        $recentUserNotifications = Auth::user()->unreadNotifications()->take(3)->get();
+                                        $recentNotifications = Auth::user()->unreadNotifications()->take(5)->get();
                                     @endphp
-                                    @foreach ($recentUserNotifications as $notification)
-                                        <a href="{{ route('users.index') }}" class="text-reset notification-item"
-                                            onclick="markNotificationAsRead('{{ $notification->id }}')">
-                                            <div class="d-flex">
-                                                <div class="avatar-xs me-3">
-                                                    <span class="avatar-title bg-success rounded-circle font-size-16">
-                                                        <i class="ri-user-add-line"></i>
-                                                    </span>
-                                                </div>
-                                                <div class="flex-1">
-                                                    <h6 class="mb-1">New User Registration</h6>
-                                                    <div class="font-size-12 text-muted">
-                                                        <p class="mb-1">
-                                                            {{ $notification->data['message'] ?? 'New user registered' }}
-                                                        </p>
-                                                        <p class="mb-0">
-                                                            <i class="mdi mdi-clock-outline"></i>
-                                                            {{ $notification->created_at->diffForHumans() }}
-                                                        </p>
+                                    @foreach ($recentNotifications as $notification)
+                                        @if (isset($notification->data['type']) && $notification->data['type'] === 'user_registration')
+                                            <a href="{{ route('users.index') }}" class="text-reset notification-item"
+                                                onclick="markNotificationAsRead('{{ $notification->id }}')">
+                                                <div class="d-flex">
+                                                    <div class="avatar-xs me-3">
+                                                        <span class="avatar-title bg-success rounded-circle font-size-16">
+                                                            <i class="ri-user-add-line"></i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h6 class="mb-1">New User Registration</h6>
+                                                        <div class="font-size-12 text-muted">
+                                                            <p class="mb-1">
+                                                                {{ $notification->data['message'] ?? 'New user registered' }}
+                                                            </p>
+                                                            <p class="mb-0">
+                                                                <i class="mdi mdi-clock-outline"></i>
+                                                                {{ $notification->created_at->diffForHumans() }}
+                                                            </p>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </a>
+                                            </a>
+                                        @elseif (isset($notification->data['type']) && $notification->data['type'] === 'blog_created')
+                                            <a href="{{ route('admin.blogs.index') }}" class="text-reset notification-item"
+                                                onclick="markNotificationAsRead('{{ $notification->id }}')">
+                                                <div class="d-flex">
+                                                    <div class="avatar-xs me-3">
+                                                        <span class="avatar-title bg-info rounded-circle font-size-16">
+                                                            <i class="ri-article-line"></i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h6 class="mb-1">New Blog Post</h6>
+                                                        <div class="font-size-12 text-muted">
+                                                            <p class="mb-1">
+                                                                {{ $notification->data['message'] ?? 'New blog post created' }}
+                                                            </p>
+                                                            <p class="mb-0">
+                                                                <i class="mdi mdi-clock-outline"></i>
+                                                                {{ $notification->created_at->diffForHumans() }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        @elseif (isset($notification->data['type']) && $notification->data['type'] === 'blog_updated')
+                                            <a href="{{ route('admin.blogs.index') }}"
+                                                class="text-reset notification-item"
+                                                onclick="markNotificationAsRead('{{ $notification->id }}')">
+                                                <div class="d-flex">
+                                                    <div class="avatar-xs me-3">
+                                                        <span class="avatar-title bg-warning rounded-circle font-size-16">
+                                                            <i class="ri-edit-line"></i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h6 class="mb-1">Blog Post Updated</h6>
+                                                        <div class="font-size-12 text-muted">
+                                                            <p class="mb-1">
+                                                                {{ $notification->data['message'] ?? 'Blog post updated' }}
+                                                            </p>
+                                                            <p class="mb-0">
+                                                                <i class="mdi mdi-clock-outline"></i>
+                                                                {{ $notification->created_at->diffForHumans() }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        @elseif (isset($notification->data['type']) && $notification->data['type'] === 'comment_created')
+                                            <a href="{{ route('admin.comments.index') }}"
+                                                class="text-reset notification-item"
+                                                onclick="markNotificationAsRead('{{ $notification->id }}')">
+                                                <div class="d-flex">
+                                                    <div class="avatar-xs me-3">
+                                                        <span
+                                                            class="avatar-title bg-secondary rounded-circle font-size-16">
+                                                            <i class="ri-chat-3-line"></i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h6 class="mb-1">New Comment</h6>
+                                                        <div class="font-size-12 text-muted">
+                                                            <p class="mb-1">
+                                                                {{ $notification->data['message'] ?? 'New comment posted' }}
+                                                            </p>
+                                                            <p class="mb-0">
+                                                                <i class="mdi mdi-clock-outline"></i>
+                                                                {{ $notification->created_at->diffForHumans() }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        @elseif (isset($notification->data['type']) && $notification->data['type'] === 'comment_updated')
+                                            <a href="{{ route('admin.comments.index') }}"
+                                                class="text-reset notification-item"
+                                                onclick="markNotificationAsRead('{{ $notification->id }}')">
+                                                <div class="d-flex">
+                                                    <div class="avatar-xs me-3">
+                                                        <span class="avatar-title bg-dark rounded-circle font-size-16">
+                                                            <i class="ri-chat-edit-line"></i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h6 class="mb-1">Comment Updated</h6>
+                                                        <div class="font-size-12 text-muted">
+                                                            <p class="mb-1">
+                                                                {{ $notification->data['message'] ?? 'Comment updated' }}
+                                                            </p>
+                                                            <p class="mb-0">
+                                                                <i class="mdi mdi-clock-outline"></i>
+                                                                {{ $notification->created_at->diffForHumans() }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        @elseif (isset($notification->data['type']) && $notification->data['type'] === 'category_created')
+                                            <a href="{{ route('admin.categories.index') }}"
+                                                class="text-reset notification-item"
+                                                onclick="markNotificationAsRead('{{ $notification->id }}')">
+                                                <div class="d-flex">
+                                                    <div class="avatar-xs me-3">
+                                                        <span class="avatar-title bg-purple rounded-circle font-size-16">
+                                                            <i class="ri-folder-add-line"></i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h6 class="mb-1">New Category</h6>
+                                                        <div class="font-size-12 text-muted">
+                                                            <p class="mb-1">
+                                                                {{ $notification->data['message'] ?? 'New category created' }}
+                                                            </p>
+                                                            <p class="mb-0">
+                                                                <i class="mdi mdi-clock-outline"></i>
+                                                                {{ $notification->created_at->diffForHumans() }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        @elseif (isset($notification->data['type']) && $notification->data['type'] === 'category_updated')
+                                            <a href="{{ route('admin.categories.index') }}"
+                                                class="text-reset notification-item"
+                                                onclick="markNotificationAsRead('{{ $notification->id }}')">
+                                                <div class="d-flex">
+                                                    <div class="avatar-xs me-3">
+                                                        <span class="avatar-title bg-orange rounded-circle font-size-16">
+                                                            <i class="ri-folder-edit-line"></i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h6 class="mb-1">Category Updated</h6>
+                                                        <div class="font-size-12 text-muted">
+                                                            <p class="mb-1">
+                                                                {{ $notification->data['message'] ?? 'Category updated' }}
+                                                            </p>
+                                                            <p class="mb-0">
+                                                                <i class="mdi mdi-clock-outline"></i>
+                                                                {{ $notification->created_at->diffForHumans() }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        @elseif (isset($notification->data['type']) && $notification->data['type'] === 'tag_created')
+                                            <a href="{{ route('admin.tags.index') }}"
+                                                class="text-reset notification-item"
+                                                onclick="markNotificationAsRead('{{ $notification->id }}')">
+                                                <div class="d-flex">
+                                                    <div class="avatar-xs me-3">
+                                                        <span class="avatar-title bg-cyan rounded-circle font-size-16">
+                                                            <i class="ri-price-tag-3-line"></i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h6 class="mb-1">New Tag</h6>
+                                                        <div class="font-size-12 text-muted">
+                                                            <p class="mb-1">
+                                                                {{ $notification->data['message'] ?? 'New tag created' }}
+                                                            </p>
+                                                            <p class="mb-0">
+                                                                <i class="mdi mdi-clock-outline"></i>
+                                                                {{ $notification->created_at->diffForHumans() }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        @elseif (isset($notification->data['type']) && $notification->data['type'] === 'tag_updated')
+                                            <a href="{{ route('admin.tags.index') }}"
+                                                class="text-reset notification-item"
+                                                onclick="markNotificationAsRead('{{ $notification->id }}')">
+                                                <div class="d-flex">
+                                                    <div class="avatar-xs me-3">
+                                                        <span class="avatar-title bg-teal rounded-circle font-size-16">
+                                                            <i class="ri-price-tag-edit-line"></i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h6 class="mb-1">Tag Updated</h6>
+                                                        <div class="font-size-12 text-muted">
+                                                            <p class="mb-1">
+                                                                {{ $notification->data['message'] ?? 'Tag updated' }}</p>
+                                                            <p class="mb-0">
+                                                                <i class="mdi mdi-clock-outline"></i>
+                                                                {{ $notification->created_at->diffForHumans() }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        @else
+                                            {{-- Handle legacy notifications without type --}}
+                                            <a href="{{ route('users.index') }}" class="text-reset notification-item"
+                                                onclick="markNotificationAsRead('{{ $notification->id }}')">
+                                                <div class="d-flex">
+                                                    <div class="avatar-xs me-3">
+                                                        <span class="avatar-title bg-info rounded-circle font-size-16">
+                                                            <i class="ri-notification-line"></i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h6 class="mb-1">Notification</h6>
+                                                        <div class="font-size-12 text-muted">
+                                                            <p class="mb-1">
+                                                                {{ $notification->data['message'] ?? 'You have a new notification' }}
+                                                            </p>
+                                                            <p class="mb-0">
+                                                                <i class="mdi mdi-clock-outline"></i>
+                                                                {{ $notification->created_at->diffForHumans() }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        @endif
                                     @endforeach
 
                                     {{-- Contact Message Notifications --}}
@@ -139,7 +357,8 @@
                                             $recentContacts = \App\Models\Contact::getRecentUnread(3);
                                         @endphp
                                         @foreach ($recentContacts as $contact)
-                                            <a href="{{ route('contact.show', $contact) }}" class="text-reset notification-item">
+                                            <a href="{{ route('contact.show', $contact) }}"
+                                                class="text-reset notification-item">
                                                 <div class="d-flex">
                                                     <div class="avatar-xs me-3">
                                                         <span class="avatar-title bg-primary rounded-circle font-size-16">
@@ -165,7 +384,8 @@
                                         <div class="text-center py-4">
                                             <div class="avatar-md mx-auto mb-3">
                                                 <div class="avatar-title bg-light rounded-circle">
-                                                    <i class="ri-notification-off-line text-muted" style="font-size: 1.5rem;"></i>
+                                                    <i class="ri-notification-off-line text-muted"
+                                                        style="font-size: 1.5rem;"></i>
                                                 </div>
                                             </div>
                                             <p class="text-muted">No new notifications</p>
@@ -174,18 +394,20 @@
                                 </div>
                                 <div class="p-2 border-top">
                                     <div class="d-grid">
-                                        <a class="btn btn-sm btn-link font-size-14 text-center" href="{{ route('contact') }}">
+                                        <a class="btn btn-sm btn-link font-size-14 text-center"
+                                            href="{{ route('contact') }}">
                                             <i class="mdi mdi-arrow-right-circle me-1"></i> View All Messages
                                         </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                @else
+                    @else
                         {{-- Regular User Notifications --}}
                         <div class="dropdown d-inline-block">
                             <button type="button" class="btn header-item noti-icon waves-effect"
-                                id="page-header-user-notifications-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                id="page-header-user-notifications-dropdown" data-bs-toggle="dropdown"
+                                aria-expanded="false">
                                 <i class="ri-notification-3-line"></i>
                                 @php
                                     $userUnreadNotifications = Auth::user()->unreadNotifications()->count();
@@ -214,7 +436,7 @@
                                         $userNotifications = Auth::user()->unreadNotifications()->take(5)->get();
                                     @endphp
                                     @foreach ($userNotifications as $notification)
-                                        @if ($notification->data['type'] === 'admin_reply')
+                                        @if (isset($notification->data['type']) && $notification->data['type'] === 'admin_reply')
                                             <a href="{{ route('user.messages.show', $notification->data['contact_id']) }}"
                                                 class="text-reset notification-item"
                                                 onclick="markUserNotificationAsRead('{{ $notification->id }}')">
@@ -227,7 +449,33 @@
                                                     <div class="flex-1">
                                                         <h6 class="mb-1">Admin Reply</h6>
                                                         <div class="font-size-12 text-muted">
-                                                            <p class="mb-1">{{ $notification->data['message'] }}</p>
+                                                            <p class="mb-1">
+                                                                {{ $notification->data['message'] ?? 'Admin replied to your message' }}
+                                                            </p>
+                                                            <p class="mb-0">
+                                                                <i class="mdi mdi-clock-outline"></i>
+                                                                {{ $notification->created_at->diffForHumans() }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        @else
+                                            {{-- Handle other notification types for regular users --}}
+                                            <a href="{{ route('user.messages') }}" class="text-reset notification-item"
+                                                onclick="markUserNotificationAsRead('{{ $notification->id }}')">
+                                                <div class="d-flex">
+                                                    <div class="avatar-xs me-3">
+                                                        <span class="avatar-title bg-info rounded-circle font-size-16">
+                                                            <i class="ri-notification-line"></i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h6 class="mb-1">Notification</h6>
+                                                        <div class="font-size-12 text-muted">
+                                                            <p class="mb-1">
+                                                                {{ $notification->data['message'] ?? 'You have a new notification' }}
+                                                            </p>
                                                             <p class="mb-0">
                                                                 <i class="mdi mdi-clock-outline"></i>
                                                                 {{ $notification->created_at->diffForHumans() }}
@@ -243,7 +491,8 @@
                                         <div class="text-center py-4">
                                             <div class="avatar-md mx-auto mb-3">
                                                 <div class="avatar-title bg-light rounded-circle">
-                                                    <i class="ri-notification-off-line text-muted" style="font-size: 1.5rem;"></i>
+                                                    <i class="ri-notification-off-line text-muted"
+                                                        style="font-size: 1.5rem;"></i>
                                                 </div>
                                             </div>
                                             <p class="text-muted">No new notifications</p>
@@ -260,181 +509,216 @@
                                 </div>
                             </div>
                         </div>
-                    @endif
+                @endif
             @endauth
 
-                <script>
-                    function markNotificationAsRead(notificationId) {
-                        fetch(`/admin/notifications/${notificationId}/read`, {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'Content-Type': 'application/json',
-                            }
-                        });
-                    }
+            <style>
+                .bg-purple {
+                    background-color: #6f42c1 !important;
+                }
 
-                    function markAllNotificationsAsRead() {
-                        fetch('/admin/notifications/mark-all-read', {
+                .bg-orange {
+                    background-color: #fd7e14 !important;
+                }
+
+                .bg-cyan {
+                    background-color: #20c997 !important;
+                }
+
+                .bg-teal {
+                    background-color: #198754 !important;
+                }
+
+                .notification-item {
+                    display: block;
+                    padding: 0.75rem 1rem;
+                    border-bottom: 1px solid #f0f0f0;
+                    transition: all 0.3s ease;
+                }
+
+                .notification-item:hover {
+                    background-color: #f8f9fa;
+                    text-decoration: none;
+                }
+
+                .notification-item:last-child {
+                    border-bottom: none;
+                }
+            </style>
+
+            <script>
+                function markNotificationAsRead(notificationId) {
+                    fetch(`/admin/notifications/${notificationId}/read`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json',
+                        }
+                    });
+                }
+
+                function markAllNotificationsAsRead() {
+                    fetch('/admin/notifications/mark-all-read', {
                             method: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                                 'Content-Type': 'application/json',
                             }
                         })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.status === 'success') {
-                                    // Reload the page to update notification counts
-                                    window.location.reload();
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                            });
-                    }
-
-                    function markUserNotificationAsRead(notificationId) {
-                        fetch(`/admin/notifications/${notificationId}/read`, {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'Content-Type': 'application/json',
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                // Reload the page to update notification counts
+                                window.location.reload();
                             }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
                         });
-                    }
+                }
 
-                    function markUserNotificationsAsRead() {
-                        fetch('/admin/notifications/mark-all-read', {
+                function markUserNotificationAsRead(notificationId) {
+                    fetch(`/admin/notifications/${notificationId}/read`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json',
+                        }
+                    });
+                }
+
+                function markUserNotificationsAsRead() {
+                    fetch('/admin/notifications/mark-all-read', {
                             method: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                                 'Content-Type': 'application/json',
                             }
                         })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.status === 'success') {
-                                    // Reload the page to update notification counts
-                                    window.location.reload();
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                            });
-                    }
-                </script>
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                // Reload the page to update notification counts
+                                window.location.reload();
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                }
+            </script>
 
-                <div class="dropdown d-inline-block user-dropdown">
-                    <button type="button"
-                        class="btn header-item waves-effect d-flex align-items-center justify-content-center"
-                        id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">
-                        @if (Auth::user()->avatar)
-                            <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="Header Avatar"
-                                class="rounded-circle header-profile-user">
-                        @else
-                            <div
-                                class="rounded-circle header-profile-user bg-primary d-flex align-items-center justify-content-center">
-                                <i class="ri-user-line text-white"></i>
-                            </div>
-                        @endif
-                        <span class="d-none d-xl-inline-block ms-1">
-                            {{ Auth::user()->name }}
-                            <small class="d-block text-muted">
-                                <span
-                                    class="badge badge-soft-{{ Auth::user()->isAdmin() ? 'primary' : 'secondary' }} badge-sm">
-                                    {{ ucfirst(Auth::user()->role) }}
-                                </span>
-                            </small>
-                        </span>
-                        <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-end">
-                        <!-- User Info -->
-                        <div class="dropdown-item-text">
-                            <div class="d-flex align-items-center">
-                                @if (Auth::user()->avatar)
-                                    <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="User Avatar"
-                                        class="rounded-circle me-2" style="width: 32px; height: 32px; object-fit: cover;">
-                                @else
-                                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center me-2"
-                                        style="width: 32px; height: 32px;">
-                                        <i class="ri-user-line text-white" style="font-size: 14px;"></i>
-                                    </div>
-                                @endif
+            <div class="dropdown d-inline-block user-dropdown">
+                <button type="button"
+                    class="btn header-item waves-effect d-flex align-items-center justify-content-center"
+                    id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    @if (Auth::user()->avatar)
+                        <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="Header Avatar"
+                            class="rounded-circle header-profile-user">
+                    @else
+                        <div
+                            class="rounded-circle header-profile-user bg-primary d-flex align-items-center justify-content-center">
+                            <i class="ri-user-line text-white"></i>
+                        </div>
+                    @endif
+                    <span class="d-none d-xl-inline-block ms-1">
+                        {{ Auth::user()->name }}
+                        <small class="d-block text-muted">
+                            <span
+                                class="badge badge-soft-{{ Auth::user()->isAdmin() ? 'primary' : 'secondary' }} badge-sm">
+                                {{ ucfirst(Auth::user()->role) }}
+                            </span>
+                        </small>
+                    </span>
+                    <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end">
+                    <!-- User Info -->
+                    <div class="dropdown-item-text">
+                        <div class="d-flex align-items-center">
+                            @if (Auth::user()->avatar)
+                                <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="User Avatar"
+                                    class="rounded-circle me-2" style="width: 32px; height: 32px; object-fit: cover;">
+                            @else
+                                <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center me-2"
+                                    style="width: 32px; height: 32px;">
+                                    <i class="ri-user-line text-white" style="font-size: 14px;"></i>
+                                </div>
+                            @endif
+                            <div>
+                                <div class="fw-bold">{{ Auth::user()->name }}</div>
+                                <small class="text-muted">{{ Auth::user()->email }}</small>
                                 <div>
-                                    <div class="fw-bold">{{ Auth::user()->name }}</div>
-                                    <small class="text-muted">{{ Auth::user()->email }}</small>
-                                    <div>
-                                        <span
-                                            class="badge badge-soft-{{ Auth::user()->isAdmin() ? 'primary' : 'secondary' }} badge-sm">
-                                            {{ ucfirst(Auth::user()->role) }}
-                                        </span>
-                                        <span
-                                            class="badge badge-soft-{{ Auth::user()->getStatusBadgeClass() === 'badge-soft-success' ? 'success' : 'danger' }} badge-sm">
-                                            {{ ucfirst(Auth::user()->status) }}
-                                        </span>
-                                    </div>
+                                    <span
+                                        class="badge badge-soft-{{ Auth::user()->isAdmin() ? 'primary' : 'secondary' }} badge-sm">
+                                        {{ ucfirst(Auth::user()->role) }}
+                                    </span>
+                                    <span
+                                        class="badge badge-soft-{{ Auth::user()->getStatusBadgeClass() === 'badge-soft-success' ? 'success' : 'danger' }} badge-sm">
+                                        {{ ucfirst(Auth::user()->status) }}
+                                    </span>
                                 </div>
                             </div>
                         </div>
-                        <div class="dropdown-divider"></div>
-
-                        <!-- Profile -->
-                        <a class="dropdown-item" href="{{ route('profile.edit') }}">
-                            <i class="ri-user-line align-middle me-1"></i> Profile Settings
-                        </a>
-
-                        @if (Auth::user()->isAdmin())
-                            <!-- Admin Only Items -->
-                            <a class="dropdown-item" href="{{ route('dashboard') }}">
-                                <i class="ri-dashboard-line align-middle me-1"></i> Dashboard
-                            </a>
-                            <a class="dropdown-item" href="{{ route('users.index') }}">
-                                <i class="ri-group-line align-middle me-1"></i> User Management
-                            </a>
-                            <a class="dropdown-item" href="{{ route('contact') }}">
-                                <i class="ri-mail-line align-middle me-1"></i> Messages
-                                @php
-                                    $unreadCount = \App\Models\Contact::getUnreadCount();
-                                @endphp
-                                @if ($unreadCount > 0)
-                                    <span class="badge badge-soft-danger badge-sm ms-1">{{ $unreadCount }}</span>
-                                @endif
-                            </a>
-                            <a class="dropdown-item" href="{{ route('users.index') }}">
-                                <i class="ri-user-add-line align-middle me-1"></i> User Registrations
-                                @php
-                                    $userNotificationsCount = Auth::user()->unreadNotifications()->count();
-                                @endphp
-                                @if ($userNotificationsCount > 0)
-                                    <span class="badge badge-soft-success badge-sm ms-1">{{ $userNotificationsCount }}</span>
-                                @endif
-                            </a>
-                        @endif
-
-                        <!-- Website Link -->
-                        <a class="dropdown-item" href="{{ route('home') }}" target="_blank">
-                            <i class="ri-external-link-line align-middle me-1"></i> View Website
-                        </a>
-
-                        <div class="dropdown-divider"></div>
-                        <form action="{{ route('logout') }}" method="POST">
-                            @csrf
-                            <button class="dropdown-item text-danger" type="submit">
-                                <i class="ri-shut-down-line align-middle me-1 text-danger"></i> Logout
-                            </button>
-                        </form>
                     </div>
-                </div>
+                    <div class="dropdown-divider"></div>
 
-                <div class="dropdown d-inline-block">
-                    <button type="button" class="btn header-item noti-icon right-bar-toggle waves-effect">
-                        <i class="ri-settings-2-line"></i>
-                    </button>
-                </div>
+                    <!-- Profile -->
+                    <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                        <i class="ri-user-line align-middle me-1"></i> Profile Settings
+                    </a>
 
+                    @if (Auth::user()->isAdmin())
+                        <!-- Admin Only Items -->
+                        <a class="dropdown-item" href="{{ route('dashboard') }}">
+                            <i class="ri-dashboard-line align-middle me-1"></i> Dashboard
+                        </a>
+                        <a class="dropdown-item" href="{{ route('users.index') }}">
+                            <i class="ri-group-line align-middle me-1"></i> User Management
+                        </a>
+                        <a class="dropdown-item" href="{{ route('contact') }}">
+                            <i class="ri-mail-line align-middle me-1"></i> Messages
+                            @php
+                                $unreadCount = \App\Models\Contact::getUnreadCount();
+                            @endphp
+                            @if ($unreadCount > 0)
+                                <span class="badge badge-soft-danger badge-sm ms-1">{{ $unreadCount }}</span>
+                            @endif
+                        </a>
+                        <a class="dropdown-item" href="{{ route('users.index') }}">
+                            <i class="ri-user-add-line align-middle me-1"></i> User Registrations
+                            @php
+                                $userNotificationsCount = Auth::user()->unreadNotifications()->count();
+                            @endphp
+                            @if ($userNotificationsCount > 0)
+                                <span
+                                    class="badge badge-soft-success badge-sm ms-1">{{ $userNotificationsCount }}</span>
+                            @endif
+                        </a>
+                    @endif
+
+                    <!-- Website Link -->
+                    <a class="dropdown-item" href="{{ route('home') }}" target="_blank">
+                        <i class="ri-external-link-line align-middle me-1"></i> View Website
+                    </a>
+
+                    <div class="dropdown-divider"></div>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button class="dropdown-item text-danger" type="submit">
+                            <i class="ri-shut-down-line align-middle me-1 text-danger"></i> Logout
+                        </button>
+                    </form>
+                </div>
             </div>
+
+            <div class="dropdown d-inline-block">
+                <button type="button" class="btn header-item noti-icon right-bar-toggle waves-effect">
+                    <i class="ri-settings-2-line"></i>
+                </button>
+            </div>
+
         </div>
+    </div>
 </header>

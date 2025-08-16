@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Notifications;
 
 use App\Models\User;
@@ -56,6 +57,7 @@ class NewUserRegistered extends Notification
     public function toArray(object $notifiable): array
     {
         return [
+            'type'       => 'user_registration',
             'user_id'    => $this->user->id,
             'user_name'  => $this->user->name,
             'user_email' => $this->user->email,

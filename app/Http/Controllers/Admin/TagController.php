@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tag;
+use App\Models\User;
+use App\Notifications\NewTagCreated;
+use App\Notifications\TagUpdated;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +22,9 @@ class TagController extends Controller
     public function index(Request $request)
     {
         $this->authorize('viewAny', Tag::class);
+
+        // Mark tag-related notifications as read when visiting this page
+        $this->markTagNotificationsAsRead();
 
         if (Auth::user()->isAdmin()) {
             $query = Tag::with(['user'])
@@ -59,12 +65,20 @@ class TagController extends Controller
             'status' => 'boolean',
         ]);
 
-        Tag::create([
+        $tag = Tag::create([
             'name'    => $request->input('name'),
             'slug'    => Str::slug($request->input('name')),
             'status'  => Auth::user()->isAdmin() ? $request->boolean('status', true) : false,
             'user_id' => Auth::id(),
         ]);
+
+        // Notify admin users about new tag (only if not created by admin)
+        if (!Auth::user()->isAdmin()) {
+            $adminUsers = User::where('role', 'admin')->get();
+            foreach ($adminUsers as $admin) {
+                $admin->notify(new NewTagCreated($tag, Auth::user()));
+            }
+        }
 
         return redirect()->route('admin.tags.index')
             ->with('success', 'Tag created successfully!');
@@ -97,6 +111,14 @@ class TagController extends Controller
             'slug'   => Str::slug($request->input('name')),
             'status' => Auth::user()->isAdmin() ? $request->boolean('status', true) : false,
         ]);
+
+        // Notify admin users about tag update (only if not updated by admin)
+        if (!Auth::user()->isAdmin()) {
+            $adminUsers = User::where('role', 'admin')->get();
+            foreach ($adminUsers as $admin) {
+                $admin->notify(new TagUpdated($tag, Auth::user()));
+            }
+        }
 
         return redirect()->route('admin.tags.index')
             ->with('success', 'Tag updated successfully!');
@@ -152,14 +174,14 @@ class TagController extends Controller
         switch ($request->action) {
             case 'activate':
                 $this->authorize('admin', Tag::class);
-                
+
                 $tags->update(['status' => true]);
                 $message = 'Tags activated successfully!';
                 break;
 
             case 'deactivate':
                 $this->authorize('admin', Tag::class);
-                
+
                 $tags->update(['status' => false]);
                 $message = 'Tags deactivated successfully!';
                 break;
@@ -188,5 +210,19 @@ class TagController extends Controller
         }
 
         return redirect()->back()->with('success', $message);
+    }
+
+    /**
+     * Mark tag-related notifications as read
+     */
+    private function markTagNotificationsAsRead()
+    {
+        // Mark tag-related notifications as read for the current user
+        Auth::user()->unreadNotifications()
+            ->whereIn('type', [
+                'App\Notifications\NewTagCreated',
+                'App\Notifications\TagUpdated'
+            ])
+            ->update(['read_at' => now()]);
     }
 }

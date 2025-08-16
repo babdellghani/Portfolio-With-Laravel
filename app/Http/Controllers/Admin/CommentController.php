@@ -20,6 +20,9 @@ class CommentController extends Controller
     {
         $this->authorize('viewAny', Comment::class);
 
+        // Mark comment-related notifications as read when visiting this page
+        $this->markCommentNotificationsAsRead();
+
         if (Auth::user()->isAdmin()) {
             $query = Comment::with(['user', 'blog', 'parent'])
                 ->latest();
@@ -83,7 +86,7 @@ class CommentController extends Controller
 
         return view('admin.comments.edit', compact('comment'));
     }
-    
+
     /**
      * Update the specified comment
      */
@@ -177,14 +180,14 @@ class CommentController extends Controller
         switch ($request->action) {
             case 'approve':
                 $this->authorize('admin', Blog::class);
-                
+
                 $comments->update(['status' => true]);
                 $message = 'Comments approved successfully!';
                 break;
 
             case 'reject':
                 $this->authorize('admin', Blog::class);
-                
+
                 $comments->update(['status' => false]);
                 $message = 'Comments rejected successfully!';
                 break;
@@ -192,12 +195,12 @@ class CommentController extends Controller
             case 'delete':
                 // Get all comment IDs including replies
                 $commentIds = $comments->pluck('id')->toArray();
-                
+
                 // Authorize delete permission for each comment
                 foreach ($comments->get() as $comment) {
                     $this->authorize('delete', $comment);
                 }
-                
+
                 $allCommentIds = Comment::whereIn('parent_id', $commentIds)
                     ->pluck('id')
                     ->merge($commentIds)
@@ -210,5 +213,23 @@ class CommentController extends Controller
         }
 
         return redirect()->back()->with('success', $message);
+    }
+
+    /**
+     * Mark comment-related notifications as read
+     */
+    private function markCommentNotificationsAsRead()
+    {
+        if (Auth::user()->isAdmin()) {
+            $user = Auth::user();
+
+            // Mark notifications as read for comment-related types
+            $user->unreadNotifications()
+                ->whereIn('type', [
+                    'App\Notifications\NewCommentCreated',
+                    'App\Notifications\CommentUpdated'
+                ])
+                ->update(['read_at' => now()]);
+        }
     }
 }

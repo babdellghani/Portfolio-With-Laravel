@@ -1,8 +1,12 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\User;
+use App\Notifications\NewCategoryCreated;
+use App\Notifications\CategoryUpdated;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +23,9 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         $this->authorize('viewAny', Category::class);
+
+        // Mark category-related notifications as read when visiting this page
+        $this->markCategoryNotificationsAsRead();
 
         if (Auth::user()->isAdmin()) {
             $query = Category::with(['user'])
@@ -93,6 +100,14 @@ class CategoryController extends Controller
 
         $category->save();
 
+        // Notify admin users about new category (only if not created by admin)
+        if (!Auth::user()->isAdmin()) {
+            $adminUsers = User::where('role', 'admin')->get();
+            foreach ($adminUsers as $admin) {
+                $admin->notify(new NewCategoryCreated($category, Auth::user()));
+            }
+        }
+
         return redirect()->route('admin.categories.index')
             ->with('success', 'Category created successfully!');
     }
@@ -142,6 +157,14 @@ class CategoryController extends Controller
         }
 
         $category->save();
+
+        // Notify admin users about category update (only if not updated by admin)
+        if (!Auth::user()->isAdmin()) {
+            $adminUsers = User::where('role', 'admin')->get();
+            foreach ($adminUsers as $admin) {
+                $admin->notify(new CategoryUpdated($category, Auth::user()));
+            }
+        }
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Category updated successfully!');
@@ -244,5 +267,19 @@ class CategoryController extends Controller
         }
 
         return redirect()->back()->with('success', $message);
+    }
+
+    /**
+     * Mark category-related notifications as read
+     */
+    private function markCategoryNotificationsAsRead()
+    {
+        // Mark category-related notifications as read for the current user
+        Auth::user()->unreadNotifications()
+            ->whereIn('type', [
+                'App\Notifications\NewCategoryCreated',
+                'App\Notifications\CategoryUpdated'
+            ])
+            ->update(['read_at' => now()]);
     }
 }

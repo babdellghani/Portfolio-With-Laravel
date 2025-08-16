@@ -28,7 +28,7 @@
                 <li class="menu-title">Menu</li>
                 <li>
                     <a href="{{ route('dashboard') }}" class="waves-effect">
-                        <i class="ri-dashboard-line"></i><span class="badge rounded-pill bg-success float-end">3</span>
+                        <i class="ri-dashboard-line"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
@@ -102,6 +102,21 @@
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-article-line"></i>
                         <span>Blog Posts</span>
+                        @if (auth()->user()->isAdmin())
+                            @php
+                                $blogNotifications = auth()
+                                    ->user()
+                                    ->unreadNotifications()
+                                    ->whereIn('type', [
+                                        'App\Notifications\NewBlogCreated',
+                                        'App\Notifications\BlogUpdated',
+                                    ])
+                                    ->count();
+                            @endphp
+                            @if ($blogNotifications > 0)
+                                <span class="badge rounded-pill bg-danger float-end">{{ $blogNotifications }}</span>
+                            @endif
+                        @endif
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
                         <li><a href="{{ route('admin.blogs.index') }}">All Posts</a></li>
@@ -113,6 +128,22 @@
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-folder-line"></i>
                         <span>Categories</span>
+                        @if (auth()->user()->isAdmin())
+                            @php
+                                $categoryNotifications = auth()
+                                    ->user()
+                                    ->unreadNotifications()
+                                    ->whereIn('type', [
+                                        'App\Notifications\NewCategoryCreated',
+                                        'App\Notifications\CategoryUpdated',
+                                    ])
+                                    ->count();
+                            @endphp
+                            @if ($categoryNotifications > 0)
+                                <span
+                                    class="badge rounded-pill bg-danger float-end">{{ $categoryNotifications }}</span>
+                            @endif
+                        @endif
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
                         <li><a href="{{ route('admin.categories.index') }}">All Categories</a></li>
@@ -124,11 +155,20 @@
                     <a href="{{ route('admin.tags.index') }}" class="waves-effect">
                         <i class="ri-price-tag-3-line"></i>
                         <span>Tags</span>
-                        @php
-                            $totalTags = \App\Models\Tag::count();
-                        @endphp
-                        @if ($totalTags > 0)
-                            <span class="badge rounded-pill bg-secondary float-end">{{ $totalTags }}</span>
+                        @if (auth()->user()->isAdmin())
+                            @php
+                                $tagNotifications = auth()
+                                    ->user()
+                                    ->unreadNotifications()
+                                    ->whereIn('type', [
+                                        'App\Notifications\NewTagCreated',
+                                        'App\Notifications\TagUpdated',
+                                    ])
+                                    ->count();
+                            @endphp
+                            @if ($tagNotifications > 0)
+                                <span class="badge rounded-pill bg-danger float-end">{{ $tagNotifications }}</span>
+                            @endif
                         @endif
                     </a>
                 </li>
@@ -137,14 +177,20 @@
                     <a href="{{ route('admin.comments.index') }}" class="waves-effect">
                         <i class="ri-chat-3-line"></i>
                         <span>Comments</span>
-                        @php
-                            $pendingComments = \App\Models\Comment::where('status', 0)->count();
-                            $totalComments = \App\Models\Comment::count();
-                        @endphp
-                        @if ($pendingComments > 0)
-                            <span class="badge rounded-pill bg-warning float-end">{{ $pendingComments }}</span>
-                        @elseif ($totalComments > 0)
-                            <span class="badge rounded-pill bg-info float-end">{{ $totalComments }}</span>
+                        @if (auth()->user()->isAdmin())
+                            @php
+                                $commentNotifications = auth()
+                                    ->user()
+                                    ->unreadNotifications()
+                                    ->whereIn('type', [
+                                        'App\Notifications\NewCommentCreated',
+                                        'App\Notifications\CommentUpdated',
+                                    ])
+                                    ->count();
+                            @endphp
+                            @if ($commentNotifications > 0)
+                                <span class="badge rounded-pill bg-danger float-end">{{ $commentNotifications }}</span>
+                            @endif
                         @endif
                     </a>
                 </li>

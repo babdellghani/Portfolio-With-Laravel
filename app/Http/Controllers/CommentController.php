@@ -1,8 +1,12 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Blog;
 use App\Models\Comment;
+use App\Models\User;
+use App\Notifications\NewCommentCreated;
+use App\Notifications\CommentUpdated;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,6 +41,14 @@ class CommentController extends Controller
             'status'    => Auth::user()->isAdmin() ? 1 : 0, // Admins can post directly, others are pending
         ]);
 
+        // Notify admin users about new comment
+        if (!Auth::user()->isAdmin()) {
+            $adminUsers = User::where('role', 'admin')->get();
+            foreach ($adminUsers as $admin) {
+                $admin->notify(new NewCommentCreated($comment, Auth::user()));
+            }
+        }
+
         return redirect()->back()->with('success', 'Comment added successfully!');
     }
 
@@ -55,6 +67,14 @@ class CommentController extends Controller
             'content' => $request->input('content'),
             'status'  => Auth::user()->isAdmin() ? 1 : 0, // Ensure status is set correctly
         ]);
+
+        // Notify admin users about comment update
+        if (!Auth::user()->isAdmin()) {
+            $adminUsers = User::where('role', 'admin')->get();
+            foreach ($adminUsers as $admin) {
+                $admin->notify(new CommentUpdated($comment, Auth::user()));
+            }
+        }
 
         return redirect()->back()->with('success', 'Comment updated successfully!');
     }
