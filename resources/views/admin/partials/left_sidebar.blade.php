@@ -222,10 +222,6 @@
                         <a href="{{ route('users.index') }}" class="waves-effect">
                             <i class="ri-group-line"></i>
                             <span>User Management</span>
-                            @php
-                                $totalUsers = \App\Models\User::count();
-                            @endphp
-                            <span class="badge rounded-pill bg-info float-end">{{ $totalUsers }}</span>
                         </a>
                     </li>
                 @endif

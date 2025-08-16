@@ -7,6 +7,7 @@ use App\Models\Comment;
 use App\Models\User;
 use App\Notifications\NewCommentCreated;
 use App\Notifications\CommentUpdated;
+use App\Notifications\CommentReply;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -40,6 +41,16 @@ class CommentController extends Controller
             'parent_id' => $request->input('parent_id'),
             'status'    => Auth::user()->isAdmin() ? 1 : 0, // Admins can post directly, others are pending
         ]);
+
+        // Check if this is a reply to another comment
+        if ($request->input('parent_id')) {
+            $parentComment = Comment::find($request->input('parent_id'));
+
+            // Notify the original comment author (if not replying to themselves)
+            if ($parentComment && $parentComment->user_id !== Auth::id()) {
+                $parentComment->user->notify(new CommentReply($comment, Auth::user(), $parentComment));
+            }
+        }
 
         // Notify admin users about new comment
         if (!Auth::user()->isAdmin()) {

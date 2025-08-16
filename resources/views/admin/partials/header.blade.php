@@ -324,6 +324,30 @@
                                                     </div>
                                                 </div>
                                             </a>
+                                        @elseif (isset($notification->data['type']) && $notification->data['type'] === 'comment_reply')
+                                            <a href="{{ route('blog.show', $notification->data['blog_slug'] ?? '#') }}"
+                                                class="text-reset notification-item"
+                                                onclick="markNotificationAsRead('{{ $notification->id }}')">
+                                                <div class="d-flex">
+                                                    <div class="avatar-xs me-3">
+                                                        <span class="avatar-title bg-purple rounded-circle font-size-16">
+                                                            <i class="ri-reply-line"></i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h6 class="mb-1">Comment Reply</h6>
+                                                        <div class="font-size-12 text-muted">
+                                                            <p class="mb-1">
+                                                                {{ $notification->data['message'] ?? 'Someone replied to your comment' }}
+                                                            </p>
+                                                            <p class="mb-0">
+                                                                <i class="mdi mdi-clock-outline"></i>
+                                                                {{ $notification->created_at->diffForHumans() }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
                                         @else
                                             {{-- Handle legacy notifications without type --}}
                                             <a href="{{ route('users.index') }}" class="text-reset notification-item"
@@ -437,7 +461,7 @@
                                     @endphp
                                     @foreach ($userNotifications as $notification)
                                         @if (isset($notification->data['type']) && $notification->data['type'] === 'admin_reply')
-                                            <a href="{{ route('user.messages.show', $notification->data['contact_id']) }}"
+                                            <a href="{{ route('user.messages.show', $notification->data['contact_id'] ?? '') }}"
                                                 class="text-reset notification-item"
                                                 onclick="markUserNotificationAsRead('{{ $notification->id }}')">
                                                 <div class="d-flex">
@@ -451,6 +475,30 @@
                                                         <div class="font-size-12 text-muted">
                                                             <p class="mb-1">
                                                                 {{ $notification->data['message'] ?? 'Admin replied to your message' }}
+                                                            </p>
+                                                            <p class="mb-0">
+                                                                <i class="mdi mdi-clock-outline"></i>
+                                                                {{ $notification->created_at->diffForHumans() }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        @elseif (isset($notification->data['type']) && $notification->data['type'] === 'comment_reply')
+                                            <a href="{{ route('blog.show', $notification->data['blog_slug'] ?? '#') }}"
+                                                class="text-reset notification-item"
+                                                onclick="markNotificationAsRead('{{ $notification->id }}')">
+                                                <div class="d-flex">
+                                                    <div class="avatar-xs me-3">
+                                                        <span class="avatar-title bg-purple rounded-circle font-size-16">
+                                                            <i class="ri-reply-line"></i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h6 class="mb-1">Comment Reply</h6>
+                                                        <div class="font-size-12 text-muted">
+                                                            <p class="mb-1">
+                                                                {{ $notification->data['message'] ?? 'Someone replied to your comment' }}
                                                             </p>
                                                             <p class="mb-0">
                                                                 <i class="mdi mdi-clock-outline"></i>
