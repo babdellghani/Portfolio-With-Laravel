@@ -3,25 +3,40 @@ namespace App\Http\Controllers;
 
 use App\Models\Blog;
 use App\Models\Bookmark;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class BookmarkController extends Controller
 {
     /**
-     * Display user's bookmarks
+     * Display a listing of all bookmarks (Admin only)
      */
-    public function index()
+    public function index(Request $request)
     {
-        if (! Auth::check()) {
-            return redirect()->route('login');
+        $query = Bookmark::where('user_id', Auth::id());
+
+
+        // Filter by date range
+        if ($request->has('date_from') && !empty($request->date_from)) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+        if ($request->has('date_to') && !empty($request->date_to)) {
+            $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        $bookmarks = Bookmark::with(['blog.user', 'blog.categories'])
-            ->where('user_id', Auth::id())
-            ->latest()
-            ->paginate(12);
+        // Sort
+        $sortBy = $request->get('sort_by', 'created_at');
+        $sortOrder = $request->get('sort_order', 'desc');
+        $query->orderBy($sortBy, $sortOrder);
 
-        return view('frontend.bookmarks.index', compact('bookmarks'));
+        $bookmarks = $query->paginate(20)->withQueryString();
+
+        // Get statistics
+        $stats = [
+            'total_bookmarks' => Bookmark::where('user_id', Auth::id())->count(),
+        ];
+
+        return view('admin.bookmarks.index', compact('bookmarks', 'stats'));
     }
 
     /**
@@ -57,12 +72,41 @@ class BookmarkController extends Controller
      */
     public function destroy(Bookmark $bookmark)
     {
-        if ($bookmark->user_id !== Auth::id()) {
-            abort(403);
+        if (! Auth::user() || Auth::id() !== $bookmark->user_id) {
+            return redirect()->route('login');
         }
 
         $bookmark->delete();
 
         return redirect()->back()->with('success', 'Bookmark removed successfully!');
+    }
+
+    /**
+     * Bulk action for bookmarks (Admin only)
+     */
+    public function bulkAction(Request $request)
+    {
+        $request->validate([
+            'action' => 'required|in:delete',
+            'bookmark_ids' => 'required|array',
+            'bookmark_ids.*' => 'exists:bookmarks,id'
+        ]);
+
+        $count = 0;
+
+        if ($request->action === 'delete') {
+            $bookmarksToDelete = Bookmark::whereIn('id', $request->bookmark_ids)->get();
+            
+            foreach ($bookmarksToDelete as $bookmark) {
+            if (! Auth::user() || Auth::id() !== $bookmark->user_id) {
+                return redirect()->route('login');
+            }
+            }
+            
+            $count = $bookmarksToDelete->count();
+            Bookmark::whereIn('id', $request->bookmark_ids)->delete();
+        }
+
+        return redirect()->back()->with('success', "Successfully processed {$count} bookmarks!");
     }
 }

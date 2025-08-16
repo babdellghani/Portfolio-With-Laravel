@@ -58,9 +58,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/comment/{comment}/like', [LikeController::class, 'toggleComment'])->name('comment.like');
 
     // Bookmarks
-    Route::get('/bookmarks', [BookmarkController::class, 'index'])->name('bookmarks.index');
     Route::post('/blog/{blog}/bookmark', [BookmarkController::class, 'toggle'])->name('blog.bookmark');
-    Route::delete('/bookmarks/{bookmark}', [BookmarkController::class, 'destroy'])->name('bookmarks.destroy');
 });
 
 // contact form
@@ -193,7 +191,6 @@ Route::prefix('/admin')->group(function () {
         // user management
         Route::resource('users', UserController::class);
         Route::patch('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
-    
     }); // End admin middleware group
 
 
@@ -245,6 +242,18 @@ Route::prefix('/admin')->group(function () {
         Route::patch('/comments/{comment}/approve', [AdminCommentController::class, 'approve'])->name('admin.comments.approve');
         Route::patch('/comments/{comment}/reject', [AdminCommentController::class, 'reject'])->name('admin.comments.reject');
         Route::post('/comments/bulk-action', [AdminCommentController::class, 'bulkAction'])->name('admin.comments.bulk-action');
+
+        // like management
+        Route::get('/likes', [LikeController::class, 'index'])->name('admin.likes.index');
+        Route::delete('/likes/{like}', [LikeController::class, 'destroy'])->name('admin.likes.destroy');
+        Route::post('/likes/bulk-action', [LikeController::class, 'bulkAction'])->name('admin.likes.bulk-action');
+        Route::get('/likes/stats', [LikeController::class, 'stats'])->name('admin.likes.stats');
+
+        // bookmark management
+        Route::get('/bookmarks', [BookmarkController::class, 'index'])->name('admin.bookmarks.index');
+        Route::delete('/bookmarks/{bookmark}', [BookmarkController::class, 'destroy'])->name('admin.bookmarks.destroy');
+        Route::post('/bookmarks/bulk-action', [BookmarkController::class, 'bulkAction'])->name('admin.bookmarks.bulk-action');
+        Route::get('/bookmarks/stats', [BookmarkController::class, 'stats'])->name('admin.bookmarks.stats');
     });
 }); // End admin prefix group
 

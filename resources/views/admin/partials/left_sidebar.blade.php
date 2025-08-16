@@ -6,7 +6,8 @@
         <div class="user-profile text-center mt-3">
             <div class="d-flex align-items-center justify-content-center text-center">
                 @if (Auth::user()->avatar)
-                    <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="" class="avatar-md rounded-circle">
+                    <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt=""
+                        class="avatar-md rounded-circle">
                 @else
                     <div class="avatar-md rounded-circle bg-primary d-flex align-items-center justify-content-center">
                         <i class="ri-user-line text-white" style="font-size: 2rem;"></i>
@@ -33,7 +34,6 @@
                 </li>
 
                 @if (auth()->user()->isAdmin())
-
                     <li class="menu-title">Content Management</li>
 
                     <li>
@@ -93,7 +93,6 @@
                             <span>Technologies</span>
                         </a>
                     </li>
-
                 @endif
 
 
@@ -191,6 +190,19 @@
                     <a href="{{ route('profile.edit') }}" class="waves-effect">
                         <i class="ri-user-settings-line"></i>
                         <span>Profile Settings</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.bookmarks.index') }}" class="waves-effect">
+                        <i class="ri-bookmark-line"></i>
+                        <span>Bookmarks</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('admin.likes.index') }}" class="waves-effect">
+                        <i class="ri-heart-line"></i>
+                        <span>Likes</span>
                     </a>
                 </li>
 
