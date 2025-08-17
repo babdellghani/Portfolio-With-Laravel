@@ -101,13 +101,11 @@ Route::prefix('/admin')->group(function () {
         Route::get('/likes', [LikeController::class, 'index'])->name('admin.likes.index');
         Route::delete('/likes/{like}', [LikeController::class, 'destroy'])->name('admin.likes.destroy');
         Route::post('/likes/bulk-action', [LikeController::class, 'bulkAction'])->name('admin.likes.bulk-action');
-        Route::get('/likes/stats', [LikeController::class, 'stats'])->name('admin.likes.stats');
 
         // bookmark management
         Route::get('/bookmarks', [BookmarkController::class, 'index'])->name('admin.bookmarks.index');
         Route::delete('/bookmarks/{bookmark}', [BookmarkController::class, 'destroy'])->name('admin.bookmarks.destroy');
         Route::post('/bookmarks/bulk-action', [BookmarkController::class, 'bulkAction'])->name('admin.bookmarks.bulk-action');
-        Route::get('/bookmarks/stats', [BookmarkController::class, 'stats'])->name('admin.bookmarks.stats');
     });
 
     // Admin-only routes
@@ -217,14 +215,12 @@ Route::prefix('/admin')->group(function () {
         Route::delete('/blogs/{blog}', [AdminBlogController::class, 'destroy'])->name('admin.blogs.destroy');
         Route::patch('/blogs/{blog}/toggle-status', [AdminBlogController::class, 'toggleStatus'])->name('admin.blogs.toggle-status');
         Route::post('/blogs/bulk-action', [AdminBlogController::class, 'bulkAction'])->name('admin.blogs.bulk-action');
-        Route::get('/blogs-stats', [AdminBlogController::class, 'stats'])->name('admin.blogs.stats');
         Route::post('/blogs/{blog}/duplicate', [AdminBlogController::class, 'duplicate'])->name('admin.blogs.duplicate');
 
         // category management
         Route::get('/categories', [AdminCategoryController::class, 'index'])->name('admin.categories.index');
         Route::get('/categories/create', [AdminCategoryController::class, 'create'])->name('admin.categories.create');
         Route::post('/categories', [AdminCategoryController::class, 'store'])->name('admin.categories.store');
-        Route::get('/categories/{category}', [AdminCategoryController::class, 'show'])->name('admin.categories.show');
         Route::get('/categories/{category}/edit', [AdminCategoryController::class, 'edit'])->name('admin.categories.edit');
         Route::put('/categories/{category}', [AdminCategoryController::class, 'update'])->name('admin.categories.update');
         Route::delete('/categories/{category}', [AdminCategoryController::class, 'destroy'])->name('admin.categories.destroy');
@@ -233,9 +229,7 @@ Route::prefix('/admin')->group(function () {
 
         // tag management
         Route::get('/tags', [AdminTagController::class, 'index'])->name('admin.tags.index');
-        Route::get('/tags/create', [AdminTagController::class, 'create'])->name('admin.tags.create');
         Route::post('/tags', [AdminTagController::class, 'store'])->name('admin.tags.store');
-        Route::get('/tags/{tag}', [AdminTagController::class, 'show'])->name('admin.tags.show');
         Route::get('/tags/{tag}/edit', [AdminTagController::class, 'edit'])->name('admin.tags.edit');
         Route::put('/tags/{tag}', [AdminTagController::class, 'update'])->name('admin.tags.update');
         Route::delete('/tags/{tag}', [AdminTagController::class, 'destroy'])->name('admin.tags.destroy');
@@ -245,7 +239,6 @@ Route::prefix('/admin')->group(function () {
         // comment management
         Route::get('/comments', [AdminCommentController::class, 'index'])->name('admin.comments.index');
         Route::get('/comments/{comment}', [AdminCommentController::class, 'show'])->name('admin.comments.show');
-        Route::post('/comments', [AdminCommentController::class, 'store'])->name('admin.comments.store');
         Route::get('/comments/{comment}/edit', [AdminCommentController::class, 'edit'])->name('admin.comments.edit');
         Route::put('/comments/{comment}', [AdminCommentController::class, 'update'])->name('admin.comments.update');
         Route::delete('/comments/{comment}', [AdminCommentController::class, 'destroy'])->name('admin.comments.destroy');

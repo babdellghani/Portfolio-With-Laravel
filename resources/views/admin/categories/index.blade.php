@@ -143,11 +143,8 @@
                                                             @endif
                                                         </div>
                                                         <div class="flex-grow-1">
-                                                            <h6 class="mb-1">
-                                                                <a href="{{ route('admin.categories.show', $category) }}"
-                                                                    class="text-dark">
+                                                            <h6 class="mb-1 text-dark">
                                                                     {{ $category->name }}
-                                                                </a>
                                                             </h6>
                                                             <p class="text-muted font-size-13 mb-0">{{ $category->slug }}
                                                             </p>

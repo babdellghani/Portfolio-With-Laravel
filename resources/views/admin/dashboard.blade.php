@@ -8,7 +8,13 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0">Dashboard</h4>
+                    <h4 class="mb-sm-0">
+                        @if (auth()->user()->isAdmin())
+                            Admin Dashboard
+                        @else
+                            User Dashboard
+                        @endif
+                    </h4>
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item active">Dashboard</li>
@@ -20,27 +26,29 @@
 
         <!-- Statistics Cards -->
         <div class="row">
-            <!-- Users Stats -->
-            <div class="col-xl-3 col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex">
-                            <div class="flex-1 overflow-hidden">
-                                <p class="text-truncate font-size-14 mb-2">Total Users</p>
-                                <h4 class="mb-0">{{ $stats['users']['total'] }}</h4>
+            @if (auth()->user()->isAdmin())
+                <!-- Users Stats (Admin Only) -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="flex-1 overflow-hidden">
+                                    <p class="text-truncate font-size-14 mb-2">Total Users</p>
+                                    <h4 class="mb-0">{{ $stats['users']['total'] }}</h4>
+                                </div>
+                                <div class="text-primary">
+                                    <i class="ri-user-line font-size-24"></i>
+                                </div>
                             </div>
-                            <div class="text-primary">
-                                <i class="ri-user-line font-size-24"></i>
-                            </div>
+                            <p class="text-muted mb-0">
+                                <span class="text-success fw-bold font-size-12">
+                                    <i class="mdi mdi-arrow-top-right"></i> {{ $stats['users']['active'] }}
+                                </span> Active Users
+                            </p>
                         </div>
-                        <p class="text-muted mb-0">
-                            <span class="text-success fw-bold font-size-12">
-                                <i class="mdi mdi-arrow-top-right"></i> {{ $stats['users']['active'] }}
-                            </span> Active Users
-                        </p>
                     </div>
                 </div>
-            </div>
+            @endif
 
             <!-- Blogs Stats -->
             <div class="col-xl-3 col-md-6">
@@ -48,7 +56,13 @@
                     <div class="card-body">
                         <div class="d-flex">
                             <div class="flex-1 overflow-hidden">
-                                <p class="text-truncate font-size-14 mb-2">Total Blogs</p>
+                                <p class="text-truncate font-size-14 mb-2">
+                                    @if (auth()->user()->isAdmin())
+                                        Total
+                                    @else
+                                        My
+                                    @endif Blogs
+                                </p>
                                 <h4 class="mb-0">{{ $stats['blogs']['total'] }}</h4>
                             </div>
                             <div class="text-success">
@@ -70,7 +84,13 @@
                     <div class="card-body">
                         <div class="d-flex">
                             <div class="flex-1 overflow-hidden">
-                                <p class="text-truncate font-size-14 mb-2">Total Comments</p>
+                                <p class="text-truncate font-size-14 mb-2">
+                                    @if (auth()->user()->isAdmin())
+                                        Total
+                                    @else
+                                        My
+                                    @endif Comments
+                                </p>
                                 <h4 class="mb-0">{{ $stats['comments']['total'] }}</h4>
                             </div>
                             <div class="text-info">
@@ -92,7 +112,13 @@
                     <div class="card-body">
                         <div class="d-flex">
                             <div class="flex-1 overflow-hidden">
-                                <p class="text-truncate font-size-14 mb-2">Total Views</p>
+                                <p class="text-truncate font-size-14 mb-2">
+                                    @if (auth()->user()->isAdmin())
+                                        Total
+                                    @else
+                                        My
+                                    @endif Views
+                                </p>
                                 <h4 class="mb-0">{{ number_format($stats['blogs']['total_views']) }}</h4>
                             </div>
                             <div class="text-warning">
@@ -116,7 +142,13 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-sm-flex flex-wrap">
-                            <h4 class="card-title mb-4">Monthly Blog Posts</h4>
+                            <h4 class="card-title mb-4">
+                                @if (auth()->user()->isAdmin())
+                                    Monthly Blog Posts
+                                @else
+                                    My Monthly Blog Posts
+                                @endif
+                            </h4>
                         </div>
                         <div id="monthly-blog-chart" class="apex-charts" dir="ltr"></div>
                     </div>
@@ -132,18 +164,30 @@
                             <a href="{{ route('admin.blogs.create') }}" class="list-group-item list-group-item-action">
                                 <i class="ri-add-circle-line me-2"></i> Create New Blog
                             </a>
-                            <a href="{{ route('admin.categories.create') }}" class="list-group-item list-group-item-action">
-                                <i class="ri-folder-add-line me-2"></i> Add Category
-                            </a>
-                            <a href="{{ route('admin.tags.create') }}" class="list-group-item list-group-item-action">
-                                <i class="ri-price-tag-3-line me-2"></i> Add Tag
-                            </a>
-                            <a href="{{ route('admin.comments.index') }}" class="list-group-item list-group-item-action">
-                                <i class="ri-chat-check-line me-2"></i> Moderate Comments
-                            </a>
-                            <a href="{{ route('admin.blogs.stats') }}" class="list-group-item list-group-item-action">
-                                <i class="ri-bar-chart-line me-2"></i> View Statistics
-                            </a>
+                            @if (auth()->user()->isAdmin())
+                                <a href="{{ route('admin.categories.create') }}"
+                                    class="list-group-item list-group-item-action">
+                                    <i class="ri-folder-add-line me-2"></i> Add Category
+                                </a>
+                                <a href="{{ route('admin.tags.index') }}" class="list-group-item list-group-item-action">
+                                    <i class="ri-price-tag-3-line me-2"></i> Add Tag
+                                </a>
+                                <a href="{{ route('admin.comments.index') }}"
+                                    class="list-group-item list-group-item-action">
+                                    <i class="ri-chat-check-line me-2"></i> Moderate Comments
+                                </a>
+                            @else
+                                <a href="{{ route('admin.blogs.index') }}" class="list-group-item list-group-item-action">
+                                    <i class="ri-article-line me-2"></i> My Blogs
+                                </a>
+                                <a href="{{ route('admin.comments.index') }}"
+                                    class="list-group-item list-group-item-action">
+                                    <i class="ri-chat-3-line me-2"></i> My Comments
+                                </a>
+                                <a href="{{ route('profile.edit') }}" class="list-group-item list-group-item-action">
+                                    <i class="ri-user-settings-line me-2"></i> Edit Profile
+                                </a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -157,7 +201,13 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-sm-flex flex-wrap">
-                            <h4 class="card-title mb-4">Recent Blog Posts</h4>
+                            <h4 class="card-title mb-4">
+                                @if (auth()->user()->isAdmin())
+                                    Recent Blog Posts
+                                @else
+                                    My Recent Blog Posts
+                                @endif
+                            </h4>
                             <div class="ms-auto">
                                 <a href="{{ route('admin.blogs.index') }}" class="btn btn-sm btn-primary">View All</a>
                             </div>
@@ -170,9 +220,9 @@
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="flex-shrink-0 me-3">
-                                                        @if($blog->thumbnail)
-                                                            <img src="{{ asset('storage/' . $blog->thumbnail) }}" alt=""
-                                                                class="avatar-sm rounded">
+                                                        @if ($blog->thumbnail)
+                                                            <img src="{{ asset('storage/' . $blog->thumbnail) }}"
+                                                                alt="" class="avatar-sm rounded">
                                                         @else
                                                             <div class="avatar-sm">
                                                                 <span class="avatar-title rounded bg-primary">
@@ -183,7 +233,12 @@
                                                     </div>
                                                     <div class="flex-grow-1">
                                                         <h6 class="mb-1">{{ Str::limit($blog->title, 40) }}</h6>
-                                                        <p class="text-muted font-size-13 mb-0">By {{ $blog->user->name }}
+                                                        <p class="text-muted font-size-13 mb-0">
+                                                            @if (auth()->user()->isAdmin() && isset($blog->user))
+                                                                By {{ $blog->user->name }}
+                                                            @else
+                                                                {{ $blog->created_at->format('M d, Y') }}
+                                                            @endif
                                                         </p>
                                                     </div>
                                                 </div>
@@ -215,7 +270,13 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-sm-flex flex-wrap">
-                            <h4 class="card-title mb-4">Recent Comments</h4>
+                            <h4 class="card-title mb-4">
+                                @if (auth()->user()->isAdmin())
+                                    Recent Comments
+                                @else
+                                    My Recent Comments
+                                @endif
+                            </h4>
                             <div class="ms-auto">
                                 <a href="{{ route('admin.comments.index') }}" class="btn btn-sm btn-primary">View
                                     All</a>
@@ -231,15 +292,29 @@
                                                     <div class="flex-shrink-0 me-3">
                                                         <div class="avatar-sm">
                                                             <span class="avatar-title rounded bg-info">
-                                                                {{ strtoupper(substr($comment->user->name, 0, 1)) }}
+                                                                @if (auth()->user()->isAdmin() && isset($comment->user))
+                                                                    {{ strtoupper(substr($comment->user->name, 0, 1)) }}
+                                                                @else
+                                                                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                                                                @endif
                                                             </span>
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1">
-                                                        <h6 class="mb-1">{{ $comment->user->name }}</h6>
+                                                        <h6 class="mb-1">
+                                                            @if (auth()->user()->isAdmin() && isset($comment->user))
+                                                                {{ $comment->user->name }}
+                                                            @else
+                                                                {{ auth()->user()->name }}
+                                                            @endif
+                                                        </h6>
                                                         <p class="text-muted font-size-13 mb-0">
                                                             {{ Str::limit($comment->content, 50) }}
                                                         </p>
+                                                        @if (isset($comment->blog))
+                                                            <small class="text-muted">on
+                                                                "{{ Str::limit($comment->blog->title, 30) }}"</small>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </td>
@@ -268,7 +343,13 @@
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title mb-4">Content Overview</h4>
+                        <h4 class="card-title mb-4">
+                            @if (auth()->user()->isAdmin())
+                                Content Overview
+                            @else
+                                My Content Overview
+                            @endif
+                        </h4>
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="text-center">
@@ -285,13 +366,25 @@
                             <div class="col-md-3">
                                 <div class="text-center">
                                     <h5 class="text-info">{{ $stats['interactions']['total_bookmarks'] }}</h5>
-                                    <p class="text-muted mb-0">Bookmarks</p>
+                                    <p class="text-muted mb-0">
+                                        @if (auth()->user()->isAdmin())
+                                            Total Bookmarks
+                                        @else
+                                            My Bookmarks
+                                        @endif
+                                    </p>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="text-center">
                                     <h5 class="text-warning">{{ $stats['interactions']['total_likes'] }}</h5>
-                                    <p class="text-muted mb-0">Total Likes</p>
+                                    <p class="text-muted mb-0">
+                                        @if (auth()->user()->isAdmin())
+                                            Total Likes
+                                        @else
+                                            My Likes Given
+                                        @endif
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -306,7 +399,7 @@
         <script src="{{ asset('backend/assets/libs/apexcharts/apexcharts.min.js') }}"></script>
 
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 // Monthly Blog Chart
                 var chartData = @json($chartData);
                 var options = {
@@ -328,7 +421,9 @@
                         curve: 'smooth'
                     },
                     xaxis: {
-                        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov',
+                            'Dec'
+                        ]
                     },
                     colors: ['#556ee6'],
                     fill: {

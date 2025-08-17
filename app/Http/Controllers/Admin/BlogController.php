@@ -343,53 +343,6 @@ class BlogController extends Controller
     }
 
     /**
-     * Get blog statistics
-     */
-    public function stats()
-    {
-        $this->authorize('admin', Blog::class);
-
-        $stats = [
-            'total'           => Blog::count(),
-            'published'       => Blog::where('status', 'published')->count(),
-            'draft'           => Blog::where('status', 'draft')->count(),
-            'total_views'     => Blog::sum('views'),
-            'total_comments'  => \App\Models\Comment::count(),
-            'total_likes'     => \App\Models\Like::where('likeable_type', Blog::class)->count(),
-            'total_bookmarks' => \App\Models\Bookmark::count(),
-            'today'           => Blog::whereDate('created_at', today())->count(),
-            'this_week'       => Blog::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count(),
-            'this_month'      => Blog::whereMonth('created_at', now()->month)->count(),
-        ];
-
-        // Top blogs by views
-        $topBlogsByViews = Blog::orderBy('views', 'desc')->take(10)->get();
-
-        // Top blogs by comments
-        $topBlogsByComments = Blog::withCount('comments')
-            ->orderBy('comments_count', 'desc')
-            ->take(10)
-            ->get();
-
-        // Top blogs by likes
-        $topBlogsByLikes = Blog::withCount('likes')
-            ->orderBy('likes_count', 'desc')
-            ->take(10)
-            ->get();
-
-        // Recent blogs
-        $recentBlogs = Blog::with('user')->latest()->take(10)->get();
-
-        return view('admin.blogs.stats', compact(
-            'stats',
-            'topBlogsByViews',
-            'topBlogsByComments',
-            'topBlogsByLikes',
-            'recentBlogs'
-        ));
-    }
-
-    /**
      * Generate unique slug
      */
     private function generateUniqueSlug($title, $ignoreId = null)

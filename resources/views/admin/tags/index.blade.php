@@ -167,11 +167,8 @@
                                                             </div>
                                                         </div>
                                                         <div class="flex-grow-1">
-                                                            <h6 class="mb-0">
-                                                                <a href="{{ route('admin.tags.show', $tag) }}"
-                                                                    class="text-dark">
+                                                            <h6 class="mb-0 text-dark">
                                                                     {{ $tag->name }}
-                                                                </a>
                                                             </h6>
                                                         </div>
                                                     </div>
@@ -221,8 +218,6 @@
                                                         <i class="ri-price-tag-line font-size-48 d-block mb-3"></i>
                                                         <h5>No tags found</h5>
                                                         <p>Create your first tag to categorize your blog posts.</p>
-                                                        <a href="{{ route('admin.tags.create') }}"
-                                                            class="btn btn-primary">Create Tag</a>
                                                     </div>
                                                 </td>
                                             </tr>
