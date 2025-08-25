@@ -33,21 +33,21 @@
                                         <li class="auth-item">
                                             <a href="{{ route('login') }}" class="auth-link login-link">
                                                 <i class="fas fa-sign-in-alt auth-icon"></i>
-                                                <span class="auth-text ms-2">Login</span>
+                                                <span class="auth-text ms-2 d-xl-none d-xxl-block">Login</span>
                                             </a>
                                         </li>
                                         <li class="auth-item">
                                             <a href="{{ route('register') }}" class="auth-link register-link">
                                                 <i class="fas fa-user-plus auth-icon"></i>
-                                                <span class="auth-text ms-2">Register</span>
+                                                <span class="auth-text ms-2 d-xl-none d-xxl-block">Register</span>
                                             </a>
                                         </li>
                                     @else
                                         <li class="auth-item authenticated">
                                             <a href="{{ route('dashboard') }}" class="auth-link dashboard-link">
                                                 <i class="fas fa-tachometer-alt auth-icon"></i>
-                                                <span class="auth-text ms-2">Dashboard</span>
-                                                <span class="auth-badge ms-2">{{ Auth::user()->name }}</span>
+                                                <span class="auth-text ms-2 d-xl-none d-xxl-block">Dashboard</span>
+                                                <span class="auth-badge ms-2 d-xl-none">{{ Auth::user()->name }}</span>
                                             </a>
                                         </li>
                                     @endguest
@@ -56,7 +56,7 @@
                             <div class="header__btn d-none d-md-block">
                                 <a href="{{ route('contact-us') }}" class="btn btn-primary contact-btn">
                                     <i class="fas fa-envelope btn-icon"></i>
-                                    <span class="ms-2">Contact me</span>
+                                    <span class="ms-2">Contact</span>
                                 </a>
                             </div>
                         </nav>
