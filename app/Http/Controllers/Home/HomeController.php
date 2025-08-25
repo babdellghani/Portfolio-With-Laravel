@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Home;
 
 use App\Http\Controllers\Controller;
 use App\Models\About;
+use App\Models\Blog;
 use App\Models\HomeSlide;
 use App\Models\Partner;
 use App\Models\Portfolio;
@@ -42,6 +43,8 @@ class HomeController extends Controller
 
         $technologies = Technology::active()->ordered()->get();
 
-        return view('frontend.pages.home', compact('homeSlide', 'about', 'services', 'portfolio', 'testimonials', 'partners', 'technologies'));
+        $blogs = Blog::where('status', 'published')->with('categories')->latest()->take(3)->get();
+
+        return view('frontend.pages.home', compact('homeSlide', 'about', 'services', 'portfolio', 'testimonials', 'partners', 'technologies', 'blogs'));
     }
 }

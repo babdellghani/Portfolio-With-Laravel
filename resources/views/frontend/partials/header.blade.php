@@ -29,10 +29,35 @@
                                     <li class="{{ request()->routeIs('blog.index') ? 'active' : '' }}"><a
                                             href="{{ route('blog.index') }}">Blog</a></li>
                                     <li><a href="{{ route('contact-us') }}">contact me</a></li>
+                                    @guest
+                                        <li class="auth-item">
+                                            <a href="{{ route('login') }}" class="auth-link login-link">
+                                                <i class="fas fa-sign-in-alt auth-icon"></i>
+                                                <span class="auth-text ms-2">Login</span>
+                                            </a>
+                                        </li>
+                                        <li class="auth-item">
+                                            <a href="{{ route('register') }}" class="auth-link register-link">
+                                                <i class="fas fa-user-plus auth-icon"></i>
+                                                <span class="auth-text ms-2">Register</span>
+                                            </a>
+                                        </li>
+                                    @else
+                                        <li class="auth-item authenticated">
+                                            <a href="{{ route('dashboard') }}" class="auth-link dashboard-link">
+                                                <i class="fas fa-tachometer-alt auth-icon"></i>
+                                                <span class="auth-text ms-2">Dashboard</span>
+                                                <span class="auth-badge ms-2">{{ Auth::user()->name }}</span>
+                                            </a>
+                                        </li>
+                                    @endguest
                                 </ul>
                             </div>
                             <div class="header__btn d-none d-md-block">
-                                <a href="{{ route('contact-us') }}" class="btn">Contact me</a>
+                                <a href="{{ route('contact-us') }}" class="btn btn-primary contact-btn">
+                                    <i class="fas fa-envelope btn-icon"></i>
+                                    <span class="ms-2">Contact me</span>
+                                </a>
                             </div>
                         </nav>
                     </div>

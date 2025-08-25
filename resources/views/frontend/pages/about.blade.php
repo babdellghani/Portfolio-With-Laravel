@@ -47,11 +47,13 @@
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="skills-tab" data-bs-toggle="tab" data-bs-target="#skills"
-                                    type="button" role="tab" aria-controls="skills" aria-selected="false">Skills</button>
+                                    type="button" role="tab" aria-controls="skills"
+                                    aria-selected="false">Skills</button>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="awards-tab" data-bs-toggle="tab" data-bs-target="#awards"
-                                    type="button" role="tab" aria-controls="awards" aria-selected="false">Awards</button>
+                                    type="button" role="tab" aria-controls="awards"
+                                    aria-selected="false">Awards</button>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="education-tab" data-bs-toggle="tab" data-bs-target="#education"
@@ -60,7 +62,8 @@
                             </li>
                         </ul>
                         <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="about" role="tabpanel" aria-labelledby="about-tab">
+                            <div class="tab-pane fade show active" id="about" role="tabpanel"
+                                aria-labelledby="about-tab">
                                 {!! $about->long_description !!}
                             </div>
                             <div class="tab-pane fade" id="skills" role="tabpanel" aria-labelledby="skills-tab">
@@ -79,7 +82,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                         @endforeach
                                     </div>
                                 </div>
@@ -111,11 +113,11 @@
                                             <div class="col-md-6">
                                                 <div class="about__education__item">
                                                     <h3 class="title">{{ $item->name }}</h3>
-                                                    <span class="date">{{ $item->start_date }} – {{ $item->end_date }}</span>
+                                                    <span class="date">{{ $item->start_date }} –
+                                                        {{ $item->end_date }}</span>
                                                     <p>{{ $item->description }}</p>
                                                 </div>
                                             </div>
-
                                         @endforeach
                                     </div>
                                 </div>
@@ -145,10 +147,13 @@
                         <div class="col-xl-3 col-lg-4 col-md-6">
                             <div class="services__style__two__item">
                                 <div class="services__style__two__icon">
-                                    <img src="{{ $item->icon && str_starts_with($item->icon, 'defaults_images/') ? asset($item->icon) : asset('storage/' . $item->icon) }}" alt="{{ $item->title }}">
+                                    <img src="{{ $item->icon && str_starts_with($item->icon, 'defaults_images/') ? asset($item->icon) : asset('storage/' . $item->icon) }}"
+                                        alt="{{ $item->title }}">
                                 </div>
                                 <div class="services__style__two__content">
-                                    <h3 class="title"><a href="{{ route('services.details', $item->slug) }}">{{ $item->title }}</a></h3>
+                                    <h3 class="title"><a
+                                            href="{{ route('services.details', $item->slug) }}">{{ $item->title }}</a>
+                                    </h3>
                                     <p>{!! $item->short_description !!}</p>
                                     <a href="{{ route('services.details', $item->slug) }}" class="services__btn"><i
                                             class="far fa-long-arrow-right"></i></a>
@@ -177,32 +182,35 @@
                             <h2 class="title">Some happy clients feedback</h2>
                         </div>
                         <div class="testimonial__two__active">
-                        @forelse ($testimonials as $item)
-                            <div class="testimonial__item">
-                                <div class="testimonial__icon">
-                                    <i class="fas fa-quote-left"></i>
-                                </div>
-                                <div class="testimonial__content">
-                                    <p>{{ $item->message }}</p>
-                                    <div class="testimonial__avatar" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-                                        <span>{{ $item->name }}</span>
-                                        <div class="testi__avatar__img" style="display: flex; align-items: center; justify-content: center; width: 70px; height: 70px; border-radius: 50%; overflow: hidden;">
-                                            @if ($item->image == null || $item->image == '')
-                                                <img src="{{ asset('frontend/assets/img/images/testi_img01.png') }}"
-                                                    alt="Testimonial Image">
-                                            @else
-                                                <img src="{{ $item->image && str_starts_with($item->image, 'defaults_images/') ? asset($item->image) : asset('storage/' . $item->image) }}"
-                                                    alt="{{ $item->name }}" width="70" height="70" style="object-fit: cover;">
-                                            @endif
+                            @forelse ($testimonials as $item)
+                                <div class="testimonial__item">
+                                    <div class="testimonial__icon">
+                                        <i class="fas fa-quote-left"></i>
+                                    </div>
+                                    <div class="testimonial__content">
+                                        <p>{{ $item->message }}</p>
+                                        <div class="testimonial__avatar"
+                                            style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                                            <span>{{ $item->name }}</span>
+                                            <div class="testi__avatar__img"
+                                                style="display: flex; align-items: center; justify-content: center; width: 70px; height: 70px; border-radius: 50%; overflow: hidden;">
+                                                @if ($item->image == null || $item->image == '')
+                                                    <img src="{{ asset('frontend/assets/img/images/testi_img01.png') }}"
+                                                        alt="Testimonial Image">
+                                                @else
+                                                    <img src="{{ $item->image && str_starts_with($item->image, 'defaults_images/') ? asset($item->image) : asset('storage/' . $item->image) }}"
+                                                        alt="{{ $item->name }}" width="70" height="70"
+                                                        style="object-fit: cover;">
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        @empty
-                            <div class="col-12">
-                                <p>No testimonials found.</p>
-                            </div>
-                        @endforelse
+                            @empty
+                                <div class="col-12">
+                                    <p>No testimonials found.</p>
+                                </div>
+                            @endforelse
                         </div>
                         <div class="testimonial__arrow"></div>
                     </div>
@@ -223,66 +231,41 @@
     <!-- testimonial-area-end -->
 
     <!-- blog-area -->
-    <section class="blog blog__style__two" style="padding-bottom: 10px !important;">
-        <div class="container">
-            <div class="row gx-0 justify-content-center">
-                <div class="col-lg-4 col-md-6 col-sm-9">
-                    <div class="blog__post__item">
-                        <div class="blog__post__thumb">
-                            <a href="blog-details.html"><img src="assets/img/blog/blog_post_thumb01.jpg"
-                                    alt=""></a>
-                            <div class="blog__post__tags">
-                                <a href="blog.html">Story</a>
+    @if ($blogs && count($blogs) > 0)
+        <section class="blog blog__style__two" style="padding-bottom: 10px !important;">
+            <div class="container">
+                <div class="row gx-0 justify-content-center">
+                    @foreach ($blogs as $blog)
+                        <div class="col-lg-4 col-md-6 col-sm-9">
+                            <div class="blog__post__item">
+                                <div class="blog__post__thumb">
+                                    <a href="{{ route('blog.show', $blog->slug) }}"><img src="{{ asset($blog->image) }}"
+                                            alt="{{ $blog->title }}"></a>
+                                    <div class="blog__post__tags">
+                                        @if ($blog->categories && count($blog->categories) > 0)
+                                            <a
+                                                href="{{ route('blog.index', ['category' => $blog->categories[0]->slug]) }}">{{ $blog->categories[0]->name }}</a>
+                                        @else
+                                            <a href="{{ route('blog.index') }}">Uncategorized</a>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="blog__post__content">
+                                    <span class="date">{{ $blog->created_at->format('d F Y') }}</span>
+                                    <h3 class="title"><a
+                                            href="{{ route('blog.show', $blog->slug) }}">{{ $blog->title }}</a></h3>
+                                    <a href="{{ route('blog.show', $blog->slug) }}" class="read__more">Read mORe</a>
+                                </div>
                             </div>
                         </div>
-                        <div class="blog__post__content">
-                            <span class="date">13 january 2021</span>
-                            <h3 class="title"><a href="blog-details.html">Facebook design is dedicated to what's new in
-                                    design</a></h3>
-                            <a href="blog-details.html" class="read__more">Read mORe</a>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
-                <div class="col-lg-4 col-md-6 col-sm-9">
-                    <div class="blog__post__item">
-                        <div class="blog__post__thumb">
-                            <a href="blog-details.html"><img src="assets/img/blog/blog_post_thumb02.jpg"
-                                    alt=""></a>
-                            <div class="blog__post__tags">
-                                <a href="blog.html">Social</a>
-                            </div>
-                        </div>
-                        <div class="blog__post__content">
-                            <span class="date">13 january 2021</span>
-                            <h3 class="title"><a href="blog-details.html">Make communication Fast and Effectively.</a>
-                            </h3>
-                            <a href="blog-details.html" class="read__more">Read mORe</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-9">
-                    <div class="blog__post__item">
-                        <div class="blog__post__thumb">
-                            <a href="blog-details.html"><img src="assets/img/blog/blog_post_thumb03.jpg"
-                                    alt=""></a>
-                            <div class="blog__post__tags">
-                                <a href="blog.html">Work</a>
-                            </div>
-                        </div>
-                        <div class="blog__post__content">
-                            <span class="date">13 january 2021</span>
-                            <h3 class="title"><a href="blog-details.html">How to increase your productivity at work -
-                                    2021</a></h3>
-                            <a href="blog-details.html" class="read__more">Read mORe</a>
-                        </div>
-                    </div>
+                <div class="blog__button text-center">
+                    <a href="{{ route('blog.index') }}" class="btn">more blog</a>
                 </div>
             </div>
-            <div class="blog__button text-center">
-                <a href="blog.html" class="btn">more blog</a>
-            </div>
-        </div>
-    </section>
+        </section>
+    @endif
     <!-- blog-area-end -->
 
 @endsection

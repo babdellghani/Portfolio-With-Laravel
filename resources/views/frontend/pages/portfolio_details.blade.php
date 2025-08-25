@@ -64,7 +64,7 @@
                                     @endforeach
                                 </li>
                                 <li><span>Project Link :</span> <a
-                                        href="{{ $portfolio->link }}">{{ $portfolio->link }}</a>
+                                        href="{{ $portfolio->link }}" target="_blank">{{ $portfolio->link }}</a>
                                 </li>
                             </ul>
                         </div>
@@ -76,10 +76,14 @@
                                     {{ $websiteInfo && $websiteInfo->city ? ', ' . $websiteInfo->city : ', Melbourne, Victoria 3000' }}
                                 </li>
                                 <li><span>Mail :</span>
-                                    {{ $websiteInfo && $websiteInfo->email ? $websiteInfo->email : 'noreply@envato.com' }}
+                                    <a href="mailto:{{ $websiteInfo && $websiteInfo->email ? $websiteInfo->email : 'noreply@envato.com' }}">
+                                        {{ $websiteInfo && $websiteInfo->email ? $websiteInfo->email : 'noreply@envato.com' }}
+                                    </a>
                                 </li>
                                 <li><span>Phone :</span>
-                                    {{ $websiteInfo && $websiteInfo->phone ? $websiteInfo->phone : '+7464 0187 3535 645' }}
+                                    <a href="tel:{{ $websiteInfo && $websiteInfo->phone ? $websiteInfo->phone : '+7464 0187 3535 645' }}">
+                                        {{ $websiteInfo && $websiteInfo->phone ? $websiteInfo->phone : '+7464 0187 3535 645' }}
+                                    </a>
                                 </li>
                             </ul>
                             <ul class="sidebar__contact__social">

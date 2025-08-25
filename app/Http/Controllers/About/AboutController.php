@@ -1,19 +1,20 @@
 <?php
 namespace App\Http\Controllers\About;
 
-use App\Http\Controllers\Controller;
+use App\Models\Blog;
 use App\Models\About;
 use App\Models\Award;
-use App\Models\Education;
-use App\Models\Service;
 use App\Models\Skill;
+use App\Models\Service;
+use App\Models\Education;
 use App\Models\Testimonial;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Database\Seeders\About\AboutSeeder;
 use Database\Seeders\About\AwardSeeder;
-use Database\Seeders\About\EducationSeeder;
 use Database\Seeders\About\SkillSeeder;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Database\Seeders\About\EducationSeeder;
 
 class AboutController extends Controller
 {
@@ -44,9 +45,11 @@ class AboutController extends Controller
         $education = Education::latest()->get();
         $skills    = Skill::latest()->get();
 
-        $service = Service::latest()->get();
+        $service = Service::latest()->take(8)->get();
 
         $testimonials = Testimonial::where('status', true)->latest()->get();
+
+        $blogs = Blog::where('status', 'published')->with('categories')->latest()->take(3)->get();
 
         if (! $about) {
             (new AboutSeeder())->run();
@@ -65,7 +68,7 @@ class AboutController extends Controller
             $skills = Skill::latest()->get();
         }
 
-        return view('frontend.pages.about', compact('about', 'award', 'education', 'skills', 'service', 'testimonials'));
+        return view('frontend.pages.about', compact('about', 'award', 'education', 'skills', 'service', 'testimonials', 'blogs'));
     }
 
     /**

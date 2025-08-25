@@ -378,7 +378,7 @@
                         <p>I'm a bit of a digital product junky. Over the years, I've used hundreds of web and mobile apps
                             in different industries and verticals. Eventually, I decided that it would be a fun challenge to
                             try designing and building my own.</p>
-                        <a href="contact.html" class="btn">Start a conversation</a>
+                        <a href="{{ route('contact-us') }}" class="btn">Start a conversation</a>
                     </div>
                 </div>
             </div>
@@ -458,69 +458,41 @@
     <!-- testimonial-area-end -->
 
     <!-- blog-area -->
-    <section class="blog">
-        <div class="container">
-            <div class="row gx-0 justify-content-center">
-                <div class="col-lg-4 col-md-6 col-sm-9">
-                    <div class="blog__post__item">
-                        <div class="blog__post__thumb">
-                            <a href="blog-details.html"><img
-                                    src="{{ asset('frontend/assets/img/blog/blog_post_thumb01.jpg') }}"
-                                    alt=""></a>
-                            <div class="blog__post__tags">
-                                <a href="blog.html">Story</a>
+    @if ($blogs && count($blogs) > 0)
+        <section class="blog" style="padding-bottom: 10px !important;">
+            <div class="container">
+                <div class="row gx-0 justify-content-center">
+                    @foreach ($blogs as $blog)
+                        <div class="col-lg-4 col-md-6 col-sm-9">
+                            <div class="blog__post__item">
+                                <div class="blog__post__thumb">
+                                    <a href="{{ route('blog.show', $blog->slug) }}"><img src="{{ asset($blog->image) }}"
+                                            alt="{{ $blog->title }}"></a>
+                                    <div class="blog__post__tags">
+                                        @if ($blog->categories && count($blog->categories) > 0)
+                                            <a
+                                                href="{{ route('blog.index', ['category' => $blog->categories[0]->slug]) }}">{{ $blog->categories[0]->name }}</a>
+                                        @else
+                                            <a href="{{ route('blog.index') }}">Uncategorized</a>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="blog__post__content">
+                                    <span class="date">{{ $blog->created_at->format('d F Y') }}</span>
+                                    <h3 class="title"><a
+                                            href="{{ route('blog.show', $blog->slug) }}">{{ $blog->title }}</a></h3>
+                                    <a href="{{ route('blog.show', $blog->slug) }}" class="read__more">Read mORe</a>
+                                </div>
                             </div>
                         </div>
-                        <div class="blog__post__content">
-                            <span class="date">13 january 2021</span>
-                            <h3 class="title"><a href="blog-details.html">Facebook design is dedicated to what's new in
-                                    design</a></h3>
-                            <a href="blog-details.html" class="read__more">Read mORe</a>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
-                <div class="col-lg-4 col-md-6 col-sm-9">
-                    <div class="blog__post__item">
-                        <div class="blog__post__thumb">
-                            <a href="blog-details.html"><img
-                                    src="{{ asset('frontend/assets/img/blog/blog_post_thumb02.jpg') }}"
-                                    alt=""></a>
-                            <div class="blog__post__tags">
-                                <a href="blog.html">Social</a>
-                            </div>
-                        </div>
-                        <div class="blog__post__content">
-                            <span class="date">13 january 2021</span>
-                            <h3 class="title"><a href="blog-details.html">Make communication Fast and Effectively.</a>
-                            </h3>
-                            <a href="blog-details.html" class="read__more">Read mORe</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-9">
-                    <div class="blog__post__item">
-                        <div class="blog__post__thumb">
-                            <a href="blog-details.html"><img
-                                    src="{{ asset('frontend/assets/img/blog/blog_post_thumb03.jpg') }}"
-                                    alt=""></a>
-                            <div class="blog__post__tags">
-                                <a href="blog.html">Work</a>
-                            </div>
-                        </div>
-                        <div class="blog__post__content">
-                            <span class="date">13 january 2021</span>
-                            <h3 class="title"><a href="blog-details.html">How to increase your productivity at work -
-                                    2021</a></h3>
-                            <a href="blog-details.html" class="read__more">Read mORe</a>
-                        </div>
-                    </div>
+                <div class="blog__button text-center">
+                    <a href="{{ route('blog.index') }}" class="btn">more blog</a>
                 </div>
             </div>
-            <div class="blog__button text-center">
-                <a href="blog.html" class="btn">more blog</a>
-            </div>
-        </div>
-    </section>
+        </section>
+    @endif
     <!-- blog-area-end -->
 
 

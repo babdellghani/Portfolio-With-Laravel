@@ -6,7 +6,9 @@
                     <div class="fw-title">
                         <h5 class="sub-title">Contact us</h5>
                         <h4 class="title">
-                            {{ $websiteInfo && $websiteInfo->phone ? $websiteInfo->phone : '+81383 766 284' }}</h4>
+                            <a
+                                href="tel:{{ $websiteInfo && $websiteInfo->phone ? $websiteInfo->phone : '+81383766284' }}">{{ $websiteInfo && $websiteInfo->phone ? $websiteInfo->phone : '+81383 766 284' }}</a>
+                        </h4>
                     </div>
                     <div class="footer__widget__text">
                         <p>{{ $websiteInfo && $websiteInfo->site_description ? $websiteInfo->site_description : 'Professional web developer with expertise in Laravel, React, and modern web technologies. Creating digital solutions that make a difference.' }}

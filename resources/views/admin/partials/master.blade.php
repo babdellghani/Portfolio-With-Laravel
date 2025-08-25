@@ -91,7 +91,7 @@
     <!-- END layout-wrapper -->
 
     <!-- ========== Right Sidebar ========== -->
-    {{-- @include('admin.partials.right_sidebar') --}}
+    @include('admin.partials.right_sidebar')
     <!-- END Right-bar -->
 
     <!-- Right bar overlay-->
